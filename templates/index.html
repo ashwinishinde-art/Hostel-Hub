@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+
+{% block title %}HostelHub - Premium Student Accommodation{% endblock %}
+
+{% block content %}
+<!-- ============ HERO SECTION ============ -->
+<section class="hero-section">
+    <div class="hero-content animate-fade">
+        <h1>Welcome to <span class="gradient-text">HostelHub</span></h1>
+        <p class="tagline">Your Home Away From Home - Premium Hostel for Excellence</p>
+        <div class="hero-buttons">
+            {% if not current_user.is_authenticated %}
+                <a href="/register" class="btn-hero primary"><i class="fas fa-user-plus"></i> Join Us Now</a>
+                <a href="/login" class="btn-hero outline"><i class="fas fa-sign-in-alt"></i> Login</a>
+            {% else %}
+                <a href="/student/dashboard" class="btn-hero primary"><i class="fas fa-home"></i> Dashboard</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- ============ STATS SECTION ============ -->
+<section class="stats-section">
+    <div class="container-custom">
+        <div class="row mb-50">
+            <div class="col-md-3 mb-3 animate-fade">
+                <div class="stat-card">
+                    <i class="fas fa-door-open"></i>
+                    <h3>{{ total_rooms }}</h3>
+                    <p>Premium Rooms</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3 animate-fade" style="animation-delay: 0.1s;">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3>{{ total_students }}</h3>
+                    <p>Happy Students</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3 animate-fade" style="animation-delay: 0.2s;">
+                <div class="stat-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>{{ available_rooms }}</h3>
+                    <p>Available Now</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3 animate-fade" style="animation-delay: 0.3s;">
+                <div class="stat-card">
+                    <i class="fas fa-star"></i>
+                    <h3>4.8★</h3>
+                    <p>Student Rating</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ ABOUT SECTION ============ -->
+<section class="about-section">
+    <div class="container-custom">
+        <div class="about-content animate-left">
+            <div class="about-text">
+                <h2>Welcome to {% if settings.hostel_name %}{{ settings.hostel_name }}{% else %}HostelHub{% endif %}</h2>
+                <p>
+                    Experience premium student living like never before. HostelHub is designed with students in mind, 
+                    offering not just accommodation, but a complete living experience that fosters growth, friendships, and success.
+                </p>
+                <p>
+                    Located at {% if settings.hostel_address %}{{ settings.hostel_address }}{% else %}Zeal Chowk, Narhe, Pune{% endif %}, our hostel combines comfort, safety, and community. 
+                    We believe every student deserves a space where they can thrive academically and personally.
+                </p>
+                
+                <div class="about-highlights">
+                    <div class="highlight-item animate-fade">
+                        <h6><i class="fas fa-shield-alt"></i> Safe & Secure</h6>
+                        <p>24/7 security with CCTV monitoring</p>
+                    </div>
+                    <div class="highlight-item animate-fade">
+                        <h6><i class="fas fa-wifi"></i> Connected Living</h6>
+                        <p>High-speed WiFi throughout</p>
+                    </div>
+                    <div class="highlight-item animate-fade">
+                        <h6><i class="fas fa-utensils"></i> Hygienic Meals</h6>
+                        <p>Nutritious meals daily</p>
+                    </div>
+                    <div class="highlight-item animate-fade">
+                        <h6><i class="fas fa-dumbbell"></i> Fitness Center</h6>
+                        <p>Fully equipped gym facility</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="animate-right">
+                <div style="background: linear-gradient(135deg, #6366f1, #ec4899); border-radius: 15px; padding: 40px; color: white; text-align: center;">
+                    <i class="fas fa-building" style="font-size: 5rem; margin-bottom: 20px; opacity: 0.8;"></i>
+                    <h3>Premium Hostel Living</h3>
+                    <p style="margin-top: 15px; opacity: 0.9;">Join 200+ satisfied students at HostelHub</p>
+                    <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
+                        <div>
+                            <div style="font-size: 2rem; font-weight: 800;">8+</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8;">Years Experience</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: 800;">100%</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8;">Satisfaction</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: 800;">24/7</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8;">Support</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ FEATURES SECTION ============ -->
+<section class="features-section">
+    <div class="container-custom">
+        <h2 class="section-title">Why Choose HostelHub?</h2>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4 animate-fade">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <h5>High-Speed Internet</h5>
+                    <p>Uninterrupted WiFi connectivity throughout the hostel for seamless online learning</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 animate-fade" style="animation-delay: 0.1s;">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h5>Hygienic Mess</h5>
+                    <p>Nutritious, home-cooked meals prepared by experienced staff with high hygiene standards</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 animate-fade" style="animation-delay: 0.2s;">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #f97316, #ea580c);">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h5>24/7 Security</h5>
+                    <p>CCTV surveillance and trained security personnel ensuring your complete safety</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 animate-fade">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h5>Fitness Center</h5>
+                    <p>Fully equipped gym with modern equipment for your fitness and wellness needs</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 animate-fade" style="animation-delay: 0.1s;">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h5>Study Spaces</h5>
+                    <p>Dedicated quiet zones and common areas perfect for studying or group projects</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 animate-fade" style="animation-delay: 0.2s;">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #ec4899, #be185d);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h5>Community Events</h5>
+                    <p>Regular events, workshops, and activities to build strong friendships and networks</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ ROOMS SECTION ============ -->
+<section class="rooms-section">
+    <div class="container-custom">
+        <h2 class="section-title">Our Room Types</h2>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4 animate-fade">
+                <div class="room-card">
+                    <div class="room-image">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="room-content">
+                        <div class="room-type">Single Deluxe</div>
+                        <h5>Private Luxury Room</h5>
+                        <div class="room-features">
+                            <span class="feature-tag"><i class="fas fa-door-open"></i> Private</span>
+                            <span class="feature-tag"><i class="fas fa-snowflake"></i> AC</span>
+                            <span class="feature-tag"><i class="fas fa-bath"></i> Ensuite</span>
+                        </div>
+                        <div class="room-price">₹7,000<small>/month</small></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 animate-fade" style="animation-delay: 0.1s;">
+                <div class="room-card">
+                    <div class="room-image" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-door-open"></i>
+                    </div>
+                    <div class="room-content">
+                        <div class="room-type">Double Sharing</div>
+                        <h5>Comfortable Shared Room</h5>
+                        <div class="room-features">
+                            <span class="feature-tag"><i class="fas fa-users"></i> 2 Students</span>
+                            <span class="feature-tag"><i class="fas fa-snowflake"></i> AC</span>
+                            <span class="feature-tag"><i class="fas fa-wifi"></i> WiFi</span>
+                        </div>
+                        <div class="room-price">₹5,000<small>/month</small></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 animate-fade" style="animation-delay: 0.2s;">
+                <div class="room-card">
+                    <div class="room-image" style="background: linear-gradient(135deg, #f97316, #ea580c);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="room-content">
+                        <div class="room-type">Quad Sharing</div>
+                        <h5>Friendly Multi-Bed Room</h5>
+                        <div class="room-features">
+                            <span class="feature-tag"><i class="fas fa-users"></i> 4 Students</span>
+                            <span class="feature-tag"><i class="fas fa-fan"></i> Fan</span>
+                            <span class="feature-tag"><i class="fas fa-heart"></i> Community</span>
+                        </div>
+                        <div class="room-price">₹3,500<small>/month</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ TESTIMONIALS SECTION ============ -->
+<section class="testimonials-section">
+    <div class="container-custom">
+        <h2 class="section-title">What Students Say</h2>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4 animate-fade">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">
+                        "HostelHub is amazing! I found an amazing community and made lifelong friends. The facilities are top-notch and the staff is always helpful."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RS</div>
+                        <div class="author-info">
+                            <h6>Rajdeep Singh</h6>
+                            <p>Engineering, 2nd Year</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 animate-fade" style="animation-delay: 0.1s;">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">
+                        "Great location, fantastic amenities, and super supportive management. I couldn't have asked for a better hostel experience!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RP</div>
+                        <div class="author-info">
+                            <h6>Rutuja Patil</h6>
+                            <p>Commerce, 3rd Year</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 animate-fade" style="animation-delay: 0.2s;">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">
+                        "The management system is so convenient and the hostel feels like home. Definitely the best decision I made!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">PT</div>
+                        <div class="author-info">
+                            <h6>Prajwal Tandekar</h6>
+                            <p>IT, 4th Year</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ CONTACT INFO SECTION ============ -->
+<section style="padding: 60px 0; background: #f9fafb;">
+    <div class="container-custom">
+        <div class="row">
+            <div class="col-md-4 mb-4 text-center animate-fade">
+                <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);">
+                    <div style="color: #6366f1; font-size: 2.5rem; margin-bottom: 15px;">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h5 style="margin-bottom: 10px; color: #1f2937;">Location</h5>
+                    <p style="color: #1f2937; margin: 0; font-weight: 500;">{% if settings.hostel_address %}{{ settings.hostel_address }}{% else %}Zeal Chowk, Narhe, Pune{% endif %}</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 text-center animate-fade" style="animation-delay: 0.1s;">
+                <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);">
+                    <div style="color: #ec4899; font-size: 2.5rem; margin-bottom: 15px;">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h5 style="margin-bottom: 10px; color: #1f2937;">Contact</h5>
+                    <p style="color: #1f2937; margin: 0; font-weight: 500;">{% if settings.hostel_phone %}{{ settings.hostel_phone }}{% else %}7030710886{% endif %}</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4 text-center animate-fade" style="animation-delay: 0.2s;">
+                <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);">
+                    <div style="color: #f97316; font-size: 2.5rem; margin-bottom: 15px;">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h5 style="margin-bottom: 10px; color: #1f2937;">Email</h5>
+                    <p style="color: #1f2937; margin: 0; font-weight: 500;">{% if settings.hostel_email %}{{ settings.hostel_email }}{% else %}hostelhub@work.com{% endif %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ CTA SECTION ============ -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2>Ready to Join Our Community?</h2>
+        <p>Find your perfect home at HostelHub. Limited rooms available!</p>
+        {% if not current_user.is_authenticated %}
+            <a href="/register" class="btn-cta"><i class="fas fa-user-plus"></i> Register Now</a>
+        {% else %}
+            <a href="/student/dashboard" class="btn-cta"><i class="fas fa-home"></i> Go to Dashboard</a>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+    .main-content {
+        padding: 0 !important;
+    }
+</style>
+{% endblock %}

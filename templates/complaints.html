@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Maintenance Desk - PortalHostel{% endblock %}
+
+{% block sub_styles %}
+<style>
+    .complaint-layout { display: grid; grid-template-columns: 1.2fr 2fr; gap: 30px; }
+    .complaint-form { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; height: fit-content; }
+    .complaint-form h2 { font-size: 18px; margin-bottom: 15px; }
+    .input-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
+    label { font-size: 12px; font-weight: 600; color: var(--text-gray); }
+    input, select, textarea { padding: 12px; background: #0b0f19; border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 14px; }
+    textarea { resize: vertical; min-height: 80px; }
+    
+    .ticket-list { display: flex; flex-direction: column; gap: 15px; }
+    .ticket-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: flex-start; }
+    .ticket-meta h3 { font-size: 16px; margin-bottom: 4px; }
+    .ticket-meta p { font-size: 13px; color: var(--text-gray); line-height: 1.4; }
+    
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    .badge-pending { background: rgba(239, 68, 68, 0.12); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.2); }
+    .badge-resolved { background: rgba(16, 185, 129, 0.12); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
+</style>
+{% endblock %}
+
+{% block main_view %}
+<div class="page-header">
+    <h1>Maintenance Resolution Desk</h1>
+    <p>File infrastructure complaints, update physical repair request logs, and monitor status loops.</p>
+</div>
+
+<div class="complaint-layout">
+    <!-- Form Side -->
+    <div class="complaint-form">
+        <h2>Report An Issue</h2>
+        <form action="/complaints" method="POST">
+            <div class="input-group">
+                <label>Reporting Room Number</label>
+                <input type="text" name="room" placeholder="e.g. 101" required>
+            </div>
+            <div class="input-group">
+                <label>Issue Classification</label>
+                <select name="category">
+                    <option value="Electrical">Electrical System</option>
+                    <option value="Plumbing">Plumbing / Water</option>
+                    <option value="Carpentry">Carpentry / Furniture</option>
+                    <option value="Internet">Wi-Fi & Networks</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Brief Issue Breakdown</label>
+                <textarea name="desc" placeholder="Describe the physical maintenance issue here..." required></textarea>
+            </div>
+            <button type="submit" class="submit-btn" style="padding:10px; font-size:14px;">Log Ticket</button>
+        </form>
+    </div>
+
+    <!-- List Side -->
+    <div class="ticket-list">
+        <h2>Recent Issues Registry</h2>
+        {% for c in complaints %}
+        <div class="ticket-card">
+            <div class="ticket-meta">
+                <h3>Room {{ c.room }} &bull; <span style="color:var(--accent);">{{ c.category }}</span></h3>
+                <p>{{ c.desc }}</p>
+            </div>
+            <span class="badge badge-{{ c.status.lower() }}">{{ c.status }}</span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

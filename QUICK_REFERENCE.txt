@@ -1,0 +1,173 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                 🏠 STUDENT UNALLOCATION - QUICK REFERENCE                   ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+┌─ WHAT DOES THIS DO? ─────────────────────────────────────────────────────┐
+│ Removes all students from their room allocations WITHOUT unregistering.  │
+│ • Students remain in the system                                          │
+│ • Room allocations are marked inactive                                   │
+│ • All student data is preserved (fees, complaints, profiles, etc.)       │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ METHOD 1: WEB INTERFACE (EASIEST) ──────────────────────────────────────┐
+│                                                                           │
+│ Command:  python app.py                                                  │
+│ URL:      http://localhost:5000/admin/unallocate-all-students           │
+│ Login:    admin / admin123                                               │
+│ Navigate: Admin → Rooms → Unallocate All Students                        │
+│                                                                           │
+│ ✓ Most user-friendly                                                     │
+│ ✓ Visual confirmation                                                    │
+│ ✓ See all students before unallocating                                   │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ METHOD 2: PYTHON SCRIPT ────────────────────────────────────────────────┐
+│                                                                           │
+│ Command:  python unallocate_students.py                                  │
+│ Confirm:  Type 'yes' when prompted                                       │
+│                                                                           │
+│ ✓ Automated with confirmations                                           │
+│ ✓ Shows all students before unallocating                                 │
+│ ✓ Good for scripting/automation                                          │
+│                                                                           │
+│ Requirements: MySQL must be running                                      │
+│              sudo systemctl start mysql                                  │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ METHOD 3: DIRECT SQL ───────────────────────────────────────────────────┐
+│                                                                           │
+│ Option A - Execute SQL file:                                             │
+│   mysql -u root hostel_management < unallocate_students.sql             │
+│                                                                           │
+│ Option B - Interactive shell:                                            │
+│   mysql -u root                                                          │
+│   USE hostel_management;                                                 │
+│   UPDATE room_occupancy SET status = 'Inactive' WHERE status = 'Active';│
+│                                                                           │
+│ ✓ Fastest method                                                         │
+│ ✓ Direct database access                                                 │
+│ ✓ No application overhead                                                │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ VERIFICATION AFTER UNALLOCATION ────────────────────────────────────────┐
+│                                                                           │
+│ Check with SQL:                                                          │
+│   SELECT COUNT(*) FROM room_occupancy WHERE status = 'Active';          │
+│   → Should return: 0                                                     │
+│                                                                           │
+│   SELECT COUNT(*) FROM users WHERE role = 'student';                    │
+│   → Should return: (same number as before)                               │
+│                                                                           │
+│   SELECT COUNT(*) FROM room_occupancy WHERE status = 'Inactive';        │
+│   → Should return: (number of students that were allocated)              │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ CURRENT ALLOCATIONS ────────────────────────────────────────────────────┐
+│                                                                           │
+│ Student Name          | Roll No  | Room | Check-in Date                 │
+│ ─────────────────────────────────────────────────────────────────────    │
+│ Prajwal Tandekar      | CO1265   | 101  | 2024-06-01                   │
+│ Rajdeep Patil         | CO1288   | 103  | 2024-06-01                   │
+│ Rutuja Patil          | CO1240   | 201  | 2024-06-01                   │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ TROUBLESHOOTING ────────────────────────────────────────────────────────┐
+│                                                                           │
+│ ❌ "Can't connect to MySQL"                                              │
+│   → Start MySQL: sudo systemctl start mysql                             │
+│   → Check if running: sudo systemctl status mysql                       │
+│                                                                           │
+│ ❌ "Access denied"                                                       │
+│   → Check .env file for credentials                                     │
+│   → MySQL password might be empty (no -p flag needed)                   │
+│                                                                           │
+│ ❌ "Database not found"                                                  │
+│   → Create database: mysql -u root < config/database.sql                │
+│                                                                           │
+│ ❌ "Flask app won't start"                                               │
+│   → Check requirements.txt: pip install -r requirements.txt            │
+│   → Check if port 5000 is available                                     │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ WHAT CHANGES? ──────────────────────────────────────────────────────────┐
+│                                                                           │
+│ Changes:                                                                 │
+│   ✓ room_occupancy.status: 'Active' → 'Inactive'                        │
+│   ✓ Rooms shown as available                                             │
+│   ✓ Room occupancy counts reset                                          │
+│                                                                           │
+│ Remains the Same:                                                        │
+│   ✓ Student registrations (still active)                                 │
+│   ✓ User accounts and logins                                             │
+│   ✓ Student information                                                  │
+│   ✓ Fee records and payment history                                      │
+│   ✓ Complaints and visitor requests                                      │
+│   ✓ All other data                                                       │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ FILES PROVIDED ─────────────────────────────────────────────────────────┐
+│                                                                           │
+│ 📄 unallocate_students.py                                                │
+│    └─ Python script for automation                                       │
+│                                                                           │
+│ 📄 unallocate_students.sql                                               │
+│    └─ SQL script for direct execution                                    │
+│                                                                           │
+│ 📄 UNALLOCATION_README.md                                                │
+│    └─ Implementation summary                                             │
+│                                                                           │
+│ 📄 STUDENT_UNALLOCATION_COMPLETE.md                                      │
+│    └─ Complete documentation (most detailed)                             │
+│                                                                           │
+│ 📄 UNALLOCATE_GUIDE.md                                                   │
+│    └─ Step-by-step guide                                                 │
+│                                                                           │
+│ 📄 QUICK_REFERENCE.txt                                                   │
+│    └─ This file                                                          │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ RECOVERY/UNDO ──────────────────────────────────────────────────────────┐
+│                                                                           │
+│ If you need to restore allocations:                                      │
+│                                                                           │
+│ Option 1: Restore from backup                                            │
+│   → Database should have backups                                         │
+│                                                                           │
+│ Option 2: Re-allocate manually                                           │
+│   → Admin → Rooms → Allocate Room                                        │
+│   → Select each student and room                                         │
+│   → Set original check-in dates                                          │
+│                                                                           │
+│ Option 3: SQL recovery (if you know student IDs)                        │
+│   → UPDATE room_occupancy                                                │
+│      SET status = 'Active'                                               │
+│      WHERE student_id IN (3, 4, 5);                                      │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ RECOMMENDED WORKFLOW ───────────────────────────────────────────────────┐
+│                                                                           │
+│ 1. ✓ Read: STUDENT_UNALLOCATION_COMPLETE.md                             │
+│ 2. ✓ Backup: Database backup (recommended)                              │
+│ 3. ✓ Choose: Pick one of three methods                                  │
+│ 4. ✓ Execute: Run the unallocation                                      │
+│ 5. ✓ Verify: Run verification SQL queries                               │
+│ 6. ✓ Confirm: Check web interface shows no allocated students           │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    ✨ READY TO UNALLOCATE STUDENTS ✨                      ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+📧 For questions, see STUDENT_UNALLOCATION_COMPLETE.md
+🔗 Documentation files are in: /home/prajwal/Programs/Hostel/
+⏰ Last updated: 2026-07-20

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Room Details - Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid main-content">
+    <h1 class="mb-4"><i class="fas fa-door-open"></i> Room Details</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Room Information</h5>
+                </div>
+                <div class="card-body">
+                    {% if room %}
+                        <div class="room-details-info">
+                            <div class="detail-row">
+                                <div class="detail-label"><strong>Room Number:</strong></div>
+                                <div class="detail-value">{{ room.room_number if room.room_number else "N/A" }}</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label"><strong>Type:</strong></div>
+                                <div class="detail-value">{{ room.room_type if room.room_type else "N/A" }}</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label"><strong>Floor:</strong></div>
+                                <div class="detail-value">{{ room.floor if room.floor else "N/A" }}</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label"><strong>Capacity:</strong></div>
+                                <div class="detail-value">{{ room.capacity if room.capacity else "N/A" }} students</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label"><strong>Monthly Rent:</strong></div>
+                                <div class="detail-value">₹{{ "%.2f"|format(room.rent) if room.rent else "N/A" }}</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label"><strong>Amenities:</strong></div>
+                                <div class="detail-value">{{ room.amenities if room.amenities else "Standard" }}</div>
+                            </div>
+                            {% if room.check_in_date %}
+                            <div class="detail-row">
+                                <div class="detail-label"><strong>Check-in Date:</strong></div>
+                                <div class="detail-value">
+                                    {% if room.check_in_date.strftime %}
+                                        {{ room.check_in_date.strftime('%d %b %Y') }}
+                                    {% else %}
+                                        {{ room.check_in_date }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No room allocated yet. Contact the admin.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Roommates -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Roommates ({{ roommates|length }})</h5>
+                </div>
+                <div class="card-body">
+                    {% if roommates %}
+                        {% for roommate in roommates %}
+                        <div class="mb-3 pb-2 border-bottom">
+                            <h6>{{ roommate.full_name }}</h6>
+                            <small class="text-muted">
+                                {{ roommate.roll_number }}<br>
+                                {{ roommate.phone or 'N/A' }}
+                            </small>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No roommates in this room yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Room Details Styling */
+    .room-details-info {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    html.dark-theme .detail-row {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        min-width: 140px;
+        color: var(--text-current);
+        font-weight: 600;
+    }
+
+    .detail-value {
+        text-align: right;
+        color: var(--text-current);
+        font-weight: 500;
+        word-break: break-word;
+        max-width: 200px;
+    }
+
+    @media (max-width: 768px) {
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .detail-value {
+            text-align: left;
+            margin-top: 5px;
+            max-width: 100%;
+        }
+    }
+</style>
+{% endblock %}

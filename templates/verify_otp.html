@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Verify OTP - Hostel Management System{% endblock %}
+
+{% block content %}
+<div style="min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <!-- Glass Morphism Card -->
+                <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 30px; padding: 50px 40px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); animation: slideInUp 0.6s ease;">
+                    
+                    <!-- Header -->
+                    <div style="text-align: center; margin-bottom: 40px;">
+                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);">
+                            <i class="fas fa-shield-alt" style="font-size: 2.5rem; color: white;"></i>
+                        </div>
+                        <h2 style="color: #2c3e50; font-weight: 900; margin-bottom: 8px; font-size: 2rem;">Verify OTP</h2>
+                        <p style="color: #7f8c8d; font-size: 1rem;">Enter the OTP sent to your {{ otp_method }}</p>
+                    </div>
+
+                    <!-- Info Box -->
+                    <div style="background: #f0f7ff; border-left: 4px solid #667eea; padding: 15px; border-radius: 8px; margin-bottom: 30px;">
+                        <p style="margin: 0; color: #2c3e50; font-size: 0.95rem;">
+                            <strong>📧 Sent to:</strong> 
+                            <span style="color: #667eea; font-weight: 600;">
+                                {% if otp_method == 'sms' %}
+                                    {{ masked_phone }}
+                                {% else %}
+                                    {{ masked_email }}
+                                {% endif %}
+                            </span>
+                        </p>
+                    </div>
+
+                    <!-- OTP Verification Form -->
+                    <form method="POST" action="/verify-otp">
+                        <!-- OTP Code Field -->
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; margin-bottom: 12px; color: #2c3e50; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.3px;">Enter OTP Code</label>
+                            <input type="text" class="form-control" id="otp_code" name="otp_code" maxlength="6" required placeholder="000000"
+                                style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 14px 16px; font-size: 1.5rem; transition: all 0.3s ease; background: #f8f9fa; color: #2c3e50; font-weight: 700; text-align: center; letter-spacing: 10px;" 
+                                onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'; this.style.backgroundColor='#fff';"
+                                onblur="this.style.borderColor='#e0e0e0'; this.style.boxShadow='none'; this.style.backgroundColor='#f8f9fa';"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                            <small style="color: #7f8c8d; display: block; margin-top: 8px;">⏱️ OTP expires at: <span id="expiry_time" style="font-weight: bold; color: #e74c3c;">{{ expiry_time }}</span></small>
+                        </div>
+
+                        <!-- Hidden fields for session data -->
+                        <input type="hidden" name="user_id" value="{{ user_id }}">
+                        <input type="hidden" name="otp_method" value="{{ otp_method }}">
+
+                        <!-- Submit Button -->
+                        <button type="submit" style="width: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; padding: 14px; font-weight: 700; font-size: 1.05rem; letter-spacing: 0.5px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3); margin-bottom: 20px;"
+                            onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.4)';"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(102, 126, 234, 0.3)';">
+                            <i class="fas fa-check"></i> Verify OTP
+                        </button>
+                    </form>
+
+                    <!-- Resend OTP -->
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <p style="color: #7f8c8d; margin: 0;">Didn't receive the OTP?</p>
+                        <form method="POST" action="/resend-otp" style="display: inline;">
+                            <input type="hidden" name="user_id" value="{{ user_id }}">
+                            <input type="hidden" name="otp_method" value="{{ otp_method }}">
+                            <button type="submit" style="background: none; border: none; color: #667eea; text-decoration: none; font-weight: 700; cursor: pointer; transition: all 0.3s ease; font-size: 1rem;" onmouseover="this.style.color='#764ba2';" onmouseout="this.style.color='#667eea';">
+                                <i class="fas fa-redo-alt"></i> Resend OTP
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Divider -->
+                    <div style="display: flex; align-items: center; margin-bottom: 25px;">
+                        <div style="flex: 1; height: 1px; background: #e0e0e0;"></div>
+                        <span style="color: #95a5a6; padding: 0 15px; font-size: 0.9rem;">OR</span>
+                        <div style="flex: 1; height: 1px; background: #e0e0e0;"></div>
+                    </div>
+
+                    <!-- Back to Login Link -->
+                    <p style="text-align: center; color: #7f8c8d; margin: 0;">
+                        <a href="/login" style="color: #667eea; text-decoration: none; font-weight: 700; transition: all 0.3s ease;" onmouseover="this.style.color='#764ba2';" onmouseout="this.style.color='#667eea';">← Back to Login</a>
+                    </p>
+
+                    <!-- Security Notice -->
+                    <div style="margin-top: 25px; padding: 15px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                        <p style="color: #856404; margin: 0; font-size: 0.9rem;">
+                            <strong>⚠️ Security Notice:</strong> Never share your OTP with anyone. Our support team will never ask for it.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-format OTP input
+    document.getElementById('otp_code').addEventListener('input', function() {
+        // Remove any non-numeric characters
+        this.value = this.value.replace(/[^0-9]/g, '');
+        
+        // Limit to 6 digits
+        if (this.value.length > 6) {
+            this.value = this.value.slice(0, 6);
+        }
+    });
+    
+    // Count down expiry timer (in real implementation, calculate from backend)
+    function updateTimer() {
+        const expiryElement = document.getElementById('expiry_time');
+        // This is just for UI purposes - actual validation happens on server
+    }
+    
+    // Auto-submit when 6 digits are entered (optional)
+    document.getElementById('otp_code').addEventListener('keyup', function() {
+        if (this.value.length === 6) {
+            // Optionally auto-submit
+            // document.querySelector('form').submit();
+        }
+    });
+</script>
+
+<style>
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+input[type="text"]::placeholder {
+    color: #bdc3c7;
+    font-weight: normal;
+    letter-spacing: 5px;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Student Directory - PortalHostel{% endblock %}
+
+{% block sub_styles %}
+<style>
+    .search-bar { display: flex; gap: 10px; margin-bottom: 30px; }
+    .search-bar input { flex: 1; padding: 12px 18px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 15px; }
+    .search-bar button { padding: 12px 24px; background: var(--accent); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; }
+    .search-bar button:hover { background: var(--accent-hover); }
+
+    .records-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; }
+    .records-table th, .records-table td { padding: 16px; text-align: left; font-size: 14px; }
+    .records-table th { background: #111827; color: var(--text-gray); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color); }
+    .records-table tr { border-bottom: 1px solid var(--border-color); transition: background 0.1s; }
+    .records-table tr:hover { background: rgba(255,255,255,0.02); }
+    .records-table tr:last-child { border-bottom: none; }
+    .tag { background: #1e293b; color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid var(--border-color); }
+</style>
+{% endblock %}
+
+{% block main_view %}
+<div class="page-header">
+    <h1>Resident Records</h1>
+    <p>Browse through registered hostellers, view assignments, or perform filtered database queries.</p>
+</div>
+
+<!-- Dynamic Search Bar -->
+<form action="/students" method="GET" class="search-bar">
+    <input type="text" name="search" placeholder="Search by Student Name, Roll No, or Assigned Room..." value="{{ search_query }}">
+    <button type="submit">Query DB</button>
+</form>
+
+<table class="records-table">
+    <thead>
+        <tr>
+            <th>Student Name</th>
+            <th>Roll No</th>
+            <th>Branch</th>
+            <th>Room No</th>
+            <th>Contact</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in students %}
+        <tr>
+            <td><strong>{{ s.name }}</strong></td>
+            <td><code>{{ s.roll_no }}</code></td>
+            <td>{{ s.branch }}</td>
+            <td><span class="tag">Room {{ s.room }}</span></td>
+            <td>{{ s.contact }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5" style="text-align: center; color: var(--text-gray); padding: 30px;">No matching resident logs found in system context.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

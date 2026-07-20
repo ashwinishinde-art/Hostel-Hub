@@ -1,0 +1,457 @@
+{% extends "base.html" %}
+
+{% block title %}Room Management - Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .room-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .room-table thead {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+    }
+
+    .room-table thead th {
+        padding: 15px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-align: left;
+        border: none;
+        text-transform: capitalize;
+    }
+
+    .room-table tbody tr {
+        border-bottom: 1px solid var(--border-current);
+        transition: all 0.3s ease;
+    }
+
+    .room-table tbody tr:hover {
+        background-color: var(--bg-current-secondary);
+        transform: scale(1.01);
+    }
+
+    .room-table tbody td {
+        padding: 12px 15px;
+        color: var(--text-current);
+        font-weight: 500;
+        vertical-align: middle;
+    }
+
+    .room-table tbody td:first-child {
+        font-weight: 700;
+        font-size: 1.05rem;
+    }
+
+    .room-table .room-type {
+        display: inline-block;
+        background: linear-gradient(135deg, rgba(52, 152, 219, 0.4), rgba(41, 128, 185, 0.4));
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-weight: 700;
+        color: #ffffff;
+        border: 2px solid rgba(52, 152, 219, 0.8);
+        box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        text-transform: capitalize;
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+    }
+
+    .room-table tbody td:nth-child(3) {
+        font-weight: 600;
+        min-width: 140px;
+    }
+
+    .room-table .rent-amount {
+        font-weight: 700;
+        color: var(--secondary-color);
+        font-size: 1.05rem;
+    }
+
+    .room-table .amenities-text {
+        font-size: 0.9rem;
+        opacity: 0.85;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .btn-group-compact {
+        display: flex;
+        gap: 5px;
+    }
+
+    .btn-group-compact .btn {
+        font-weight: 600;
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+
+    /* Modal improvements */
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+    }
+
+    .modal-title {
+        font-weight: 700;
+        letter-spacing: 0.3px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-current);
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        border-width: 2px;
+        font-weight: 500;
+    }
+
+    /* Page header */
+    .room-management-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .room-management-header h1 {
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        margin: 0;
+    }
+
+    .header-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .header-buttons .btn {
+        font-weight: 600;
+        letter-spacing: 0.2px;
+    }
+
+    /* Empty state */
+    .no-rooms {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-current);
+    }
+
+    .no-rooms i {
+        font-size: 4rem;
+        opacity: 0.2;
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .no-rooms p {
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid main-content">
+    <div class="room-management-header">
+        <div>
+            <h1><i class="fas fa-door-open"></i> Room Management</h1>
+            <p class="text-muted" style="font-weight: 500; margin-top: 5px;">Total Rooms: <strong>{{ rooms|length }}</strong></p>
+        </div>
+        <div class="header-buttons">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal">
+                <i class="fas fa-plus"></i> Add New Room
+            </button>
+            <a href="/admin/allocate-room" class="btn btn-success">
+                <i class="fas fa-check"></i> Allocate Room
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        {% if rooms %}
+        <div class="table-responsive">
+            <table class="room-table">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-door-open"></i> Room No</th>
+                        <th><i class="fas fa-layer-group"></i> Floor</th>
+                        <th><i class="fas fa-home"></i> Type</th>
+                        <th><i class="fas fa-users"></i> Capacity</th>
+                        <th><i class="fas fa-check"></i> Occupied</th>
+                        <th><i class="fas fa-rupee-sign"></i> Rent</th>
+                        <th><i class="fas fa-lightbulb"></i> Available</th>
+                        <th><i class="fas fa-list"></i> Amenities</th>
+                        <th><i class="fas fa-cog"></i> Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for room in rooms %}
+                    <tr>
+                        <td>{{ room.room_number }}</td>
+                        <td>{{ room.floor }}</td>
+                        <td>
+                            <span class="room-type">{{ room.room_type }}</span>
+                        </td>
+                        <td style="font-weight: 600;">{{ room.capacity }}</td>
+                        <td style="font-weight: 600;">{{ room.occupied_count if room.occupied_count else 0 }}/{{ room.capacity }}</td>
+                        <td>
+                            <span class="rent-amount">₹{{ "%.2f"|format(room.rent) if room.rent else "0" }}</span>
+                        </td>
+                        <td>
+                            {% if room.occupied_count is defined and room.capacity is defined %}
+                                {% if room.occupied_count < room.capacity %}
+                                    <span class="badge bg-success" style="font-weight: 600; padding: 6px 12px;">✓ Yes</span>
+                                {% else %}
+                                    <span class="badge bg-danger" style="font-weight: 600; padding: 6px 12px;">✕ Full</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge bg-warning" style="font-weight: 600; padding: 6px 12px;">?</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="amenities-text" title="{{ room.amenities if room.amenities else 'N/A' }}">{{ room.amenities[:35] if room.amenities else "N/A" }}</span></td>
+                        <td>
+                            <div class="btn-group-compact">
+                                <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editRoomModal" onclick="loadRoom({{ room|tojson }})" title="Edit room">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteRoom({{ room.id }})" title="Delete room">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-rooms">
+            <i class="fas fa-inbox"></i>
+            <p>No rooms found in the system</p>
+            <small class="text-muted">Click "Add New Room" button to create rooms</small>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Room Modal -->
+<div class="modal fade" id="addRoomModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-plus-circle"></i> Add New Room</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <input type="hidden" name="action" value="add">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Room Number *</label>
+                        <input type="text" class="form-control" name="room_number" required placeholder="e.g., 101, 102">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Floor *</label>
+                        <input type="number" class="form-control" name="floor" required placeholder="e.g., 1, 2, 3">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Room Type *</label>
+                        <select class="form-select" name="room_type" required>
+                            <option value="">-- Select Room Type --</option>
+                            <option value="Single Deluxe">Single Deluxe</option>
+                            <option value="Double Sharing">Double Sharing</option>
+                            <option value="Triple Sharing">Triple Sharing</option>
+                            <option value="Quad Sharing">Quad Sharing</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Capacity *</label>
+                        <input type="number" class="form-control" name="capacity" required placeholder="Number of students">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Monthly Rent *</label>
+                        <input type="number" step="0.01" class="form-control" name="rent" required placeholder="e.g., 5000">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Amenities</label>
+                        <textarea class="form-control" name="amenities" rows="3" placeholder="e.g., WiFi, AC, Cupboard, Study Desk"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Add Room</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Room Modal -->
+<div class="modal fade" id="editRoomModal" tabindex="-1" style="--bs-modal-width: 700px;">
+    <div class="modal-dialog" style="max-width: 700px;">
+        <div class="modal-content">
+            <!-- Tabs for Room Info and Student Management -->
+            <ul class="nav nav-tabs" id="roomEditTabs" role="tablist" style="border-bottom: 3px solid var(--primary-color);">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="room-info-tab" data-bs-toggle="tab" data-bs-target="#room-info" type="button" role="tab">
+                        <i class="fas fa-info-circle"></i> Room Info
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="room-students-tab" data-bs-toggle="tab" data-bs-target="#room-students" type="button" role="tab">
+                        <i class="fas fa-users"></i> Manage Students
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="roomEditTabContent">
+                <!-- Tab 1: Room Information -->
+                <div class="tab-pane fade show active" id="room-info" role="tabpanel">
+                    <form method="POST" id="roomEditForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><i class="fas fa-edit"></i> Edit Room Details</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <input type="hidden" name="action" value="update">
+                        <input type="hidden" name="room_id" id="edit_room_id">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label" style="font-weight: 700;">Room Number *</label>
+                                <input type="text" class="form-control" name="room_number" id="edit_room_number" required placeholder="e.g., 101, 102" style="border-width: 2px; font-weight: 500;">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" style="font-weight: 700;">Floor *</label>
+                                <input type="number" class="form-control" name="floor" id="edit_floor" required placeholder="e.g., 1, 2, 3" style="border-width: 2px; font-weight: 500;">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" style="font-weight: 700;">Room Type *</label>
+                                <select class="form-select" name="room_type" id="edit_room_type" required style="border-width: 2px; font-weight: 500;">
+                                    <option value="">-- Select Room Type --</option>
+                                    <option value="Single Deluxe">Single Deluxe</option>
+                                    <option value="Double Sharing">Double Sharing</option>
+                                    <option value="Triple Sharing">Triple Sharing</option>
+                                    <option value="Quad Sharing">Quad Sharing</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" style="font-weight: 700;">Capacity *</label>
+                                <input type="number" class="form-control" name="capacity" id="edit_capacity" required placeholder="Number of students" style="border-width: 2px; font-weight: 500;">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" style="font-weight: 700;">Monthly Rent *</label>
+                                <input type="number" step="0.01" class="form-control" name="rent" id="edit_rent" required placeholder="e.g., 5000" style="border-width: 2px; font-weight: 500;">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" style="font-weight: 700;">Amenities</label>
+                                <textarea class="form-control" name="amenities" id="edit_amenities" rows="3" placeholder="e.g., WiFi, AC, Cupboard, Study Desk" style="border-width: 2px; font-weight: 500;"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" style="font-weight: 700;"><i class="fas fa-save"></i> Update Room</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tab 2: Manage Students -->
+                <div class="tab-pane fade" id="room-students" role="tabpanel">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-users"></i> Manage Room Students</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="roomStudentsContainer">
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 2rem; opacity: 0.3; margin-bottom: 15px;">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                            <p style="font-weight: 500;">Loading students...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadRoom(room) {
+    // Populate the edit form with room data
+    document.getElementById('edit_room_id').value = room.id || '';
+    document.getElementById('edit_room_number').value = room.room_number || '';
+    document.getElementById('edit_floor').value = room.floor || '';
+    document.getElementById('edit_room_type').value = room.room_type || '';
+    document.getElementById('edit_capacity').value = room.capacity || '';
+    document.getElementById('edit_rent').value = room.rent || '';
+    document.getElementById('edit_amenities').value = room.amenities || '';
+    
+    // Load students when tab is clicked
+    document.getElementById('room-students-tab').addEventListener('click', function() {
+        loadRoomStudents(room.id);
+    });
+}
+
+function loadRoomStudents(roomId) {
+    const container = document.getElementById('roomStudentsContainer');
+    container.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; opacity: 0.3; margin-bottom: 15px;"></i><p style="font-weight: 500;">Loading students...</p></div>';
+    
+    // Fetch students in this room
+    fetch(`/admin/room-students/${roomId}`)
+        .then(response => response.text())
+        .then(html => {
+            container.innerHTML = html;
+        })
+        .catch(error => {
+            container.innerHTML = `<div style="padding: 20px; color: #e74c3c;"><i class="fas fa-exclamation-circle"></i> Error loading students: ${error}</div>`;
+        });
+}
+
+function removeStudentFromRoom(occupancyId, roomId) {
+    if (confirm('Are you sure you want to remove this student from the room?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.innerHTML = `
+            <input type="hidden" name="action" value="remove_student">
+            <input type="hidden" name="occupancy_id" value="${occupancyId}">
+            <input type="hidden" name="room_id" value="${roomId}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function shiftStudent(occupancyId, roomId) {
+    // Show shift modal
+    fetch(`/admin/shift-student/${occupancyId}/${roomId}`)
+        .then(response => response.text())
+        .then(html => {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            document.body.appendChild(tempDiv);
+            const modal = new bootstrap.Modal(tempDiv.querySelector('.modal'));
+            modal.show();
+        })
+        .catch(error => alert(`Error: ${error}`));
+}
+
+function deleteRoom(roomId) {
+    if (confirm('Are you sure you want to delete this room?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.innerHTML = `<input type="hidden" name="action" value="delete"><input type="hidden" name="room_id" value="${roomId}">`;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
+
+{% endblock %}

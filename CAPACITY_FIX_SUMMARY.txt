@@ -1,0 +1,61 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║           ROOM CAPACITY BUG - FIXED ✓                                    ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+ISSUE: Room with capacity 2 allowed 3+ students to be allocated
+
+ROOT CAUSE:
+───────────
+Code was checking WRONG database field:
+  ❌ WHERE is_active = 1        (field doesn't exist in schema)
+  ✅ WHERE status = 'Active'    (correct field)
+
+Since query returned 0 results, capacity check always passed!
+
+SOLUTION:
+─────────
+Fixed 4 query locations in routes/admin_routes.py:
+  1. Line ~195 - Room allocation validation
+  2. Line ~218 - Student active room check
+  3. Line ~175 - Room management occupancy count
+  4. Line ~279 - Allocate room form validation
+
+Changed ALL from: is_active = 1
+Changed ALL to:   status = 'Active'
+
+HOW IT WORKS NOW:
+─────────────────
+When allocating a room:
+  1. Count ACTIVE occupants in room
+  2. Get room capacity
+  3. If occupants >= capacity → BLOCK allocation
+  4. If occupants < capacity → ALLOW allocation
+
+EXAMPLE:
+────────
+Room 101 (Capacity: 2)
+  ✅ Add Student 1   → 1/2 occupied
+  ✅ Add Student 2   → 2/2 occupied (FULL)
+  ❌ Add Student 3   → ERROR: "Room at full capacity (2/2)"
+
+Room 102 (Capacity: 4)
+  ✅ Add Student 1   → 1/4 occupied
+  ✅ Add Student 2   → 2/4 occupied
+  ✅ Add Student 3   → 3/4 occupied
+  ✅ Add Student 4   → 4/4 occupied (FULL)
+  ❌ Add Student 5   → ERROR: "Room at full capacity (4/4)"
+
+VERIFICATION:
+──────────────
+✅ Tested multiple room capacities
+✅ Capacity enforcement works correctly
+✅ Error messages display properly
+✅ Available rooms list only shows rooms with space
+
+STATUS: ✅ PRODUCTION READY
+
+Room capacity is now properly enforced!
+No room can accommodate more students than its capacity.
+
+Files Modified: routes/admin_routes.py
+Lines Changed: 4 SQL queries updated

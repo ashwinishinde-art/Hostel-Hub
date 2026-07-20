@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Complaints - Student Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .complaints-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .complaints-table thead {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+    }
+
+    .complaints-table thead th {
+        padding: 15px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-align: left;
+        border: none;
+    }
+
+    .complaints-table tbody tr {
+        border-bottom: 1px solid var(--border-current);
+        transition: all 0.3s ease;
+    }
+
+    .complaints-table tbody tr:hover {
+        background-color: var(--bg-current-secondary);
+        transform: scale(1.01);
+    }
+
+    .complaints-table tbody td {
+        padding: 12px 15px;
+        color: var(--text-current);
+        font-weight: 500;
+        vertical-align: middle;
+    }
+
+    .complaints-table tbody td:first-child {
+        font-weight: 700;
+    }
+
+    .btn-view {
+        font-weight: 600;
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+    }
+
+    .modal-title {
+        font-weight: 700;
+        letter-spacing: 0.3px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-current);
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        border-width: 2px;
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid main-content">
+    <div class="room-management-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+        <div>
+            <h1 style="font-weight: 800; letter-spacing: 0.5px; margin: 0;"><i class="fas fa-tools"></i> My Complaints</h1>
+            <p class="text-muted" style="font-weight: 500; margin-top: 5px;">Total Complaints: <strong>{{ complaints|length }}</strong></p>
+        </div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newComplaintModal" style="font-weight: 600; letter-spacing: 0.2px;">
+            <i class="fas fa-plus"></i> File New Complaint
+        </button>
+    </div>
+
+    <!-- Complaints List -->
+    <div class="row">
+        <div class="col-md-12">
+            {% if complaints %}
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="complaints-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag"></i> ID</th>
+                                <th><i class="fas fa-tag"></i> Category</th>
+                                <th><i class="fas fa-heading"></i> Title</th>
+                                <th><i class="fas fa-check-circle"></i> Status</th>
+                                <th><i class="fas fa-exclamation"></i> Priority</th>
+                                <th><i class="fas fa-calendar"></i> Date Filed</th>
+                                <th><i class="fas fa-cog"></i> Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for complaint in complaints %}
+                            <tr>
+                                <td>#{{ complaint.id }}</td>
+                                <td>{{ complaint.category }}</td>
+                                <td style="font-weight: 700;">{{ complaint.title }}</td>
+                                <td>
+                                    <span class="badge bg-{% if complaint.status == 'Resolved' %}success{% elif complaint.status == 'In Progress' %}warning{% else %}danger{% endif %}" style="font-weight: 600;">
+                                        {{ complaint.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-{% if complaint.priority == 'High' %}danger{% elif complaint.priority == 'Medium' %}warning{% else %}info{% endif %}" style="font-weight: 600;">
+                                        {{ complaint.priority }}
+                                    </span>
+                                </td>
+                                <td>{{ complaint.created_at.strftime('%d %b %Y') }}</td>
+                                <td>
+                                    <a href="/student/complaint/{{ complaint.id }}" class="btn btn-sm btn-info btn-view">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info" style="font-weight: 500;">
+                <i class="fas fa-info-circle"></i> No complaints filed yet.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- New Complaint Modal -->
+<div class="modal fade" id="newComplaintModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-plus-circle"></i> File a New Complaint</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category *</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Plumbing">Plumbing</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Cleanliness">Cleanliness</option>
+                            <option value="Noise">Noise</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title *</label>
+                        <input type="text" class="form-control" id="title" name="title" required placeholder="Brief title of the complaint">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description *</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" required placeholder="Detailed description of the issue"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="priority" class="form-label">Priority</label>
+                        <select class="form-select" id="priority" name="priority">
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="font-weight: 600;">
+                        <i class="fas fa-paper-plane"></i> Submit Complaint
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

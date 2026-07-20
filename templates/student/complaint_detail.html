@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Complaint Details - Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid main-content">
+    <a href="/student/complaints" class="btn btn-secondary mb-3"><i class="fas fa-arrow-left"></i> Back</a>
+    
+    <h1 class="mb-4"><i class="fas fa-tools"></i> Complaint #{{ complaint.id }}</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">{{ complaint.title }}</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td><strong>Category:</strong></td>
+                            <td>{{ complaint.category }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Status:</strong></td>
+                            <td>
+                                <span class="badge bg-{% if complaint.status == 'Resolved' %}success{% elif complaint.status == 'In Progress' %}warning{% else %}danger{% endif %}">
+                                    {{ complaint.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Priority:</strong></td>
+                            <td>
+                                <span class="badge bg-{% if complaint.priority == 'High' %}danger{% elif complaint.priority == 'Medium' %}warning{% else %}info{% endif %}">
+                                    {{ complaint.priority }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Filed Date:</strong></td>
+                            <td>{{ complaint.created_at.strftime('%d %b %Y %H:%M') }}</td>
+                        </tr>
+                        {% if complaint.resolved_at %}
+                        <tr>
+                            <td><strong>Resolved Date:</strong></td>
+                            <td>{{ complaint.resolved_at.strftime('%d %b %Y %H:%M') }}</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                    
+                    <hr>
+                    
+                    <h5>Description</h5>
+                    <p>{{ complaint.description }}</p>
+                    
+                    {% if complaint.resolution_notes %}
+                    <hr>
+                    <h5>Resolution Notes</h5>
+                    <p>{{ complaint.resolution_notes }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Complaint Status</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h3 class="mb-3">
+                        {% if complaint.status == 'Resolved' %}
+                            <i class="fas fa-check-circle text-success" style="font-size: 2.5rem;"></i>
+                        {% elif complaint.status == 'In Progress' %}
+                            <i class="fas fa-spinner text-warning" style="font-size: 2.5rem;"></i>
+                        {% else %}
+                            <i class="fas fa-clock text-danger" style="font-size: 2.5rem;"></i>
+                        {% endif %}
+                    </h3>
+                    <p><strong>{{ complaint.status }}</strong></p>
+                    <p class="text-muted small">Last updated: {{ complaint.updated_at.strftime('%d %b %Y') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

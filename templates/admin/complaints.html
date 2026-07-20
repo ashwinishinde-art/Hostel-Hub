@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Complaints Management - Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .complaints-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .complaints-table thead {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+    }
+
+    .complaints-table thead th {
+        padding: 15px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-align: left;
+        border: none;
+    }
+
+    .complaints-table tbody tr {
+        border-bottom: 1px solid var(--border-current);
+        transition: all 0.3s ease;
+    }
+
+    .complaints-table tbody tr:hover {
+        background-color: var(--bg-current-secondary);
+        transform: scale(1.01);
+    }
+
+    .complaints-table tbody td {
+        padding: 12px 15px;
+        color: var(--text-current);
+        font-weight: 500;
+        vertical-align: middle;
+    }
+
+    .complaints-table tbody td:first-child {
+        font-weight: 700;
+    }
+
+    .btn-group-compact {
+        display: flex;
+        gap: 5px;
+    }
+
+    .btn-group-compact .btn {
+        font-weight: 600;
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid main-content">
+    <div class="row mb-4 fade-in-down">
+        <div class="col-md-12">
+            <h1 style="font-weight: 800; letter-spacing: 0.5px;"><i class="fas fa-tools"></i> Complaints Management</h1>
+            <p class="text-muted" style="font-weight: 500; margin-top: 5px;">Total Complaints: <strong>{{ complaints|length }}</strong></p>
+        </div>
+    </div>
+
+    <div class="card">
+        {% if complaints %}
+        <div class="table-responsive">
+            <table class="complaints-table">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-hashtag"></i> ID</th>
+                        <th><i class="fas fa-door-open"></i> Room</th>
+                        <th><i class="fas fa-user"></i> Student</th>
+                        <th><i class="fas fa-tag"></i> Category</th>
+                        <th><i class="fas fa-exclamation"></i> Priority</th>
+                        <th><i class="fas fa-check-circle"></i> Status</th>
+                        <th><i class="fas fa-calendar"></i> Date</th>
+                        <th><i class="fas fa-cog"></i> Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for complaint in complaints %}
+                    <tr>
+                        <td>#{{ complaint.id }}</td>
+                        <td style="font-weight: 600;">{{ complaint.room_number or 'N/A' }}</td>
+                        <td style="font-weight: 600;">{{ complaint.full_name }}</td>
+                        <td>{{ complaint.category }}</td>
+                        <td><span class="badge bg-{% if complaint.priority == 'High' %}danger{% elif complaint.priority == 'Medium' %}warning{% else %}info{% endif %}" style="font-weight: 600;">{{ complaint.priority }}</span></td>
+                        <td><span class="badge bg-{% if complaint.status == 'Resolved' %}success{% elif complaint.status == 'In Progress' %}warning{% else %}danger{% endif %}" style="font-weight: 600;">{{ complaint.status }}</span></td>
+                        <td>{{ complaint.created_at.strftime('%d %b %Y') }}</td>
+                        <td>
+                            <div class="btn-group-compact">
+                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#complaintModal" onclick="loadComplaint({{ complaint.id }})" title="Update complaint">
+                                    <i class="fas fa-edit"></i> Update
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 60px 20px;">
+            <i class="fas fa-inbox" style="font-size: 4rem; opacity: 0.2; display: block; margin-bottom: 20px;"></i>
+            <p style="font-size: 1.1rem; font-weight: 500;">No complaints found</p>
+            <small class="text-muted">All complaints will appear here once filed by students</small>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

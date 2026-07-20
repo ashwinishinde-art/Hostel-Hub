@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Visitor Management - Warden{% endblock %}
+
+{% block extra_css %}
+<style>
+    .visitors-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .visitors-table thead {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+    }
+
+    .visitors-table thead th {
+        padding: 15px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-align: left;
+        border: none;
+    }
+
+    .visitors-table tbody tr {
+        border-bottom: 1px solid var(--border-current);
+        transition: all 0.3s ease;
+    }
+
+    .visitors-table tbody tr:hover {
+        background-color: var(--bg-current-secondary);
+        transform: scale(1.01);
+    }
+
+    .visitors-table tbody td {
+        padding: 12px 15px;
+        color: var(--text-current);
+        font-weight: 500;
+        vertical-align: middle;
+    }
+
+    .visitors-table tbody td:first-child {
+        font-weight: 700;
+    }
+
+    .btn-group-compact {
+        display: flex;
+        gap: 5px;
+    }
+
+    .btn-group-compact .btn {
+        font-weight: 600;
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid main-content">
+    <div class="row mb-4 fade-in-down">
+        <div class="col-md-12">
+            <h1 style="font-weight: 800; letter-spacing: 0.5px;"><i class="fas fa-users"></i> Visitor Requests</h1>
+            <p class="text-muted" style="font-weight: 500; margin-top: 5px;">Total Requests: <strong>{{ visitors|length }}</strong></p>
+        </div>
+    </div>
+
+    <div class="card">
+        {% if visitors %}
+        <div class="table-responsive">
+            <table class="visitors-table">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-user"></i> Visitor</th>
+                        <th><i class="fas fa-id-card"></i> Student</th>
+                        <th><i class="fas fa-calendar"></i> Date</th>
+                        <th><i class="fas fa-check-circle"></i> Status</th>
+                        <th><i class="fas fa-cog"></i> Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for visitor in visitors %}
+                    <tr>
+                        <td style="font-weight: 700;">{{ visitor.visitor_name }}</td>
+                        <td style="font-weight: 600;">{{ visitor.full_name }}</td>
+                        <td>{{ visitor.visit_date.strftime('%d %b %Y') if visitor.visit_date else 'N/A' }}</td>
+                        <td><span class="badge bg-{% if visitor.status == 'Approved' %}success{% elif visitor.status == 'Rejected' %}danger{% else %}warning{% endif %}" style="font-weight: 600;">{{ visitor.status }}</span></td>
+                        <td>
+                            {% if visitor.status == 'Pending' %}
+                            <div class="btn-group-compact">
+                                <form method="POST" style="display: inline;">
+                                    <input type="hidden" name="action" value="approve">
+                                    <input type="hidden" name="visitor_id" value="{{ visitor.id }}">
+                                    <button type="submit" class="btn btn-sm btn-success" title="Approve request">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                </form>
+                                <form method="POST" style="display: inline;">
+                                    <input type="hidden" name="action" value="reject">
+                                    <input type="hidden" name="visitor_id" value="{{ visitor.id }}">
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Reject request">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                </form>
+                            </div>
+                            {% else %}
+                            <span style="font-weight: 600; color: var(--text-current); opacity: 0.7;">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 60px 20px;">
+            <i class="fas fa-inbox" style="font-size: 4rem; opacity: 0.2; display: block; margin-bottom: 20px;"></i>
+            <p style="font-size: 1.1rem; font-weight: 500;">No visitor requests found</p>
+            <small class="text-muted">Visitor requests will appear here</small>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

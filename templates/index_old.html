@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Hostel Management System{% endblock %}
+
+{% block content %}
+<div class="container-fluid main-content">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="card bg-primary text-white p-5 rounded-lg" style="background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%) !important;">
+                <h1 class="display-4"><i class="fas fa-building"></i> Welcome to Hostel Management System</h1>
+                <p class="lead">Your one-stop solution for hostel management and student services</p>
+                {% if not current_user.is_authenticated %}
+                    <div class="mt-3">
+                        <a href="/register" class="btn btn-light btn-lg me-2"><i class="fas fa-user-plus"></i> Register</a>
+                        <a href="/login" class="btn btn-outline-light btn-lg"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="row mb-5">
+        <div class="col-md-3 mb-3">
+            <div class="stat-card">
+                <h3>{{ total_rooms }}</h3>
+                <p><i class="fas fa-door-open"></i> Total Rooms</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);">
+                <h3>{{ available_rooms }}</h3>
+                <p><i class="fas fa-check-circle"></i> Available Rooms</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+                <h3>{{ total_students }}</h3>
+                <p><i class="fas fa-users"></i> Students</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);">
+                <h3>{{ pending_complaints }}</h3>
+                <p><i class="fas fa-exclamation-circle"></i> Pending Issues</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hostel Introduction Section -->
+    <div class="row mb-5">
+        <div class="col-md-8">
+            <div class="card p-4">
+                <h2 class="mb-3"><i class="fas fa-info-circle"></i> About Our Hostel</h2>
+                <p class="text-muted">
+                    Welcome to {{ settings.get('hostel_name', 'Our Hostel') }}! We provide a comfortable, safe, and conducive environment 
+                    for students to live and grow during their academic journey. Our hostel is equipped with modern facilities 
+                    and amenities to ensure the well-being of our residents.
+                </p>
+                <h4>Location & Contact:</h4>
+                <p>
+                    <i class="fas fa-map-marker-alt"></i> {{ settings.get('hostel_address', 'N/A') }}<br>
+                    <i class="fas fa-phone"></i> {{ settings.get('hostel_phone', 'N/A') }}<br>
+                    <i class="fas fa-envelope"></i> {{ settings.get('hostel_email', 'N/A') }}
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4">
+                <h4><i class="fas fa-star"></i> Warden Information</h4>
+                <p class="mb-1"><strong>{{ settings.get('warden_name', 'N/A') }}</strong></p>
+                <p class="text-muted small">
+                    <i class="fas fa-phone"></i> {{ settings.get('warden_phone', 'N/A') }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Facilities Section -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <h2 class="mb-4"><i class="fas fa-heart"></i> Our Facilities</h2>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center p-4">
+                <h4><i class="fas fa-wifi text-primary" style="font-size: 2rem;"></i></h4>
+                <h5>Free WiFi</h5>
+                <p class="text-muted small">High-speed internet throughout the hostel</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center p-4">
+                <h4><i class="fas fa-utensils text-success" style="font-size: 2rem;"></i></h4>
+                <h5>Hygienic Mess</h5>
+                <p class="text-muted small">Nutritious meals with clean eating facilities</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center p-4">
+                <h4><i class="fas fa-dumbbell text-danger" style="font-size: 2rem;"></i></h4>
+                <h5>Gym & Sports</h5>
+                <p class="text-muted small">Well-equipped gym and sports facilities</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center p-4">
+                <h4><i class="fas fa-book text-warning" style="font-size: 2rem;"></i></h4>
+                <h5>Study Rooms</h5>
+                <p class="text-muted small">Quiet study spaces for focused learning</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Section -->
+    {% if gallery_images %}
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-image"></i> Hostel Gallery</h2>
+                <a href="/gallery" class="btn btn-sm btn-primary">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        {% for image in gallery_images %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <img src="{{ image.image_path }}" class="card-img-top" alt="{{ image.title }}" style="height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ image.title }}</h5>
+                        <p class="card-text text-muted small">{{ image.category }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Recent Notices Section -->
+    {% if recent_notices %}
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <h2 class="mb-4"><i class="fas fa-bullhorn"></i> Recent Notices</h2>
+        </div>
+        {% for notice in recent_notices %}
+            <div class="col-md-12 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="card-title">{{ notice.title }}</h5>
+                                <p class="card-text">{{ notice.content[:200] }}...</p>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar"></i> {{ notice.created_at.strftime('%d %b %Y') }}
+                                </small>
+                            </div>
+                            <span class="badge bg-info">{{ notice.category }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Testimonials Section -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <h2 class="mb-4"><i class="fas fa-quote-left"></i> Student Testimonials</h2>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </p>
+                    <p class="card-text">"The hostel management system has made my stay incredibly convenient. Everything I need is just a few clicks away!"</p>
+                    <p class="card-text"><strong>- Prajwal Tandekar</strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </p>
+                    <p class="card-text">"Outstanding facilities and great management. I feel safe and comfortable here."</p>
+                    <p class="card-text"><strong>- Rajdeep Patil</strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </p>
+                    <p class="card-text">"The staff is very helpful and the complaint resolution is quick. Highly recommended!"</p>
+                    <p class="card-text"><strong>- Rutuja Patil</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

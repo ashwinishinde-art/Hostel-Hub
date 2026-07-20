@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Contact - Hostel Management System{% endblock %}
+
+{% block content %}
+<div class="container-fluid main-content">
+    <h1 class="mb-4"><i class="fas fa-envelope"></i> Contact Us</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Contact Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <h5><i class="fas fa-map-marker-alt text-danger"></i> Address</h5>
+                            <p>{{ settings.get('hostel_address', 'N/A') }}</p>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <h5><i class="fas fa-phone text-success"></i> Phone</h5>
+                            <p>{{ settings.get('hostel_phone', 'N/A') }}</p>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <h5><i class="fas fa-envelope text-info"></i> Email</h5>
+                            <p>{{ settings.get('hostel_email', 'N/A') }}</p>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <h5><i class="fas fa-user text-warning"></i> Warden</h5>
+                            <p>{{ settings.get('warden_name', 'N/A') }}</p>
+                            <p>{{ settings.get('warden_phone', 'N/A') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Send us a Message</h5>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Your Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hostel Info Card -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-building"></i> Hostel Info</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong><br>{{ settings.get('hostel_name', 'N/A') }}</p>
+                    <hr>
+                    <p><strong>Check-in Time:</strong><br>{{ settings.get('checkin_time', 'N/A') }}</p>
+                    <p><strong>Check-out Time:</strong><br>{{ settings.get('checkout_time', 'N/A') }}</p>
+                    <hr>
+                    <p><strong>Visitor Hours:</strong><br>{{ settings.get('visitor_hours_start', 'N/A') }} to {{ settings.get('visitor_hours_end', 'N/A') }}</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-star"></i> Warden Details</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>{{ settings.get('warden_name', 'N/A') }}</strong></p>
+                    <p class="text-muted">Hostel Warden</p>
+                    <p>
+                        <i class="fas fa-phone"></i> {{ settings.get('warden_phone', 'N/A') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

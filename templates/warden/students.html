@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Students - Warden Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .student-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .student-table thead {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+    }
+
+    .student-table thead th {
+        padding: 15px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-align: left;
+        border: none;
+    }
+
+    .student-table tbody tr {
+        border-bottom: 1px solid var(--border-current);
+        transition: all 0.3s ease;
+    }
+
+    .student-table tbody tr:hover {
+        background-color: var(--bg-current-secondary);
+        transform: scale(1.01);
+    }
+
+    .student-table tbody td {
+        padding: 12px 15px;
+        color: var(--text-current);
+        font-weight: 500;
+        vertical-align: middle;
+    }
+
+    .student-table tbody td:first-child {
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid main-content">
+    <div class="row mb-4 fade-in-down">
+        <div class="col-md-12">
+            <h1 style="font-weight: 800; letter-spacing: 0.5px;"><i class="fas fa-users"></i> Student List</h1>
+            <p class="text-muted" style="font-weight: 500; margin-top: 5px;">Total Students: <strong>{{ students|length }}</strong></p>
+        </div>
+    </div>
+
+    <div class="card">
+        {% if students %}
+        <div class="table-responsive">
+            <table class="student-table">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-user"></i> Name</th>
+                        <th><i class="fas fa-id-card"></i> Roll No</th>
+                        <th><i class="fas fa-door-open"></i> Room</th>
+                        <th><i class="fas fa-book"></i> Branch</th>
+                        <th><i class="fas fa-phone"></i> Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.full_name }}</td>
+                        <td style="font-weight: 600;">{{ student.roll_number }}</td>
+                        <td style="font-weight: 600;">{{ student.room_number or 'N/A' }}</td>
+                        <td>{{ student.branch }}</td>
+                        <td>{{ student.phone or 'N/A' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 60px 20px;">
+            <i class="fas fa-inbox" style="font-size: 4rem; opacity: 0.2; display: block; margin-bottom: 20px;"></i>
+            <p style="font-size: 1.1rem; font-weight: 500;">No students found</p>
+            <small class="text-muted">Students will appear here once they are allocated rooms</small>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

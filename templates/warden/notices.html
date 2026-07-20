@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Notices - Warden Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid main-content">
+    <h1 class="mb-4"><i class="fas fa-bullhorn"></i> Notices</h1>
+
+    <div class="row">
+        {% for notice in notices %}
+        <div class="col-md-12 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ notice.title }}</h5>
+                    <p class="card-text">{{ notice.content[:200] }}...</p>
+                    <small class="text-muted">{{ notice.created_at.strftime('%d %b %Y') }}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Fee Management - Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .fees-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .fees-table thead {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+    }
+
+    .fees-table thead th {
+        padding: 15px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-align: left;
+        border: none;
+    }
+
+    .fees-table tbody tr {
+        border-bottom: 1px solid var(--border-current);
+        transition: all 0.3s ease;
+    }
+
+    .fees-table tbody tr:hover {
+        background-color: var(--bg-current-secondary);
+        transform: scale(1.01);
+    }
+
+    .fees-table tbody td {
+        padding: 12px 15px;
+        color: var(--text-current);
+        font-weight: 500;
+        vertical-align: middle;
+    }
+
+    .fees-table tbody td:first-child {
+        font-weight: 700;
+    }
+
+    .amount-value {
+        font-weight: 700;
+        color: var(--secondary-color);
+    }
+
+    .btn-group-compact {
+        display: flex;
+        gap: 5px;
+    }
+
+    .btn-group-compact .btn {
+        font-weight: 600;
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid main-content">
+    <div class="row mb-4 fade-in-down">
+        <div class="col-md-12">
+            <h1 style="font-weight: 800; letter-spacing: 0.5px;"><i class="fas fa-money-bill"></i> Fee Management</h1>
+            <p class="text-muted" style="font-weight: 500; margin-top: 5px;">Total Records: <strong>{{ fees|length }}</strong></p>
+        </div>
+    </div>
+
+    <div class="card">
+        {% if fees %}
+        <div class="table-responsive">
+            <table class="fees-table">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-user"></i> Student</th>
+                        <th><i class="fas fa-id-card"></i> Roll No</th>
+                        <th><i class="fas fa-rupee-sign"></i> Total</th>
+                        <th><i class="fas fa-check"></i> Paid</th>
+                        <th><i class="fas fa-hourglass"></i> Pending</th>
+                        <th><i class="fas fa-check-circle"></i> Status</th>
+                        <th><i class="fas fa-calendar"></i> Due Date</th>
+                        <th><i class="fas fa-cog"></i> Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fee in fees %}
+                    <tr>
+                        <td style="font-weight: 700;">{{ fee.full_name }}</td>
+                        <td style="font-weight: 600;">{{ fee.roll_number }}</td>
+                        <td><span class="amount-value">₹{{ "%.2f"|format(fee.total_amount) }}</span></td>
+                        <td>₹{{ "%.2f"|format(fee.paid_amount) }}</td>
+                        <td>₹{{ "%.2f"|format(fee.pending_amount) }}</td>
+                        <td><span class="badge bg-{% if fee.payment_status == 'Paid' %}success{% elif fee.payment_status == 'Partial' %}warning{% else %}danger{% endif %}" style="font-weight: 600;">{{ fee.payment_status }}</span></td>
+                        <td>{{ fee.due_date.strftime('%d %b %Y') if fee.due_date else 'N/A' }}</td>
+                        <td>
+                            <div class="btn-group-compact">
+                                <button class="btn btn-sm btn-primary" title="Record payment">
+                                    <i class="fas fa-money-bill"></i> Record
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 60px 20px;">
+            <i class="fas fa-inbox" style="font-size: 4rem; opacity: 0.2; display: block; margin-bottom: 20px;"></i>
+            <p style="font-size: 1.1rem; font-weight: 500;">No fee records found</p>
+            <small class="text-muted">Fee records will appear here once students are allocated rooms</small>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
