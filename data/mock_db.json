@@ -558,6 +558,15 @@
       "title": "The light",
       "description": "The lights are been fluctuating past four days.",
       "priority": "High"
+    },
+    {
+      "id": 2,
+      "student_id": 14,
+      "room_id": 5,
+      "category": "Electrical",
+      "title": "Lights",
+      "description": "Lights are not working properly",
+      "priority": "Medium"
     }
   ],
   "visitors": [],

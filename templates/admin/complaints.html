@@ -29,7 +29,6 @@
 
     .complaints-table tbody tr:hover {
         background-color: var(--bg-current-secondary);
-        transform: scale(1.01);
     }
 
     .complaints-table tbody td {
@@ -45,13 +44,85 @@
 
     .btn-group-compact {
         display: flex;
-        gap: 5px;
+        gap: 8px;
+        flex-wrap: wrap;
     }
 
     .btn-group-compact .btn {
         font-weight: 600;
-        padding: 6px 10px;
+        padding: 8px 12px;
         font-size: 0.85rem;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-group-compact .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .complaint-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .detail-item {
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+    }
+
+    .detail-item label {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 0.9rem;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .detail-item p {
+        color: #555;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .description-box {
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #f97316;
+        margin-bottom: 20px;
+    }
+
+    .description-box label {
+        font-weight: 700;
+        color: #2c3e50;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .description-box p {
+        color: #555;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+    }
+
+    .modal-title {
+        font-weight: 700;
+        font-size: 1.3rem;
+    }
+
+    .btn-close-white {
+        filter: brightness(0) invert(1);
     }
 </style>
 {% endblock %}
@@ -72,29 +143,47 @@
                 <thead>
                     <tr>
                         <th><i class="fas fa-hashtag"></i> ID</th>
+                        <th><i class="fas fa-user"></i> Student Name</th>
                         <th><i class="fas fa-door-open"></i> Room</th>
-                        <th><i class="fas fa-user"></i> Student</th>
                         <th><i class="fas fa-tag"></i> Category</th>
+                        <th><i class="fas fa-heading"></i> Title</th>
                         <th><i class="fas fa-exclamation"></i> Priority</th>
                         <th><i class="fas fa-check-circle"></i> Status</th>
                         <th><i class="fas fa-calendar"></i> Date</th>
-                        <th><i class="fas fa-cog"></i> Action</th>
+                        <th><i class="fas fa-cog"></i> Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for complaint in complaints %}
                     <tr>
-                        <td>#{{ complaint.id }}</td>
-                        <td style="font-weight: 600;">{{ complaint.room_number or 'N/A' }}</td>
-                        <td style="font-weight: 600;">{{ complaint.full_name }}</td>
-                        <td>{{ complaint.category }}</td>
-                        <td><span class="badge bg-{% if complaint.priority == 'High' %}danger{% elif complaint.priority == 'Medium' %}warning{% else %}info{% endif %}" style="font-weight: 600;">{{ complaint.priority }}</span></td>
-                        <td><span class="badge bg-{% if complaint.status == 'Resolved' %}success{% elif complaint.status == 'In Progress' %}warning{% else %}danger{% endif %}" style="font-weight: 600;">{{ complaint.status }}</span></td>
-                        <td>{{ complaint.created_at.strftime('%d %b %Y') }}</td>
+                        <td><strong>#{{ complaint.id }}</strong></td>
+                        <td style="font-weight: 700; color: #2c3e50;">{{ complaint.full_name }}</td>
+                        <td><span style="background: #667eea; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 700;">{{ complaint.room_number or 'N/A' }}</span></td>
+                        <td>
+                            <span style="background: #f0f0f0; color: #2c3e50; padding: 6px 10px; border-radius: 6px; font-weight: 600;">{{ complaint.category }}</span>
+                        </td>
+                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ complaint.title }}">{{ complaint.title }}</td>
+                        <td>
+                            <span class="badge bg-{% if complaint.priority == 'High' %}danger{% elif complaint.priority == 'Medium' %}warning{% else %}info{% endif %}" style="font-weight: 600; padding: 8px 12px; font-size: 0.9rem;">
+                                {{ complaint.priority }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-{% if complaint.status == 'Resolved' %}success{% elif complaint.status == 'In Progress' %}primary{% elif complaint.status == 'Closed' %}secondary{% else %}danger{% endif %}" style="font-weight: 600; padding: 8px 12px; font-size: 0.9rem;">
+                                {{ complaint.status }}
+                            </span>
+                        </td>
+                        <td style="white-space: nowrap;">{{ complaint.created_at_str or complaint.created_at }}</td>
                         <td>
                             <div class="btn-group-compact">
-                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#complaintModal" onclick="loadComplaint({{ complaint.id }})" title="Update complaint">
-                                    <i class="fas fa-edit"></i> Update
+                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#complaintModal" onclick="loadComplaint({{ complaint.id }})" title="View & Update">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button class="btn btn-sm btn-info" onclick="quickUpdate({{ complaint.id }}, 'In Progress')" title="Mark as In Progress">
+                                    <i class="fas fa-wrench"></i> WIP
+                                </button>
+                                <button class="btn btn-sm btn-success" onclick="quickUpdate({{ complaint.id }}, 'Resolved')" title="Mark as Resolved">
+                                    <i class="fas fa-check"></i> Done
                                 </button>
                             </div>
                         </td>
@@ -112,4 +201,60 @@
         {% endif %}
     </div>
 </div>
+
+<!-- Complaint Details Modal -->
+<div class="modal fade" id="complaintModal" tabindex="-1" aria-labelledby="complaintModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="complaintModalLabel">
+                    <i class="fas fa-tools"></i> Complaint Details
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="complaintContent">Loading...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadComplaint(complaintId) {
+    // Fetch complaint details
+    fetch(`/admin/complaint/${complaintId}`)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('complaintContent').innerHTML = html;
+        })
+        .catch(error => {
+            document.getElementById('complaintContent').innerHTML = '<div class="alert alert-danger">Error loading complaint details</div>';
+            console.error('Error:', error);
+        });
+}
+
+function quickUpdate(complaintId, status) {
+    // Quick update to change status
+    const formData = new FormData();
+    formData.append('action', 'update');
+    formData.append('complaint_id', complaintId);
+    formData.append('status', status);
+    
+    fetch('/admin/complaints', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            // Reload the page to show updated status
+            location.reload();
+        } else {
+            alert('Error updating complaint. Please try again.');
+        }
+    })
+    .catch(error => {
+        alert('Error: ' + error);
+    });
+}
+</script>
 {% endblock %}

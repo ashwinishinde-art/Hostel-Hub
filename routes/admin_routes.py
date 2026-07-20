@@ -419,10 +419,150 @@ def complaints():
             ORDER BY c.created_at DESC
         """, (status_filter,))
     
-    complaints_list = cursor.fetchall()
+    complaints_raw = cursor.fetchall()
+    
+    # Convert complaints to proper format
+    complaints_list = []
+    for complaint in complaints_raw:
+        complaint_dict = dict(complaint) if isinstance(complaint, tuple) else complaint
+        
+        # Convert created_at to string format if it's a datetime object
+        if 'created_at' in complaint_dict:
+            created_at = complaint_dict['created_at']
+            if hasattr(created_at, 'strftime'):
+                complaint_dict['created_at_str'] = created_at.strftime('%d %b %Y')
+            else:
+                complaint_dict['created_at_str'] = str(created_at)
+        
+        complaints_list.append(complaint_dict)
+    
     cursor.close()
     
     return render_template('admin/complaints.html', complaints=complaints_list, status_filter=status_filter)
+
+# ==================== VIEW COMPLAINT DETAILS ====================
+@admin_bp.route('/complaint/<int:complaint_id>')
+@login_required
+@admin_required
+def view_complaint(complaint_id):
+    """View complaint details"""
+    cursor = db.connection.cursor()
+    cursor.execute("""
+        SELECT c.*, u.full_name, u.phone, u.email, r.room_number
+        FROM complaints c
+        JOIN users u ON c.student_id = u.id
+        LEFT JOIN rooms r ON c.room_id = r.id
+        WHERE c.id = %s
+    """, (complaint_id,))
+    complaint = cursor.fetchone()
+    cursor.close()
+    
+    if not complaint:
+        return '<div class="alert alert-danger">Complaint not found</div>', 404
+    
+    # Convert to dict
+    complaint_dict = dict(complaint) if isinstance(complaint, tuple) else complaint
+    
+    # Format dates
+    if 'created_at' in complaint_dict:
+        created_at = complaint_dict['created_at']
+        if hasattr(created_at, 'strftime'):
+            complaint_dict['created_at_str'] = created_at.strftime('%d %b %Y at %H:%M')
+        else:
+            complaint_dict['created_at_str'] = str(created_at)
+    
+    # Return modal content
+    html = f"""
+    <div class="complaint-details">
+        <div class="detail-item">
+            <label><i class="fas fa-user"></i> Student Name</label>
+            <p>{complaint_dict.get('full_name', 'N/A')}</p>
+        </div>
+        <div class="detail-item">
+            <label><i class="fas fa-door-open"></i> Room Number</label>
+            <p>{complaint_dict.get('room_number', 'N/A')}</p>
+        </div>
+        <div class="detail-item">
+            <label><i class="fas fa-phone"></i> Contact</label>
+            <p>{complaint_dict.get('phone', 'N/A')} | {complaint_dict.get('email', 'N/A')}</p>
+        </div>
+        <div class="detail-item">
+            <label><i class="fas fa-tag"></i> Category</label>
+            <p>{complaint_dict.get('category', 'N/A')}</p>
+        </div>
+        <div class="detail-item">
+            <label><i class="fas fa-exclamation"></i> Priority</label>
+            <p>
+                <span class="badge bg-{{'danger' if complaint_dict.get('priority') == 'High' else 'warning' if complaint_dict.get('priority') == 'Medium' else 'info'}}">
+                    {complaint_dict.get('priority', 'N/A')}
+                </span>
+            </p>
+        </div>
+        <div class="detail-item">
+            <label><i class="fas fa-check-circle"></i> Status</label>
+            <p>
+                <span class="badge bg-{{'success' if complaint_dict.get('status') == 'Resolved' else 'warning' if complaint_dict.get('status') == 'In Progress' else 'danger'}}">
+                    {complaint_dict.get('status', 'N/A')}
+                </span>
+            </p>
+        </div>
+        <div class="detail-item">
+            <label><i class="fas fa-calendar"></i> Submitted</label>
+            <p>{complaint_dict.get('created_at_str', 'N/A')}</p>
+        </div>
+    </div>
+
+    <div class="description-box">
+        <label><i class="fas fa-heading"></i> Title</label>
+        <p>{complaint_dict.get('title', 'N/A')}</p>
+    </div>
+
+    <div class="description-box">
+        <label><i class="fas fa-file-alt"></i> Description</label>
+        <p>{complaint_dict.get('description', 'N/A')}</p>
+    </div>
+
+    <form method="POST" action="/admin/complaints">
+        <input type="hidden" name="action" value="update">
+        <input type="hidden" name="complaint_id" value="{complaint_id}">
+        
+        <div class="row">
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Update Status</label>
+                <select name="status" class="form-select" style="border-radius: 8px; border: 2px solid #e0e0e0;">
+                    <option value="Pending" {{'selected' if complaint_dict.get('status') == 'Pending' else ''}}>Pending</option>
+                    <option value="In Progress" {{'selected' if complaint_dict.get('status') == 'In Progress' else ''}}>In Progress</option>
+                    <option value="Resolved" {{'selected' if complaint_dict.get('status') == 'Resolved' else ''}}>Resolved</option>
+                    <option value="Closed" {{'selected' if complaint_dict.get('status') == 'Closed' else ''}}>Closed</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Priority</label>
+                <select name="priority" class="form-select" style="border-radius: 8px; border: 2px solid #e0e0e0;">
+                    <option value="Low" {{'selected' if complaint_dict.get('priority') == 'Low' else ''}}>Low</option>
+                    <option value="Medium" {{'selected' if complaint_dict.get('priority') == 'Medium' else ''}}>Medium</option>
+                    <option value="High" {{'selected' if complaint_dict.get('priority') == 'High' else ''}}>High</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <label class="form-label fw-bold">Resolution Notes</label>
+            <textarea name="resolution_notes" class="form-control" rows="4" style="border-radius: 8px; border: 2px solid #e0e0e0;" placeholder="Add notes about the resolution...">{complaint_dict.get('resolution_notes', '')}</textarea>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <button type="submit" class="btn btn-success" style="font-weight: 700; border-radius: 8px;">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-weight: 700; border-radius: 8px;">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+    </form>
+    """
+    
+    return html
 
 # ==================== VISITORS MANAGEMENT ====================
 @admin_bp.route('/visitors', methods=['GET', 'POST'])

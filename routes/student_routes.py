@@ -169,7 +169,23 @@ def complaints():
         WHERE student_id = %s 
         ORDER BY created_at DESC
     """, (current_user.id,))
-    complaints_list = cursor.fetchall()
+    complaints_raw = cursor.fetchall()
+    
+    # Convert complaints to proper format
+    complaints_list = []
+    for complaint in complaints_raw:
+        complaint_dict = dict(complaint) if isinstance(complaint, tuple) else complaint
+        
+        # Convert created_at to string format if it's a datetime object
+        if 'created_at' in complaint_dict:
+            created_at = complaint_dict['created_at']
+            if hasattr(created_at, 'strftime'):
+                complaint_dict['created_at_str'] = created_at.strftime('%d %b %Y')
+            else:
+                complaint_dict['created_at_str'] = str(created_at)
+        
+        complaints_list.append(complaint_dict)
+    
     cursor.close()
     
     return render_template('student/complaints.html', complaints=complaints_list)

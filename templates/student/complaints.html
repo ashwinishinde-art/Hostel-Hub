@@ -118,7 +118,7 @@
                                         {{ complaint.priority }}
                                     </span>
                                 </td>
-                                <td>{{ complaint.created_at.strftime('%d %b %Y') }}</td>
+                                <td>{{ complaint.created_at_str or complaint.created_at }}</td>
                                 <td>
                                     <a href="/student/complaint/{{ complaint.id }}" class="btn btn-sm btn-info btn-view">
                                         <i class="fas fa-eye"></i> View
