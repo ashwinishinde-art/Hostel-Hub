@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+
+{% block title %}Gallery Management - Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .gallery-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .gallery-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .gallery-image-preview {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .gallery-content {
+        padding: 20px;
+    }
+
+    .gallery-title {
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 8px;
+        font-size: 1.1rem;
+    }
+
+    .gallery-category {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .gallery-description {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+
+    .gallery-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .gallery-actions .btn {
+        flex: 1;
+        min-width: 80px;
+        font-size: 0.85rem;
+        padding: 8px 12px;
+    }
+
+    .form-section {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        border-width: 2px;
+        border-color: #e0e0e0;
+        border-radius: 8px;
+        font-weight: 500;
+        padding: 10px 12px;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .modal-title {
+        font-weight: 700;
+    }
+
+    .empty-gallery {
+        text-align: center;
+        padding: 60px 20px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border-radius: 15px;
+    }
+
+    .empty-gallery i {
+        font-size: 3rem;
+        color: #667eea;
+        margin-bottom: 20px;
+    }
+
+    .tab-content {
+        padding: 20px 0;
+    }
+
+    .nav-tabs .nav-link {
+        color: #7f8c8d;
+        border: none;
+        font-weight: 600;
+        padding: 12px 20px;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .nav-tabs .nav-link:hover {
+        color: #667eea;
+        border-bottom-color: #667eea;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+        background-color: transparent;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid main-content">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 style="font-weight: 800; letter-spacing: 0.5px;">
+                <i class="fas fa-images"></i> Gallery Management
+            </h1>
+            <p class="text-muted" style="font-weight: 500; margin-top: 5px;">
+                Add, edit, and manage hostel gallery photos
+            </p>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="card mb-4">
+        <ul class="nav nav-tabs" role="tablist" style="border-bottom: 3px solid #667eea; padding: 0 20px;">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="add-tab" data-bs-toggle="tab" data-bs-target="#add-photo" type="button" role="tab">
+                    <i class="fas fa-plus-circle"></i> Add New Photo
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="manage-tab" data-bs-toggle="tab" data-bs-target="#manage-photos" type="button" role="tab">
+                    <i class="fas fa-list"></i> Manage Photos ({{ gallery_images|length }})
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- Add New Photo Tab -->
+            <div class="tab-pane fade show active" id="add-photo" role="tabpanel">
+                <div class="form-section">
+                    <h4 style="font-weight: 700; margin-bottom: 25px; color: #2c3e50;">
+                        <i class="fas fa-camera"></i> Add New Photo to Gallery
+                    </h4>
+
+                    <form method="POST">
+                        <input type="hidden" name="action" value="add">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">
+                                    <i class="fas fa-heading"></i> Photo Title *
+                                </label>
+                                <input type="text" class="form-control" name="title" required placeholder="e.g., Common Room, Dining Hall">
+                                <small class="text-muted d-block mt-2">Give a descriptive title for the photo</small>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">
+                                    <i class="fas fa-tag"></i> Category *
+                                </label>
+                                <select class="form-select" name="category" required>
+                                    <option value="">-- Select Category --</option>
+                                    <option value="Facilities">Facilities</option>
+                                    <option value="Rooms">Rooms</option>
+                                    <option value="Common Areas">Common Areas</option>
+                                    <option value="Dining">Dining</option>
+                                    <option value="Events">Events</option>
+                                    <option value="Infrastructure">Infrastructure</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <small class="text-muted d-block mt-2">Choose the category for this photo</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-image"></i> Image Path/URL *
+                            </label>
+                            <input type="text" class="form-control" name="image_path" required 
+                                   placeholder="e.g., /static/uploads/common_room.jpg or https://example.com/image.jpg">
+                            <small class="text-muted d-block mt-2">
+                                Enter the path to the image file or full URL. 
+                                <br>You can use: /static/uploads/filename.jpg or provide a full URL
+                            </small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-file-alt"></i> Description
+                            </label>
+                            <textarea class="form-control" name="description" rows="4" 
+                                      placeholder="Add a description about this photo (optional)"></textarea>
+                            <small class="text-muted d-block mt-2">Describe what's in the photo and why it's important</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg" style="font-weight: 700; width: 100%;">
+                            <i class="fas fa-upload"></i> Add Photo to Gallery
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Example Paths -->
+                <div class="form-section" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%); border-left: 4px solid #667eea;">
+                    <h5 style="font-weight: 700; margin-bottom: 15px; color: #667eea;">
+                        <i class="fas fa-lightbulb"></i> Image Path Examples
+                    </h5>
+                    <p style="margin-bottom: 10px; color: #2c3e50;">
+                        <strong>Option 1: Local upload (recommended)</strong>
+                    </p>
+                    <code style="background: white; padding: 10px; border-radius: 5px; display: block; margin-bottom: 15px;">
+                        /static/uploads/hostel_photo_1.jpg
+                    </code>
+
+                    <p style="margin-bottom: 10px; color: #2c3e50;">
+                        <strong>Option 2: External URL</strong>
+                    </p>
+                    <code style="background: white; padding: 10px; border-radius: 5px; display: block; margin-bottom: 15px;">
+                        https://example.com/images/hostel.jpg
+                    </code>
+
+                    <p style="color: #7f8c8d; margin: 0;">
+                        <i class="fas fa-info-circle"></i>
+                        Upload image files to the <strong>/static/uploads/</strong> directory and use the path above.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Manage Photos Tab -->
+            <div class="tab-pane fade" id="manage-photos" role="tabpanel">
+                <div style="padding: 20px 0;">
+                    {% if gallery_images %}
+                        <div class="row">
+                            {% for image in gallery_images %}
+                            <div class="col-md-4 mb-4">
+                                <div class="gallery-card">
+                                    <!-- Image Preview -->
+                                    <div style="position: relative; overflow: hidden; height: 250px; background: #f0f0f0;">
+                                        <img src="{{ image.image_path if image.image_path.startswith('http') or image.image_path.startswith('/') else '/' ~ image.image_path }}" 
+                                             alt="{{ image.title }}" 
+                                             class="gallery-image-preview"
+                                             onerror="this.src='/static/images/placeholder.jpg'; this.style.opacity='0.5';">
+                                    </div>
+
+                                    <!-- Content -->
+                                    <div class="gallery-content">
+                                        <div class="gallery-category">
+                                            {{ image.category if image.category else 'Facilities' }}
+                                        </div>
+                                        <h6 class="gallery-title">{{ image.title }}</h6>
+                                        <p class="gallery-description">
+                                            {{ image.description if image.description else 'No description provided' }}
+                                        </p>
+
+                                        <!-- Actions -->
+                                        <div class="gallery-actions">
+                                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" 
+                                                    data-bs-target="#editModal" 
+                                                    onclick="loadImageData({{ image|tojson }})">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                            <form method="POST" style="flex: 1;">
+                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="image_id" value="{{ image.id }}">
+                                                <button type="submit" class="btn btn-sm btn-danger w-100" 
+                                                        onclick="return confirm('Delete this photo?')">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-gallery">
+                            <i class="fas fa-inbox"></i>
+                            <h4 style="color: #2c3e50; font-weight: 700; margin-bottom: 10px;">No Photos Yet</h4>
+                            <p style="color: #7f8c8d; margin-bottom: 20px;">Add photos to the gallery from the "Add New Photo" tab</p>
+                            <button class="btn btn-primary" data-bs-toggle="tab" data-bs-target="#add-photo">
+                                <i class="fas fa-plus"></i> Add First Photo
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit"></i> Edit Photo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <input type="hidden" name="action" value="update">
+                <input type="hidden" name="image_id" id="edit_image_id">
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-heading"></i> Photo Title *</label>
+                        <input type="text" class="form-control" name="title" id="edit_title" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-tag"></i> Category *</label>
+                        <select class="form-select" name="category" id="edit_category" required>
+                            <option value="Facilities">Facilities</option>
+                            <option value="Rooms">Rooms</option>
+                            <option value="Common Areas">Common Areas</option>
+                            <option value="Dining">Dining</option>
+                            <option value="Events">Events</option>
+                            <option value="Infrastructure">Infrastructure</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-image"></i> Image Path/URL *</label>
+                        <input type="text" class="form-control" name="image_path" id="edit_image_path" required>
+                        <small class="text-muted d-block mt-2">Update the image path or URL</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-file-alt"></i> Description</label>
+                        <textarea class="form-control" name="description" id="edit_description" rows="4"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="font-weight: 700;">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadImageData(image) {
+    document.getElementById('edit_image_id').value = image.id || '';
+    document.getElementById('edit_title').value = image.title || '';
+    document.getElementById('edit_category').value = image.category || 'Facilities';
+    document.getElementById('edit_image_path').value = image.image_path || '';
+    document.getElementById('edit_description').value = image.description || '';
+}
+</script>
+
+{% endblock %}

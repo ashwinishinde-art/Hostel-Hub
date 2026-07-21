@@ -92,12 +92,21 @@
                     
                     <div class="mb-3">
                         <label for="visit_time" class="form-label">Visit Time *</label>
-                        <input type="time" class="form-control" id="visit_time" name="visit_time" required>
+                        <input type="time" class="form-control" id="visit_time" name="visit_time" required 
+                               min="10:00" onchange="validateVisitTime()">
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-info-circle"></i> Visitors can only check-in after <strong>10:00 AM</strong>
+                        </small>
                     </div>
                     
                     <div class="mb-3">
                         <label for="expected_departure" class="form-label">Expected Departure Time</label>
-                        <input type="time" class="form-control" id="expected_departure" name="expected_departure">
+                        <input type="time" class="form-control" id="expected_departure" name="expected_departure"
+                               max="16:00" onchange="validateDepartureTime()">
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-info-circle"></i> Visitors must check-out by <strong>4:00 PM (16:00)</strong>
+                        </small>
+                    </div>
                     </div>
                     
                     <div class="mb-3">
@@ -115,5 +124,67 @@
         </div>
     </div>
 </div>
+
+<script>
+// Validate check-in time (must be after 10:00 AM)
+function validateVisitTime() {
+    const visitTime = document.getElementById('visit_time').value;
+    if (!visitTime) return;
+    
+    const [hours, minutes] = visitTime.split(':').map(Number);
+    
+    if (hours < 10 || (hours === 10 && minutes < 0)) {
+        alert('❌ Visitors can only check-in after 10:00 AM. Please select a valid time.');
+        document.getElementById('visit_time').value = '10:00';
+        return false;
+    }
+    return true;
+}
+
+// Validate check-out time (must be before or at 4:00 PM)
+function validateDepartureTime() {
+    const departureTime = document.getElementById('expected_departure').value;
+    const visitTime = document.getElementById('visit_time').value;
+    
+    if (!departureTime) return;
+    
+    const [depHours, depMinutes] = departureTime.split(':').map(Number);
+    
+    if (depHours > 16 || (depHours === 16 && depMinutes > 0)) {
+        alert('❌ Visitors must check-out by 4:00 PM (16:00). Please select an earlier time.');
+        document.getElementById('expected_departure').value = '16:00';
+        return false;
+    }
+    
+    // Check that departure is after check-in
+    if (visitTime) {
+        const [visHours, visMinutes] = visitTime.split(':').map(Number);
+        if (depHours < visHours || (depHours === visHours && depMinutes <= visMinutes)) {
+            alert('❌ Check-out time must be after check-in time.');
+            document.getElementById('expected_departure').value = '';
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// Validate form on submission
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('#newVisitorModal form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            if (!validateVisitTime()) {
+                e.preventDefault();
+                return false;
+            }
+            if (!validateDepartureTime()) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+});
+</script>
 
 {% endblock %}

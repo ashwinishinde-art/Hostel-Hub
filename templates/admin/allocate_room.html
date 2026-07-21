@@ -96,7 +96,7 @@
                             <small class="text-muted d-block mt-2">Leave empty to use today's date</small>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary btn-lg w-100" style="font-weight: 700; letter-spacing: 0.3px;">
+                        <button type="submit" class="btn btn-primary btn-lg w-100" style="font-weight: 700; letter-spacing: 0.3px;" id="allocateBtn">
                             <i class="fas fa-check"></i> Allocate Room
                         </button>
                     </form>
@@ -105,4 +105,60 @@
         </div>
     </div>
 </div>
+
+<script>
+// Validate form submission
+document.querySelector('form').addEventListener('submit', function(e) {
+    const studentSelect = document.getElementById('student_id');
+    const roomSelect = document.getElementById('room_id');
+    
+    if (!studentSelect.value) {
+        e.preventDefault();
+        alert('⚠️ Please select a student');
+        return false;
+    }
+    
+    if (!roomSelect.value) {
+        e.preventDefault();
+        alert('⚠️ Please select a room');
+        return false;
+    }
+    
+    // Verify room still has capacity
+    const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+    const availableText = selectedOption.text;
+    
+    // Extract available count from text like "Room 102 (Double Sharing) - 2 available"
+    const availableMatch = availableText.match(/(\d+)\s+available/);
+    if (availableMatch) {
+        const available = parseInt(availableMatch[1]);
+        if (available <= 0) {
+            e.preventDefault();
+            alert('❌ Room is now at full capacity! Please select another room.');
+            return false;
+        }
+    }
+    
+    // Confirm allocation
+    const roomNum = selectedOption.text.match(/Room\s+(\d+)/)[1];
+    const confirmed = confirm(`✓ Confirm allocation to Room ${roomNum}?`);
+    if (!confirmed) {
+        e.preventDefault();
+        return false;
+    }
+});
+
+// Update form on room selection
+document.getElementById('room_id').addEventListener('change', function() {
+    if (this.value) {
+        const selectedOption = this.options[this.selectedIndex];
+        const text = selectedOption.text;
+        
+        // Extract capacity and occupied info
+        if (text.includes('available')) {
+            console.log(`✓ Room selected: ${text}`);
+        }
+    }
+});
+</script>
 {% endblock %}

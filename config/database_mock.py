@@ -9,7 +9,8 @@ from datetime import datetime
 import hashlib
 import bcrypt
 
-DB_FILE = '/home/prajwal/Programs/Hostel/data/mock_db.json'
+# Use Desktop/Hostel-Hub as the primary location
+DB_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'mock_db.json')
 os.makedirs(os.path.dirname(DB_FILE), exist_ok=True)
 
 # Pre-computed bcrypt hash for admin123
@@ -35,9 +36,9 @@ DEFAULT_DB = {
         {"id": 3, "room_number": "201", "room_type": "Triple Sharing", "floor": 2, "capacity": 3, "rent": 2500, "amenities": "Fan, Shared Bathroom, WiFi", "status": "occupied"},
     ],
     "room_occupancy": [
-        {"id": 1, "student_id": 1, "room_id": 1, "check_in_date": "2024-01-01", "status": "Active"},
-        {"id": 2, "student_id": 2, "room_id": 3, "check_in_date": "2024-01-01", "status": "Active"},
-        {"id": 3, "student_id": 3, "room_id": 3, "check_in_date": "2024-01-01", "status": "Active"},
+        {"id": 1, "student_id": 2, "room_id": 1, "check_in_date": "2024-01-01", "status": "Active"},
+        {"id": 2, "student_id": 3, "room_id": 3, "check_in_date": "2024-01-01", "status": "Active"},
+        {"id": 3, "student_id": 4, "room_id": 3, "check_in_date": "2024-01-01", "status": "Active"},
     ],
     "complaints": [
         {"id": 1, "student_id": 1, "category": "Maintenance", "description": "AC not working", "status": "pending", "priority": "high", "created_at": "2024-01-15", "resolution_notes": ""},
@@ -74,23 +75,71 @@ class MockDatabase:
         try:
             if os.path.exists(DB_FILE):
                 with open(DB_FILE, 'r') as f:
-                    return json.load(f)
-        except:
+                    loaded_data = json.load(f)
+                    # Ensure all required keys exist in loaded data
+                    # Merge with defaults to add missing tables
+                    for key in DEFAULT_DB:
+                        if key not in loaded_data:
+                            loaded_data[key] = DEFAULT_DB[key]
+                    return loaded_data
+        except Exception as e:
+            print(f"Error loading database: {e}")
+            # Don't overwrite if there's just a read error
             pass
         
-        # Save default data
-        self.save_data(DEFAULT_DB)
-        return DEFAULT_DB
+        # Only create new database if file truly doesn't exist
+        if not os.path.exists(DB_FILE):
+            self.save_data(DEFAULT_DB)
+            return DEFAULT_DB
+        
+        # If file exists but had error, try to return empty structure
+        # to preserve what's on disk
+        try:
+            with open(DB_FILE, 'r') as f:
+                return json.load(f)
+        except:
+            # Final fallback - return defaults but DON'T save
+            # to preserve any existing data
+            return DEFAULT_DB
     
     def save_data(self, data):
-        """Save data to JSON file"""
+        """Save data to JSON file with error handling and backup"""
         try:
             os.makedirs(os.path.dirname(DB_FILE), exist_ok=True)
-            with open(DB_FILE, 'w') as f:
-                json.dump(data, f, indent=2)
-            return True
+            
+            # Create backup of existing file before overwriting
+            if os.path.exists(DB_FILE):
+                backup_file = DB_FILE + '.backup'
+                try:
+                    import shutil
+                    shutil.copy2(DB_FILE, backup_file)
+                except:
+                    pass  # Backup failed, continue anyway
+            
+            # Write to temporary file first
+            temp_file = DB_FILE + '.tmp'
+            try:
+                with open(temp_file, 'w') as f:
+                    json.dump(data, f, indent=2)
+                
+                # If write succeeded, move temp file to final location
+                import shutil
+                shutil.move(temp_file, DB_FILE)
+                print(f"✓ Database saved successfully")
+                return True
+            except Exception as e:
+                # Clean up temp file if it exists
+                if os.path.exists(temp_file):
+                    try:
+                        os.remove(temp_file)
+                    except:
+                        pass
+                raise e
+                
         except Exception as e:
-            print(f"Error saving data: {e}")
+            print(f"❌ Error saving data: {e}")
+            import traceback
+            traceback.print_exc()
             return False
     
     def get_connection(self):

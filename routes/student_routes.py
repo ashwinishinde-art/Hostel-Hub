@@ -244,6 +244,36 @@ def visitors():
                 flash('All required fields must be filled.', 'danger')
                 return redirect(url_for('student.visitors'))
             
+            # Validate visitor check-in time (must be after 10:00 AM)
+            try:
+                check_in_time = datetime.strptime(visit_time, '%H:%M').time()
+                min_checkin = datetime.strptime('10:00', '%H:%M').time()
+                
+                if check_in_time < min_checkin:
+                    flash('❌ Visitors can only check-in after 10:00 AM. Please select a valid time.', 'danger')
+                    return redirect(url_for('student.visitors'))
+            except ValueError:
+                flash('Invalid check-in time format.', 'danger')
+                return redirect(url_for('student.visitors'))
+            
+            # Validate visitor check-out time (must be before or at 4:00 PM)
+            if expected_departure:
+                try:
+                    checkout_time = datetime.strptime(expected_departure, '%H:%M').time()
+                    max_checkout = datetime.strptime('16:00', '%H:%M').time()
+                    
+                    if checkout_time > max_checkout:
+                        flash('❌ Visitors must check-out by 4:00 PM (16:00). Please select an earlier time.', 'danger')
+                        return redirect(url_for('student.visitors'))
+                    
+                    # Check that checkout time is after check-in time
+                    if checkout_time <= check_in_time:
+                        flash('❌ Check-out time must be after check-in time.', 'danger')
+                        return redirect(url_for('student.visitors'))
+                except ValueError:
+                    flash('Invalid check-out time format.', 'danger')
+                    return redirect(url_for('student.visitors'))
+            
             cursor.execute("""
                 INSERT INTO visitors (student_id, visitor_name, visitor_phone, visitor_relation, 
                                     visit_date, visit_time, expected_departure, purpose, status)
@@ -252,7 +282,7 @@ def visitors():
                   visit_date, visit_time, expected_departure, purpose))
             db.connection.commit()
             
-            flash('Visitor request submitted successfully!', 'success')
+            flash('✓ Visitor request submitted successfully!', 'success')
             return redirect(url_for('student.visitors'))
             
         except Exception as e:

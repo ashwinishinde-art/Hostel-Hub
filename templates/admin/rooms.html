@@ -673,6 +673,8 @@ function updateFloorInfo(mode) {
     }
 }
 
+let currentRoomIdForStudents = null;
+
 function loadRoom(room) {
     // Populate the edit form with room data
     document.getElementById('edit_room_id').value = room.id || '';
@@ -687,25 +689,54 @@ function loadRoom(room) {
     // Update the preview
     updateFloorInfo('edit');
     
-    // Load students when tab is clicked
-    document.getElementById('room-students-tab').addEventListener('click', function() {
-        loadRoomStudents(room.id);
-    });
+    // Store current room ID for students tab
+    currentRoomIdForStudents = room.id;
 }
 
+// Add event listener for students tab - only once
+document.addEventListener('DOMContentLoaded', function() {
+    const studentsTab = document.getElementById('room-students-tab');
+    if (studentsTab) {
+        studentsTab.addEventListener('click', function() {
+            if (currentRoomIdForStudents) {
+                loadRoomStudents(currentRoomIdForStudents);
+            }
+        });
+    }
+});
+
 function loadRoomStudents(roomId) {
+    if (!roomId) {
+        console.error('No room ID provided');
+        return;
+    }
+    
     const container = document.getElementById('roomStudentsContainer');
-    container.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; opacity: 0.3; margin-bottom: 15px;"></i><p style="font-weight: 500;">Loading students...</p></div>';
+    if (!container) {
+        console.error('Container not found');
+        return;
+    }
+    
+    // Show loading spinner
+    container.innerHTML = '<div style="text-align: center; padding: 40px;"><div style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 15px;"><i class="fas fa-spinner fa-spin"></i></div><p style="font-weight: 600; color: var(--text-current);">Loading students...</p></div>';
     
     // Fetch students in this room with timeout
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    const timeoutId = setTimeout(() => {
+        controller.abort();
+    }, 15000); // 15 second timeout
     
-    fetch(`/admin/room-students/${roomId}`, { signal: controller.signal })
+    fetch(`/admin/room-students/${roomId}`, { 
+        method: 'GET',
+        signal: controller.signal,
+        headers: {
+            'Accept': 'text/html'
+        }
+    })
         .then(response => {
             clearTimeout(timeoutId);
             if (!response.ok) {
-                throw new Error(`Server error: ${response.status}`);
+                throw new Error(`Server error: ${response.status} ${response.statusText}`);
             }
             return response.text();
         })
@@ -714,11 +745,16 @@ function loadRoomStudents(roomId) {
         })
         .catch(error => {
             clearTimeout(timeoutId);
+            console.error('Error loading students:', error);
+            
+            let errorMsg = 'Error loading students';
             if (error.name === 'AbortError') {
-                container.innerHTML = `<div style="padding: 20px; color: #e74c3c;"><i class="fas fa-exclamation-circle"></i> Request timeout - Taking too long to load. Please refresh and try again.</div>`;
+                errorMsg = 'Request timeout - Taking too long to load. Please try again.';
             } else {
-                container.innerHTML = `<div style="padding: 20px; color: #e74c3c;"><i class="fas fa-exclamation-circle"></i> Error loading students: ${error.message}</div>`;
+                errorMsg = `Error: ${error.message}`;
             }
+            
+            container.innerHTML = `<div style="padding: 20px; color: #e74c3c;"><i class="fas fa-exclamation-circle"></i> ${errorMsg}</div>`;
         });
 }
 

@@ -401,9 +401,20 @@ def allocate_room():
             count_result = cursor.fetchone()
             current_count = count_result.get('count', 0) if count_result else 0
             
-            # Check if room is at capacity
+            # Get room details for better error message
+            cursor.execute("SELECT room_number, room_type FROM rooms WHERE id = %s", (room_id,))
+            room_details = cursor.fetchone()
+            room_number = room_details.get('room_number') if isinstance(room_details, dict) else room_details[1]
+            room_type = room_details.get('room_type') if isinstance(room_details, dict) else room_details[2] if len(room_details) > 2 else 'Unknown'
+            
+            # Check if room is at capacity - STRICT VALIDATION
             if current_count >= room_capacity:
-                flash(f'This room is at full capacity ({current_count}/{room_capacity} occupied). Cannot add more students.', 'danger')
+                flash(f'❌ Room {room_number} ({room_type}) is full! Current: {current_count}/{room_capacity} students. Cannot add more students beyond the capacity.', 'danger')
+                return redirect(url_for('admin.allocate_room'))
+            
+            # Double-check: Ensure we're not exceeding capacity (defensive check)
+            if current_count + 1 > room_capacity:
+                flash(f'❌ Cannot allocate! Adding this student would exceed Room {room_number} capacity of {room_capacity}.', 'danger')
                 return redirect(url_for('admin.allocate_room'))
             
             # GENDER RESTRICTION: Check if room already has opposite gender students
@@ -450,7 +461,9 @@ def allocate_room():
             """, (room_id, student_id, check_in_date))
             db.connection.commit()
             
-            flash(f'Room allocated successfully! ({current_count + 1}/{room_capacity} occupied)', 'success')
+            new_count = current_count + 1
+            remaining = room_capacity - new_count
+            flash(f'✓ Student allocated to Room {room_number} successfully! Occupancy: {new_count}/{room_capacity} (Remaining: {remaining} slots)', 'success')
             return redirect(url_for('admin.rooms'))
             
         except Exception as e:
@@ -474,36 +487,42 @@ def allocate_room():
         if not cursor.fetchone():
             students.append(student)
     
-    # Get available rooms with occupancy info
-    cursor.execute("""
-        SELECT r.id, r.room_number, r.room_type, r.capacity, r.gender_occupancy,
-               COUNT(ro.id) as occupied_count
-        FROM rooms r
-        LEFT JOIN room_occupancy ro ON r.id = ro.room_id AND ro.status = 'Active'
-        GROUP BY r.id
-        ORDER BY r.room_number
-    """)
-    all_rooms = cursor.fetchall() or []
+    # Get all rooms first
+    cursor.execute("SELECT id, room_number, room_type, capacity FROM rooms ORDER BY room_number")
+    all_rooms_raw = cursor.fetchall() or []
     
+    # For each room, count occupants
     available_rooms = []
-    for room in all_rooms:
-        room_id = int(room.get('id')) if isinstance(room.get('id'), str) else room.get('id')
-        cursor.execute("SELECT COUNT(*) as count FROM room_occupancy WHERE room_id = %s AND status = 'Active'", (room_id,))
-        count_result = cursor.fetchone()
-        occupied = count_result.get('count', 0) if count_result else 0
-        capacity = room.get('capacity', 0) if isinstance(room, dict) else room[3]
-        gender_occupancy = room.get('gender_occupancy', 'Mixed') if isinstance(room, dict) else (room[4] if len(room) > 4 else 'Mixed')
+    for room in all_rooms_raw:
+        # Handle both dict and tuple formats
+        if isinstance(room, dict):
+            room_id = room.get('id')
+            room_number = room.get('room_number')
+            room_type = room.get('room_type')
+            capacity = room.get('capacity', 0)
+        else:
+            room_id = room[0]
+            room_number = room[1]
+            room_type = room[2]
+            capacity = room[3]
         
+        # Count active occupants in this room
+        cursor.execute("""
+            SELECT COUNT(*) as count FROM room_occupancy 
+            WHERE room_id = %s AND status = 'Active'
+        """, (room_id,))
+        occupancy = cursor.fetchone()
+        occupied = occupancy.get('count', 0) if isinstance(occupancy, dict) else (occupancy[0] if occupancy else 0)
+        
+        # Only add if room has available capacity
         if occupied < capacity:
-            room_dict = {
+            available_rooms.append({
                 'id': room_id,
-                'room_number': room.get('room_number') if isinstance(room, dict) else room[1],
-                'room_type': room.get('room_type') if isinstance(room, dict) else room[2],
+                'room_number': room_number,
+                'room_type': room_type,
                 'capacity': capacity,
-                'gender_occupancy': gender_occupancy,
                 'occupied_count': occupied
-            }
-            available_rooms.append(room_dict)
+            })
     
     cursor.close()
     
@@ -984,15 +1003,29 @@ def students():
 def room_students(room_id):
     """Get students in a room (AJAX endpoint)"""
     try:
+        # Ensure database connection is alive
+        if db.connection is None or not db.is_connected:
+            return '<p style="color: #e74c3c;"><i class="fas fa-exclamation-circle"></i> Database connection error. Please refresh the page.</p>', 500
+        
         cursor = db.connection.cursor()
         
         # Get room details
-        cursor.execute("SELECT room_number, capacity FROM rooms WHERE id = %s", (room_id,))
+        cursor.execute("SELECT id, room_number, capacity FROM rooms WHERE id = %s", (room_id,))
         room = cursor.fetchone()
         
         if not room:
             cursor.close()
             return '<p style="color: #e74c3c;">Room not found</p>', 404
+        
+        # Convert to dict for consistency
+        if isinstance(room, dict):
+            room_data = room
+        else:
+            room_data = {
+                'id': room[0] if len(room) > 0 else room_id,
+                'room_number': room[1] if len(room) > 1 else 'Unknown',
+                'capacity': room[2] if len(room) > 2 else 0
+            }
         
         # Get students in this room
         cursor.execute("""
@@ -1006,6 +1039,10 @@ def room_students(room_id):
         """, (room_id,))
         students = cursor.fetchall()
         
+        # Ensure we got valid data
+        if students is None:
+            students = []
+        
         cursor.close()
     except Exception as e:
         import traceback
@@ -1017,9 +1054,9 @@ def room_students(room_id):
     <div style="padding: 20px;">
         <div class="room-info-box">
             <i class="fas fa-door-open"></i>
-            <strong>Room {room['room_number']}</strong>
+            <strong>Room {room_data.get('room_number', 'Unknown')}</strong>
             <span style="float: right; font-weight: 700; color: var(--secondary-color);">
-                {len(students)}/{room['capacity']} Students
+                {len(students)}/{room_data.get('capacity', 0)} Students
             </span>
         </div>
     '''
@@ -1040,31 +1077,44 @@ def room_students(room_id):
         '''
         
         for i, student in enumerate(students, 1):
-            check_in_date = student['check_in_date'].strftime('%d %b %Y') if hasattr(student['check_in_date'], 'strftime') else str(student['check_in_date'])
+            # Handle both dict and tuple formats
+            if isinstance(student, dict):
+                occupancy_id = student.get('occupancy_id')
+                full_name = student.get('full_name', 'Unknown')
+                roll_number = student.get('roll_number', 'N/A')
+                check_in_date = student.get('check_in_date')
+            else:
+                # Assume tuple format: (occupancy_id, student_id, full_name, roll_number, check_in_date, status)
+                occupancy_id = student[0] if len(student) > 0 else 'Unknown'
+                full_name = student[2] if len(student) > 2 else 'Unknown'
+                roll_number = student[3] if len(student) > 3 else 'N/A'
+                check_in_date = student[4] if len(student) > 4 else None
+            
+            check_in_str = check_in_date.strftime('%d %b %Y') if hasattr(check_in_date, 'strftime') else str(check_in_date) if check_in_date else 'N/A'
             bg_color = 'rgba(52, 152, 219, 0.05)' if i % 2 == 0 else 'transparent'
             
             html += f'''
                     <tr style="background-color: {bg_color};">
                         <td style="padding: 16px; font-weight: 700; color: var(--secondary-color);">
                             <i class="fas fa-user-circle" style="margin-right: 8px;"></i>
-                            {student['full_name']}
+                            {full_name}
                         </td>
                         <td style="padding: 16px; font-weight: 600;">
-                            {student['roll_number']}
+                            {roll_number}
                         </td>
                         <td style="padding: 16px; color: #7f8c8d;">
-                            {check_in_date}
+                            {check_in_str}
                         </td>
                         <td style="padding: 16px; text-align: center;">
                             <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
                                 <button class="btn btn-sm btn-info" 
-                                        onclick="shiftStudent({student['occupancy_id']}, {room_id})" 
+                                        onclick="shiftStudent({occupancy_id}, {room_id})" 
                                         title="Move student to another room" 
                                         style="font-weight: 600; padding: 6px 10px;">
                                     <i class="fas fa-exchange-alt"></i> Shift
                                 </button>
                                 <button class="btn btn-sm btn-danger" 
-                                        onclick="removeStudentFromRoom({student['occupancy_id']}, {room_id})" 
+                                        onclick="removeStudentFromRoom({occupancy_id}, {room_id})" 
                                         title="Remove student from this room" 
                                         style="font-weight: 600; padding: 6px 10px;">
                                     <i class="fas fa-trash-alt"></i> Remove
@@ -1433,3 +1483,88 @@ def settings():
     cursor.close()
     
     return render_template('admin/settings.html', settings=settings_dict)
+
+
+# ==================== GALLERY MANAGEMENT ====================
+@admin_bp.route('/gallery', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def gallery():
+    """Manage hostel gallery"""
+    cursor = db.connection.cursor()
+    
+    if request.method == 'POST':
+        action = request.form.get('action', '').strip()
+        
+        if action == 'add':
+            try:
+                title = request.form.get('title', '').strip()
+                description = request.form.get('description', '').strip()
+                category = request.form.get('category', 'Facilities')
+                image_path = request.form.get('image_path', '').strip()
+                
+                if not all([title, image_path]):
+                    flash('❌ Title and image path are required!', 'danger')
+                    return redirect(url_for('admin.gallery'))
+                
+                cursor.execute("""
+                    INSERT INTO gallery (title, description, category, image_path, created_at)
+                    VALUES (%s, %s, %s, %s, NOW())
+                """, (title, description, category, image_path))
+                db.connection.commit()
+                flash(f'✅ Photo "{title}" added to gallery successfully!', 'success')
+                
+            except Exception as e:
+                db.connection.rollback()
+                flash(f'❌ Error adding photo: {str(e)}', 'danger')
+        
+        elif action == 'update':
+            try:
+                image_id = int(request.form.get('image_id', 0))
+                title = request.form.get('title', '').strip()
+                description = request.form.get('description', '').strip()
+                category = request.form.get('category', 'Facilities')
+                image_path = request.form.get('image_path', '').strip()
+                
+                if not all([title, image_path]):
+                    flash('❌ Title and image path are required!', 'danger')
+                    return redirect(url_for('admin.gallery'))
+                
+                cursor.execute("""
+                    UPDATE gallery 
+                    SET title = %s, description = %s, category = %s, image_path = %s
+                    WHERE id = %s
+                """, (title, description, category, image_path, image_id))
+                db.connection.commit()
+                flash(f'✅ Photo "{title}" updated successfully!', 'success')
+                
+            except Exception as e:
+                db.connection.rollback()
+                flash(f'❌ Error updating photo: {str(e)}', 'danger')
+        
+        elif action == 'delete':
+            try:
+                image_id = int(request.form.get('image_id', 0))
+                
+                # Get image title for message
+                cursor.execute("SELECT title FROM gallery WHERE id = %s", (image_id,))
+                image = cursor.fetchone()
+                image_title = image.get('title') if isinstance(image, dict) else image[0] if image else 'Photo'
+                
+                cursor.execute("DELETE FROM gallery WHERE id = %s", (image_id,))
+                db.connection.commit()
+                flash(f'✅ Photo "{image_title}" deleted successfully!', 'success')
+                
+            except Exception as e:
+                db.connection.rollback()
+                flash(f'❌ Error deleting photo: {str(e)}', 'danger')
+        
+        return redirect(url_for('admin.gallery'))
+    
+    # Get all gallery images
+    cursor.execute("SELECT * FROM gallery ORDER BY created_at DESC")
+    gallery_images = cursor.fetchall() or []
+    
+    cursor.close()
+    
+    return render_template('admin/gallery.html', gallery_images=gallery_images)

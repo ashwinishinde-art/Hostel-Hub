@@ -839,6 +839,17 @@ app.register_blueprint(student_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(warden_bp)
 
+# ==================== CACHE CONTROL ====================
+@app.after_request
+def add_cache_headers(response):
+    """Add cache-control headers to prevent browser caching"""
+    # Prevent caching of all pages
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, public, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    response.headers['ETag'] = None  # Remove ETag to force revalidation
+    return response
+
 if __name__ == '__main__':
     print("\n" + "="*60)
     print("🚀 Hostel Management System Starting...")
