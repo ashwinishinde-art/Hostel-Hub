@@ -43,9 +43,34 @@ def format_date(value, format_str='%d %b %Y'):
         # If it's already a datetime object, format it
         if hasattr(value, 'strftime'):
             return value.strftime(format_str)
-        # If it's a string, return it as-is (already formatted)
+        # If it's a string, try to parse it first
         elif isinstance(value, str):
-            return value
+            # Try to parse common date formats
+            from datetime import datetime
+            
+            # Remove any whitespace
+            date_str = value.strip()
+            
+            # Try different date formats
+            formats_to_try = [
+                '%Y-%m-%d %H:%M:%S',  # 2026-07-21 12:09:15
+                '%Y-%m-%d %H:%M',     # 2026-07-21 12:09
+                '%Y-%m-%d',           # 2026-07-21
+                '%d %b %Y',           # 21 Jul 2026 (already formatted)
+                '%d-%m-%Y',           # 21-07-2026
+                '%m/%d/%Y',           # 07/21/2026
+                '%Y/%m/%d',           # 2026/07/21
+            ]
+            
+            for fmt in formats_to_try:
+                try:
+                    parsed_date = datetime.strptime(date_str, fmt)
+                    return parsed_date.strftime(format_str)
+                except ValueError:
+                    continue
+            
+            # If no format matched, return as-is
+            return date_str
         else:
             return str(value)
     except Exception as e:

@@ -173,7 +173,7 @@
                                 {{ complaint.status }}
                             </span>
                         </td>
-                        <td style="white-space: nowrap;">{{ complaint.created_at_str or complaint.created_at }}</td>
+                        <td style="white-space: nowrap;">{{ complaint.created_at|format_date('%d %b %Y') }}</td>
                         <td>
                             <div class="btn-group-compact">
                                 <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#complaintModal" onclick="loadComplaint({{ complaint.id }})" title="View & Update">
@@ -234,6 +234,11 @@ function loadComplaint(complaintId) {
 }
 
 function quickUpdate(complaintId, status) {
+    // Disable button and show loading state
+    event.target.disabled = true;
+    const originalText = event.target.innerHTML;
+    event.target.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+    
     // Quick update to change status
     const formData = new FormData();
     formData.append('action', 'update');
@@ -246,14 +251,45 @@ function quickUpdate(complaintId, status) {
     })
     .then(response => {
         if (response.ok) {
-            // Reload the page to show updated status
-            location.reload();
+            // Show success message
+            const statusDisplay = {
+                'In Progress': 'Work in Progress',
+                'Resolved': 'Done',
+                'Pending': 'Pending'
+            };
+            
+            // Create toast notification
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #10b981;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 9999;
+                font-weight: 600;
+            `;
+            toast.innerHTML = `✓ Complaint marked as ${statusDisplay[status] || status}`;
+            document.body.appendChild(toast);
+            
+            // Remove toast after 2 seconds and reload
+            setTimeout(() => {
+                toast.remove();
+                location.reload();
+            }, 2000);
         } else {
             alert('Error updating complaint. Please try again.');
+            event.target.disabled = false;
+            event.target.innerHTML = originalText;
         }
     })
     .catch(error => {
         alert('Error: ' + error);
+        event.target.disabled = false;
+        event.target.innerHTML = originalText;
     });
 }
 </script>

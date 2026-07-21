@@ -634,6 +634,8 @@ class MockDatabase:
         try:
             # Find table name
             import re
+            from datetime import datetime
+            
             match = re.search(r'INSERT\s+INTO\s+(\w+)', query, re.IGNORECASE)
             if not match:
                 return False
@@ -661,6 +663,14 @@ class MockDatabase:
                 for i, field in enumerate(fields):
                     if i < len(params):
                         row[field] = params[i]
+            
+            # Add automatic timestamps for new records
+            if 'created_at' not in row:
+                # Format as YYYY-MM-DD for consistency with mock DB
+                row['created_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            
+            if 'updated_at' not in row and table in ['complaints', 'notices', 'visitors', 'fees', 'rooms']:
+                row['updated_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             
             # Add the new row to the table
             self.data[table].append(row)

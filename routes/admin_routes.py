@@ -522,7 +522,7 @@ def complaints():
         action = request.form.get('action', '').strip()
         complaint_id = request.form.get('complaint_id', 0)
         
-        if action == 'update_status':
+        if action in ['update', 'update_status']:
             try:
                 status = request.form.get('status', '')
                 resolution_notes = request.form.get('resolution_notes', '').strip()

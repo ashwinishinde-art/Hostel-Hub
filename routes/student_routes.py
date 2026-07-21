@@ -35,9 +35,17 @@ def dashboard():
             cursor.execute("SELECT * FROM rooms WHERE id = %s", (occupancy.get('room_id'),))
             room = cursor.fetchone()
         
-        # Get complaints
-        cursor.execute("SELECT * FROM complaints WHERE student_id = %s ORDER BY id DESC LIMIT 5", (current_user.id,))
-        complaints = cursor.fetchall()
+        # Get all complaints (not just recent 5)
+        cursor.execute("SELECT * FROM complaints WHERE student_id = %s ORDER BY created_at DESC", (current_user.id,))
+        all_complaints = cursor.fetchall()
+        
+        # Separate resolved and pending complaints
+        resolved_complaints = [c for c in all_complaints if isinstance(c, dict) and c.get('status') == 'Resolved' or (isinstance(c, tuple) and dict(c).get('status') == 'Resolved')]
+        pending_complaints = [c for c in all_complaints if isinstance(c, dict) and c.get('status') != 'Resolved' or (isinstance(c, tuple) and dict(c).get('status') != 'Resolved')]
+        
+        # Limit to 5 each for display
+        complaints = pending_complaints[:5]
+        resolved_complaints = resolved_complaints[:5]
         
         # Get pending visitors
         cursor.execute("SELECT * FROM visitors WHERE student_id = %s", (current_user.id,))
@@ -57,6 +65,7 @@ def dashboard():
                              student=student, 
                              room=room,
                              complaints=complaints or [],
+                             resolved_complaints=resolved_complaints or [],
                              pending_visitors=pending_visitors or [],
                              fee=fee,
                              notices=notices or [])
@@ -69,6 +78,7 @@ def dashboard():
                              student=None, 
                              room=None,
                              complaints=[],
+                             resolved_complaints=[],
                              pending_visitors=[],
                              fee=None,
                              notices=[])

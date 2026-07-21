@@ -113,4 +113,72 @@
     animation: fadeInUp 0.6s ease forwards;
 }
 </style>
+
+<!-- Recent Complaints Section -->
+{% if complaints %}
+<div class="row mb-5">
+    <div class="col-md-12">
+        <h3 style="color: #2c3e50; font-weight: 900; margin-bottom: 30px; font-size: 1.8rem; letter-spacing: -0.5px;">
+            <i class="fas fa-history" style="color: #f59e0b; margin-right: 15px; font-size: 2rem;"></i>Recent Complaints
+        </h3>
+    </div>
+    {% for complaint in complaints %}
+    <div class="col-md-6 mb-4 animate-fade">
+        <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-left: 5px solid {% if complaint.status == 'Resolved' %}#10b981{% elif complaint.status == 'In Progress' %}#f59e0b{% else %}#ef4444{% endif %}; transition: all 0.3s ease;"
+            onmouseover="this.style.boxShadow='0 8px 25px rgba(0,0,0,0.12)'; this.style.transform='translateY(-4px)';"
+            onmouseout="this.style.boxShadow='0 4px 15px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)';">
+            
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                <h5 style="color: #2c3e50; font-weight: 700; margin: 0; flex: 1;">{{ complaint.title }}</h5>
+                <span style="background: {% if complaint.priority == 'High' %}#fee2e2{% elif complaint.priority == 'Medium' %}#fef3c7{% else %}#e0f2fe{% endif %}; color: {% if complaint.priority == 'High' %}#991b1b{% elif complaint.priority == 'Medium' %}#92400e{% else %}#0c4a6e{% endif %}; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">{{ complaint.priority }}</span>
+            </div>
+
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5;">{{ complaint.description[:100] }}{% if complaint.description|length > 100 %}...{% endif %}</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                <div>
+                    <small style="color: #999; font-weight: 600;">Category</small>
+                    <p style="color: #2c3e50; font-weight: 600; margin: 4px 0;">{{ complaint.category }}</p>
+                </div>
+                <div>
+                    <small style="color: #999; font-weight: 600;">Date Filed</small>
+                    <p style="color: #2c3e50; font-weight: 600; margin: 4px 0;">{{ complaint.created_at|format_date('%d %b %Y') }}</p>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <small style="color: #999; font-weight: 600;">Status</small>
+                    <p style="margin: 4px 0;">
+                        <span style="background: {% if complaint.status == 'Resolved' %}#dcfce7{% elif complaint.status == 'In Progress' %}#fef3c7{% else %}#fee2e2{% endif %}; color: {% if complaint.status == 'Resolved' %}#166534{% elif complaint.status == 'In Progress' %}#92400e{% else %}#991b1b{% endif %}; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                            {{ complaint.status }}
+                        </span>
+                    </p>
+                </div>
+                <a href="/student/complaint/{{ complaint.id }}" style="background: #667eea; color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
+                    <i class="fas fa-eye"></i> View
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 {% endblock %}
+
+<style>
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade {
+    animation: fadeInUp 0.6s ease forwards;
+}
+</style>
