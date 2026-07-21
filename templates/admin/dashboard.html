@@ -145,6 +145,151 @@
             </div>
         </div>
     </div>
+
+    <!-- Recent Entries Section -->
+    <div style="margin-top: 80px; margin-bottom: 60px;">
+        <h3 style="color: #2c3e50; font-weight: 900; margin-bottom: 30px; font-size: 1.8rem; letter-spacing: -0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <i class="fas fa-history" style="color: #667eea; margin-right: 15px; font-size: 2rem;"></i>Recent Activity
+        </h3>
+
+        <!-- Recent Students -->
+        {% if recent_students %}
+        <div class="row mb-5">
+            <div class="col-12">
+                <h5 style="color: #2c3e50; font-weight: 800; margin-bottom: 20px; font-size: 1.2rem;">
+                    <i class="fas fa-user-plus" style="color: #667eea; margin-right: 10px;"></i>Recently Added Students
+                </h5>
+            </div>
+            {% for student in recent_students %}
+            <div class="col-md-4 mb-3 animate-fade">
+                <div style="background: white; border-radius: 12px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 4px solid #667eea; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <h6 style="color: #2c3e50; font-weight: 700; margin-bottom: 5px; font-size: 1rem;">{{ student.get('full_name', 'N/A') }}</h6>
+                        <span style="background: #e0e7ff; color: #667eea; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">NEW</span>
+                    </div>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 8px;"><strong>Username:</strong> {{ student.get('username', 'N/A') }}</p>
+                    {% if student.get('roll_number') %}
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 8px;"><strong>Roll:</strong> {{ student.get('roll_number', 'N/A') }}</p>
+                    {% endif %}
+                    {% if student.get('branch') %}
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 8px;"><strong>Branch:</strong> {{ student.get('branch', 'N/A') }}</p>
+                    {% endif %}
+                    <p style="color: #999; font-size: 0.85rem;"><i class="fas fa-calendar-alt"></i> {{ student.get('created_at', 'N/A') }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Recent Complaints -->
+        {% if recent_complaints %}
+        <div class="row mb-5">
+            <div class="col-12">
+                <h5 style="color: #2c3e50; font-weight: 800; margin-bottom: 20px; font-size: 1.2rem;">
+                    <i class="fas fa-exclamation-circle" style="color: #f97316; margin-right: 10px;"></i>Recent Complaints
+                </h5>
+            </div>
+            {% for complaint in recent_complaints %}
+            <div class="col-md-4 mb-3 animate-fade">
+                <div style="background: white; border-radius: 12px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 4px solid #f97316; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <h6 style="color: #2c3e50; font-weight: 700; margin-bottom: 5px; font-size: 1rem; flex: 1;">{{ complaint.get('title', 'No Title')[:30] }}...</h6>
+                        {% if complaint.get('priority') == 'High' %}
+                        <span style="background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">HIGH</span>
+                        {% elif complaint.get('priority') == 'Medium' %}
+                        <span style="background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">MEDIUM</span>
+                        {% else %}
+                        <span style="background: #e0f2fe; color: #0c4a6e; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">LOW</span>
+                        {% endif %}
+                    </div>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 8px;"><strong>Student:</strong> {{ complaint.get('full_name', 'N/A') }}</p>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 8px;"><strong>Category:</strong> {{ complaint.get('category', 'N/A') }}</p>
+                    {% if complaint.get('room_number') %}
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 8px;"><strong>Room:</strong> {{ complaint.get('room_number', 'N/A') }}</p>
+                    {% endif %}
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <p style="color: #999; font-size: 0.85rem; margin-bottom: 0;"><i class="fas fa-clock"></i> {{ complaint.get('created_at', 'N/A') }}</p>
+                        {% if complaint.get('status') == 'Pending' %}
+                        <span style="background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">Pending</span>
+                        {% elif complaint.get('status') == 'In Progress' %}
+                        <span style="background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">In Progress</span>
+                        {% else %}
+                        <span style="background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">{{ complaint.get('status', 'N/A') }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Recent Visitors -->
+        {% if recent_visitors %}
+        <div class="row mb-5">
+            <div class="col-12">
+                <h5 style="color: #2c3e50; font-weight: 800; margin-bottom: 20px; font-size: 1.2rem;">
+                    <i class="fas fa-sign-in-alt" style="color: #06b6d4; margin-right: 10px;"></i>Recent Visitor Requests
+                </h5>
+            </div>
+            {% for visitor in recent_visitors %}
+            <div class="col-md-4 mb-3 animate-fade">
+                <div style="background: white; border-radius: 12px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 4px solid #06b6d4; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <h6 style="color: #2c3e50; font-weight: 700; margin-bottom: 5px; font-size: 1rem;">{{ visitor.get('visitor_name', 'N/A') }}</h6>
+                        {% if visitor.get('status') == 'Pending' %}
+                        <span style="background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">Pending</span>
+                        {% elif visitor.get('status') == 'Approved' %}
+                        <span style="background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">Approved</span>
+                        {% elif visitor.get('status') == 'Rejected' %}
+                        <span style="background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">Rejected</span>
+                        {% else %}
+                        <span style="background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">{{ visitor.get('status', 'N/A') }}</span>
+                        {% endif %}
+                    </div>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 8px;"><strong>Student:</strong> {{ visitor.get('full_name', 'N/A') }}</p>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 8px;"><strong>Date:</strong> {{ visitor.get('visit_date', 'N/A') }}</p>
+                    {% if visitor.get('purpose') %}
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 8px;"><strong>Purpose:</strong> {{ visitor.get('purpose', 'N/A')[:30] }}...</p>
+                    {% endif %}
+                    <p style="color: #999; font-size: 0.85rem;"><i class="fas fa-calendar-alt"></i> {{ visitor.get('visit_date', 'N/A') }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Recent Pending Fees -->
+        {% if recent_fees %}
+        <div class="row mb-5">
+            <div class="col-12">
+                <h5 style="color: #2c3e50; font-weight: 800; margin-bottom: 20px; font-size: 1.2rem;">
+                    <i class="fas fa-money-bill-wave" style="color: #8b5cf6; margin-right: 10px;"></i>Pending Payments
+                </h5>
+            </div>
+            {% for fee in recent_fees %}
+            <div class="col-md-4 mb-3 animate-fade">
+                <div style="background: white; border-radius: 12px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 4px solid #8b5cf6; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <h6 style="color: #2c3e50; font-weight: 700; margin-bottom: 5px; font-size: 1rem;">{{ fee.get('full_name', 'N/A') }}</h6>
+                        {% if fee.get('payment_status') == 'Overdue' %}
+                        <span style="background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">OVERDUE</span>
+                        {% else %}
+                        <span style="background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">PENDING</span>
+                        {% endif %}
+                    </div>
+                    {% if fee.get('roll_number') %}
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 8px;"><strong>Roll:</strong> {{ fee.get('roll_number', 'N/A') }}</p>
+                    {% endif %}
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 8px;"><strong>Total:</strong> ₹{{ "%.2f"|format(fee.get('total_amount', 0)|float) }}</p>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 8px;"><strong>Paid:</strong> ₹{{ "%.2f"|format(fee.get('paid_amount', 0)|float) }}</p>
+                    <p style="color: #e74c3c; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px;"><strong>Pending:</strong> ₹{{ "%.2f"|format(fee.get('pending_amount', 0)|float) }}</p>
+                    <p style="color: #999; font-size: 0.85rem;"><i class="fas fa-calendar-alt"></i> Due: {{ fee.get('due_date', 'N/A') }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
 </div>
 
 <style>
@@ -161,6 +306,16 @@
 
 .animate-fade {
     animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Recent entries card hover effect */
+div[style*="border-left: 4px solid"] {
+    position: relative;
+}
+
+div[style*="border-left: 4px solid"]:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+    transform: translateY(-2px) !important;
 }
 </style>
 {% endblock %}

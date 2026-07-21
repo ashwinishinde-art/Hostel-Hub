@@ -26,11 +26,19 @@
     .room-table tbody tr {
         border-bottom: 1px solid var(--border-current);
         transition: all 0.3s ease;
+        height: auto;
     }
 
     .room-table tbody tr:hover {
         background-color: var(--bg-current-secondary);
         transform: scale(1.01);
+    }
+    
+    /* Prevent text overflow in room type cell */
+    .room-table tbody td:nth-child(3) {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        word-break: break-word;
     }
 
     .room-table tbody td {
@@ -45,23 +53,223 @@
         font-size: 1.05rem;
     }
 
-    .room-table .room-type {
-        display: inline-block;
-        background: linear-gradient(135deg, rgba(52, 152, 219, 0.4), rgba(41, 128, 185, 0.4));
-        padding: 8px 14px;
-        border-radius: 6px;
+    /* Tab styling */
+    .nav-tabs .nav-link {
+        color: var(--text-current) !important;
+        border: none;
+        font-weight: 600;
+        padding: 12px 20px;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .nav-tabs .nav-link:hover {
+        background-color: var(--bg-current-secondary);
+        border-bottom-color: var(--secondary-color);
+    }
+
+    .nav-tabs .nav-link.active {
+        background-color: transparent;
+        border-bottom-color: var(--secondary-color) !important;
+        color: var(--secondary-color) !important;
+    }
+
+    .nav-tabs .nav-link i {
+        margin-right: 8px;
+        font-size: 1.1rem;
+    }
+
+    /* Students table in modal */
+    .students-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    .students-table thead {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, #3498db 100%);
+        color: white;
+    }
+
+    .students-table thead th {
+        padding: 14px;
         font-weight: 700;
-        color: #ffffff;
-        border: 2px solid rgba(52, 152, 219, 0.8);
-        box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
-        text-transform: capitalize;
+        text-align: left;
         font-size: 0.95rem;
+    }
+
+    .students-table tbody tr {
+        border-bottom: 1px solid var(--border-current);
+        transition: all 0.2s ease;
+    }
+
+    .students-table tbody tr:hover {
+        background-color: var(--bg-current-secondary);
+    }
+
+    .students-table tbody td {
+        padding: 14px;
+        color: var(--text-current);
+        font-weight: 500;
+    }
+
+    .students-table .student-name {
+        font-weight: 700;
+        color: var(--secondary-color);
+    }
+
+    .students-table .actions-cell {
+        text-align: center;
+        min-width: 150px;
+    }
+
+    .students-table .btn-sm {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .room-info-box {
+        background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(41, 128, 185, 0.05) 100%);
+        border-left: 4px solid var(--secondary-color);
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+
+    .room-info-box i {
+        color: var(--secondary-color);
+        margin-right: 10px;
+        font-size: 1.1rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        background: var(--bg-current-secondary);
+        border-radius: 8px;
+        color: #7f8c8d;
+    }
+
+    .empty-state i {
+        font-size: 2.5rem;
+        opacity: 0.3;
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .room-type {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.9rem;
         letter-spacing: 0.3px;
+        white-space: normal;
+        max-width: 180px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+        text-transform: capitalize;
+        text-align: center;
+        flex-wrap: wrap;
+    }
+
+    .room-type:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Different room type colors */
+    .room-type.single {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: 2px solid rgba(102, 126, 234, 0.5);
+    }
+
+    .room-type.double {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        border: 2px solid rgba(245, 87, 108, 0.5);
+    }
+
+    .room-type.triple {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        border: 2px solid rgba(79, 172, 254, 0.5);
+    }
+
+    .room-type.quad {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        color: white;
+        border: 2px solid rgba(67, 233, 123, 0.5);
+    }
+
+    .room-type i {
+        font-size: 1.1rem;
+    }
+
+    /* New badge styles */
+    .room-type-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-weight: 800;
+        font-size: 1rem;
+        color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        cursor: default;
+        min-width: 160px;
+        text-align: center;
+    }
+
+    .room-type-badge:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .room-type-badge i {
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .room-type-text {
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        white-space: nowrap;
+    }
+
+    .single-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: 2px solid rgba(102, 126, 234, 0.6);
+    }
+
+    .double-badge {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border: 2px solid rgba(245, 87, 108, 0.6);
+    }
+
+    .triple-badge {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        border: 2px solid rgba(79, 172, 254, 0.6);
+    }
+
+    .quad-badge {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        border: 2px solid rgba(67, 233, 123, 0.6);
     }
 
     .room-table tbody td:nth-child(3) {
         font-weight: 600;
-        min-width: 140px;
+        min-width: 220px;
+        text-align: center;
     }
 
     .room-table .rent-amount {
@@ -200,8 +408,41 @@
                     <tr>
                         <td>{{ room.room_number }}</td>
                         <td>{{ room.floor }}</td>
-                        <td>
-                            <span class="room-type">{{ room.room_type }}</span>
+                        <td style="padding: 12px 15px !important;">
+                            {% if room.room_type %}
+                                {% set rt = room.room_type.lower() %}
+                                {% if 'single' in rt %}
+                                    <div class="room-type-badge single-badge">
+                                        <i class="fas fa-user-check"></i>
+                                        <span class="room-type-text">Single Deluxe</span>
+                                    </div>
+                                {% elif 'double' in rt %}
+                                    <div class="room-type-badge double-badge">
+                                        <i class="fas fa-users"></i>
+                                        <span class="room-type-text">Double Sharing</span>
+                                    </div>
+                                {% elif 'triple' in rt %}
+                                    <div class="room-type-badge triple-badge">
+                                        <i class="fas fa-users"></i>
+                                        <span class="room-type-text">Triple Sharing</span>
+                                    </div>
+                                {% elif 'quad' in rt %}
+                                    <div class="room-type-badge quad-badge">
+                                        <i class="fas fa-people-carry"></i>
+                                        <span class="room-type-text">Quad Sharing</span>
+                                    </div>
+                                {% else %}
+                                    <div class="room-type-badge single-badge">
+                                        <i class="fas fa-door-open"></i>
+                                        <span class="room-type-text">{{ room.room_type }}</span>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="room-type-badge single-badge">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="room-type-text">Not Set</span>
+                                </div>
+                            {% endif %}
                         </td>
                         <td style="font-weight: 600;">{{ room.capacity }}</td>
                         <td style="font-weight: 600;">{{ room.occupied_count if room.occupied_count else 0 }}/{{ room.capacity }}</td>
@@ -256,13 +497,24 @@
                 </div>
                 <input type="hidden" name="action" value="add">
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Room Number *</label>
-                        <input type="text" class="form-control" name="room_number" required placeholder="e.g., 101, 102">
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle"></i> <strong>Room Numbering:</strong> Each floor can have maximum 5 rooms. Room number is auto-generated as Floor+Position (e.g., Floor 2, Position 1 = Room 201)
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Floor *</label>
-                        <input type="number" class="form-control" name="floor" required placeholder="e.g., 1, 2, 3">
+                        <input type="number" class="form-control" name="floor" id="add_floor" required placeholder="e.g., 1, 2, 3" min="1" onchange="updateFloorInfo('add')">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Room Position on Floor (1-5) *</label>
+                        <select class="form-select" name="room_position" id="add_room_position" required onchange="updateFloorInfo('add')">
+                            <option value="">-- Select Position --</option>
+                            <option value="1">Position 1</option>
+                            <option value="2">Position 2</option>
+                            <option value="3">Position 3</option>
+                            <option value="4">Position 4</option>
+                            <option value="5">Position 5</option>
+                        </select>
+                        <small class="form-text text-muted" id="add_room_number_preview">Generated Room Number: --</small>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Room Type *</label>
@@ -276,11 +528,11 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Capacity *</label>
-                        <input type="number" class="form-control" name="capacity" required placeholder="Number of students">
+                        <input type="number" class="form-control" name="capacity" required placeholder="Number of students" min="1">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Monthly Rent *</label>
-                        <input type="number" step="0.01" class="form-control" name="rent" required placeholder="e.g., 5000">
+                        <input type="number" step="0.01" class="form-control" name="rent" required placeholder="e.g., 5000" min="0">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Amenities</label>
@@ -325,13 +577,28 @@
                         <input type="hidden" name="action" value="update">
                         <input type="hidden" name="room_id" id="edit_room_id">
                         <div class="modal-body">
+                            <div class="alert alert-info" role="alert">
+                                <i class="fas fa-info-circle"></i> <strong>Room Numbering:</strong> Room number is auto-generated as Floor+Position (e.g., Floor 2, Position 1 = Room 201)
+                            </div>
                             <div class="mb-3">
-                                <label class="form-label" style="font-weight: 700;">Room Number *</label>
-                                <input type="text" class="form-control" name="room_number" id="edit_room_number" required placeholder="e.g., 101, 102" style="border-width: 2px; font-weight: 500;">
+                                <label class="form-label" style="font-weight: 700;">Current Room Number</label>
+                                <input type="text" class="form-control" id="edit_current_room_number" disabled style="background-color: #e9ecef; border-width: 2px; font-weight: 500;">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" style="font-weight: 700;">Floor *</label>
-                                <input type="number" class="form-control" name="floor" id="edit_floor" required placeholder="e.g., 1, 2, 3" style="border-width: 2px; font-weight: 500;">
+                                <input type="number" class="form-control" name="floor" id="edit_floor" required placeholder="e.g., 1, 2, 3" style="border-width: 2px; font-weight: 500;" min="1" onchange="updateFloorInfo('edit')">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" style="font-weight: 700;">Room Position on Floor (1-5) *</label>
+                                <select class="form-select" name="room_position" id="edit_room_position" required style="border-width: 2px; font-weight: 500;" onchange="updateFloorInfo('edit')">
+                                    <option value="">-- Select Position --</option>
+                                    <option value="1">Position 1</option>
+                                    <option value="2">Position 2</option>
+                                    <option value="3">Position 3</option>
+                                    <option value="4">Position 4</option>
+                                    <option value="5">Position 5</option>
+                                </select>
+                                <small class="form-text text-muted" id="edit_room_number_preview">New Room Number: --</small>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" style="font-weight: 700;">Room Type *</label>
@@ -345,11 +612,11 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" style="font-weight: 700;">Capacity *</label>
-                                <input type="number" class="form-control" name="capacity" id="edit_capacity" required placeholder="Number of students" style="border-width: 2px; font-weight: 500;">
+                                <input type="number" class="form-control" name="capacity" id="edit_capacity" required placeholder="Number of students" style="border-width: 2px; font-weight: 500;" min="1">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" style="font-weight: 700;">Monthly Rent *</label>
-                                <input type="number" step="0.01" class="form-control" name="rent" id="edit_rent" required placeholder="e.g., 5000" style="border-width: 2px; font-weight: 500;">
+                                <input type="number" step="0.01" class="form-control" name="rent" id="edit_rent" required placeholder="e.g., 5000" style="border-width: 2px; font-weight: 500;" min="0">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" style="font-weight: 700;">Amenities</label>
@@ -366,15 +633,17 @@
                 <!-- Tab 2: Manage Students -->
                 <div class="tab-pane fade" id="room-students" role="tabpanel">
                     <div class="modal-header">
-                        <h5 class="modal-title"><i class="fas fa-users"></i> Manage Room Students</h5>
+                        <h5 class="modal-title">
+                            <i class="fas fa-users"></i> Manage Room Students
+                        </h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="modal-body" id="roomStudentsContainer">
-                        <div style="text-align: center; padding: 20px;">
-                            <div style="font-size: 2rem; opacity: 0.3; margin-bottom: 15px;">
+                    <div class="modal-body" id="roomStudentsContainer" style="background: var(--bg-current);">
+                        <div style="text-align: center; padding: 40px;">
+                            <div style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 15px;">
                                 <i class="fas fa-spinner fa-spin"></i>
                             </div>
-                            <p style="font-weight: 500;">Loading students...</p>
+                            <p style="font-weight: 600; color: var(--text-current);">Loading students...</p>
                         </div>
                     </div>
                 </div>
@@ -384,15 +653,39 @@
 </div>
 
 <script>
+function generateRoomNumber(floor, position) {
+    if (!floor || !position) return '--';
+    floor = parseInt(floor);
+    position = parseInt(position);
+    if (position < 1 || position > 5) return '--';
+    return floor + String(position).padStart(2, '0');
+}
+
+function updateFloorInfo(mode) {
+    const floor = document.getElementById(mode === 'add' ? 'add_floor' : 'edit_floor').value;
+    const position = document.getElementById(mode === 'add' ? 'add_room_position' : 'edit_room_position').value;
+    const roomNumber = generateRoomNumber(floor, position);
+    
+    if (mode === 'add') {
+        document.getElementById('add_room_number_preview').textContent = 'Generated Room Number: ' + roomNumber;
+    } else {
+        document.getElementById('edit_room_number_preview').textContent = 'New Room Number: ' + roomNumber;
+    }
+}
+
 function loadRoom(room) {
     // Populate the edit form with room data
     document.getElementById('edit_room_id').value = room.id || '';
-    document.getElementById('edit_room_number').value = room.room_number || '';
+    document.getElementById('edit_current_room_number').value = room.room_number || '';
     document.getElementById('edit_floor').value = room.floor || '';
+    document.getElementById('edit_room_position').value = room.room_position || '';
     document.getElementById('edit_room_type').value = room.room_type || '';
     document.getElementById('edit_capacity').value = room.capacity || '';
     document.getElementById('edit_rent').value = room.rent || '';
     document.getElementById('edit_amenities').value = room.amenities || '';
+    
+    // Update the preview
+    updateFloorInfo('edit');
     
     // Load students when tab is clicked
     document.getElementById('room-students-tab').addEventListener('click', function() {
@@ -404,14 +697,28 @@ function loadRoomStudents(roomId) {
     const container = document.getElementById('roomStudentsContainer');
     container.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; opacity: 0.3; margin-bottom: 15px;"></i><p style="font-weight: 500;">Loading students...</p></div>';
     
-    // Fetch students in this room
-    fetch(`/admin/room-students/${roomId}`)
-        .then(response => response.text())
+    // Fetch students in this room with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    
+    fetch(`/admin/room-students/${roomId}`, { signal: controller.signal })
+        .then(response => {
+            clearTimeout(timeoutId);
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+            return response.text();
+        })
         .then(html => {
             container.innerHTML = html;
         })
         .catch(error => {
-            container.innerHTML = `<div style="padding: 20px; color: #e74c3c;"><i class="fas fa-exclamation-circle"></i> Error loading students: ${error}</div>`;
+            clearTimeout(timeoutId);
+            if (error.name === 'AbortError') {
+                container.innerHTML = `<div style="padding: 20px; color: #e74c3c;"><i class="fas fa-exclamation-circle"></i> Request timeout - Taking too long to load. Please refresh and try again.</div>`;
+            } else {
+                container.innerHTML = `<div style="padding: 20px; color: #e74c3c;"><i class="fas fa-exclamation-circle"></i> Error loading students: ${error.message}</div>`;
+            }
         });
 }
 

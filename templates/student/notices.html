@@ -30,7 +30,7 @@
                     <div class="card-body">
                         <p class="card-text">{{ notice.content }}</p>
                         <small class="text-muted">
-                            <i class="fas fa-calendar"></i> {{ notice.created_at.strftime('%d %b %Y at %H:%M') }}
+                            <i class="fas fa-calendar"></i> {{ notice.created_at|format_date('%d %b %Y at %H:%M') }}
                         </small>
                     </div>
                 </div>

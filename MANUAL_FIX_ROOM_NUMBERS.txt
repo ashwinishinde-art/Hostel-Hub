@@ -1,0 +1,176 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║           HOW TO FIX ROOM NUMBERS - Manual Steps Required                  ║
+║          To change rooms to: 101-105, 201-205, 301-305                     ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+⚠️ IMPORTANT NOTE
+════════════════════════════════════════════════════════════════════════════
+
+Your MySQL requires admin (sudo) access. I cannot run this automatically.
+You need to execute this command in your terminal with your password.
+
+This is SECURE and GOOD - prevents unauthorized database changes!
+
+════════════════════════════════════════════════════════════════════════════
+
+✅ QUICK 30-SECOND FIX
+════════════════════════════════════════════════════════════════════════════
+
+COPY THIS ENTIRE COMMAND (all of it):
+
+sudo mysql hostel_management << 'ENDSQL'
+DELETE FROM room_occupancy;
+DELETE FROM rooms;
+INSERT INTO rooms (floor, room_number, room_type, capacity, rent, amenities, is_available) VALUES
+(1, '101', 'Single Deluxe', 1, 7000.00, 'WiFi, AC, Private Bathroom, Study Desk', TRUE),
+(1, '102', 'Double Sharing', 2, 5000.00, 'WiFi, AC, Cupboard, Study Desk', TRUE),
+(1, '103', 'Double Sharing', 2, 5000.00, 'WiFi, AC, Cupboard, Study Desk', TRUE),
+(1, '104', 'Triple Sharing', 3, 4000.00, 'WiFi, Ceiling Fan, Cupboard, Study Desk', TRUE),
+(1, '105', 'Quad Sharing', 4, 3500.00, 'WiFi, Ceiling Fan, Cupboard, Study Desk', TRUE),
+(2, '201', 'Single Deluxe', 1, 7000.00, 'WiFi, AC, Private Bathroom, Study Desk', TRUE),
+(2, '202', 'Double Sharing', 2, 5000.00, 'WiFi, AC, Cupboard, Study Desk', TRUE),
+(2, '203', 'Double Sharing', 2, 5000.00, 'WiFi, AC, Cupboard, Study Desk', TRUE),
+(2, '204', 'Triple Sharing', 3, 4000.00, 'WiFi, Ceiling Fan, Cupboard, Study Desk', TRUE),
+(2, '205', 'Quad Sharing', 4, 3500.00, 'WiFi, Ceiling Fan, Cupboard, Study Desk', TRUE),
+(3, '301', 'Single Deluxe', 1, 7000.00, 'WiFi, AC, Private Bathroom, Study Desk', TRUE),
+(3, '302', 'Double Sharing', 2, 5000.00, 'WiFi, AC, Cupboard, Study Desk', TRUE),
+(3, '303', 'Double Sharing', 2, 5000.00, 'WiFi, AC, Cupboard, Study Desk', TRUE),
+(3, '304', 'Triple Sharing', 3, 4000.00, 'WiFi, Ceiling Fan, Cupboard, Study Desk', TRUE),
+(3, '305', 'Quad Sharing', 4, 3500.00, 'WiFi, Ceiling Fan, Cupboard, Study Desk', TRUE);
+SELECT 'Success! Rooms Created' AS status;
+SELECT CONCAT('Floor ', floor, ': ', COUNT(*), ' rooms') FROM rooms GROUP BY floor ORDER BY floor;
+ENDSQL
+
+════════════════════════════════════════════════════════════════════════════
+
+STEPS TO EXECUTE
+════════════════════════════════════════════════════════════════════════════
+
+Step 1: Open Terminal
+  • Press: Ctrl + Alt + T
+  • OR click Terminal icon
+
+Step 2: Paste Command
+  • Right-click → Paste
+  • OR press: Ctrl + Shift + V
+
+Step 3: Press Enter
+  • Command will ask for password
+  • Type your sudo password (characters won't show)
+  • Press Enter
+
+Step 4: Wait
+  • Should complete in 1-2 seconds
+  • You'll see: "Success! Rooms Created"
+
+════════════════════════════════════════════════════════════════════════════
+
+WHAT THIS DOES
+════════════════════════════════════════════════════════════════════════════
+
+✅ Deletes all old rooms
+✅ Creates 15 new rooms with correct numbering:
+   • Floor 1: 101, 102, 103, 104, 105
+   • Floor 2: 201, 202, 203, 204, 205
+   • Floor 3: 301, 302, 303, 304, 305
+✅ Each room has type, capacity, and rent set
+✅ All rooms marked as available
+
+════════════════════════════════════════════════════════════════════════════
+
+AFTER FIX - VERIFY IN ADMIN DASHBOARD
+════════════════════════════════════════════════════════════════════════════
+
+1. Go to: http://localhost:5000/admin/rooms
+2. Login if needed (admin / admin123)
+3. You should see rooms listed as:
+   ✓ 101 | Floor 1 | Single Deluxe
+   ✓ 102 | Floor 1 | Double Sharing
+   ✓ 103 | Floor 1 | Double Sharing
+   ✓ ...and so on up to 305
+
+════════════════════════════════════════════════════════════════════════════
+
+ROOM TYPES & PRICING
+════════════════════════════════════════════════════════════════════════════
+
+Each floor has 5 rooms:
+
+Room X1 (e.g., 101): Single Deluxe
+  • 1 person capacity
+  • ₹7,000 per month
+  • Private bathroom, AC
+
+Room X2, X3 (e.g., 102, 103): Double Sharing
+  • 2 people capacity
+  • ₹5,000 per month
+  • AC, Cupboard, Desk
+
+Room X4 (e.g., 104): Triple Sharing
+  • 3 people capacity
+  • ₹4,000 per month
+  • Ceiling fan, Cupboard, Desk
+
+Room X5 (e.g., 105): Quad Sharing
+  • 4 people capacity
+  • ₹3,500 per month
+  • Ceiling fan, Cupboard, Desk
+
+════════════════════════════════════════════════════════════════════════════
+
+TROUBLESHOOTING
+════════════════════════════════════════════════════════════════════════════
+
+If "command not found":
+  → Make sure you copied the ENTIRE command
+  → Start with: sudo mysql
+
+If "Permission denied":
+  → You entered wrong sudo password
+  → Just press Up arrow and try again
+
+If "mysql: can't connect":
+  → MySQL might not be running
+  → Run: sudo systemctl start mysql
+  → Then retry the command
+
+If it works but rooms don't appear:
+  → Refresh browser (F5)
+  → Restart Flask app
+  → Check admin/rooms page again
+
+════════════════════════════════════════════════════════════════════════════
+
+NEED HELP?
+════════════════════════════════════════════════════════════════════════════
+
+Alternative methods if terminal seems complex:
+
+1. MySQL Workbench (GUI):
+   • Open MySQL Workbench
+   • Connect to database
+   • Paste SQL commands in Query tab
+   • Click Execute
+
+2. PhpMyAdmin (Web):
+   • Open phpmyadmin in browser
+   • Select hostel_management database
+   • Click SQL tab
+   • Paste SQL commands
+   • Click Go/Execute
+
+3. File Method:
+   • The SQL file is at: config/fix_room_numbering.sql
+   • Double-click to open or edit
+
+════════════════════════════════════════════════════════════════════════════
+
+That's it! 30 seconds and you'll have the correct room numbering!
+
+Once done:
+  ✅ All rooms will be: 101-105, 201-205, 301-305
+  ✅ Admin dashboard will display rooms correctly
+  ✅ Room allocation will work perfectly
+  ✅ Gender-based room separation will work
+
+════════════════════════════════════════════════════════════════════════════

@@ -83,7 +83,7 @@
                     <tr>
                         <td style="font-weight: 700;">{{ visitor.visitor_name }}</td>
                         <td style="font-weight: 600;">{{ visitor.full_name }}</td>
-                        <td>{{ visitor.visit_date.strftime('%d %b %Y') if visitor.visit_date else 'N/A' }}</td>
+                        <td>{{ visitor.visit_date|format_date('%d %b %Y') }}</td>
                         <td><span class="badge bg-{% if visitor.status == 'Approved' %}success{% elif visitor.status == 'Rejected' %}danger{% else %}warning{% endif %}" style="font-weight: 600;">{{ visitor.status }}</span></td>
                         <td>
                             {% if visitor.status == 'Pending' %}

@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ notice.title }}</h5>
                     <p class="card-text">{{ notice.content[:200] }}...</p>
-                    <small class="text-muted">{{ notice.created_at.strftime('%d %b %Y') }}</small>
+                    <small class="text-muted">{{ notice.created_at|format_date('%d %b %Y') }}</small>
                 </div>
             </div>
         </div>

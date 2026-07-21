@@ -102,4 +102,5 @@ db = Database()
 connection = db.connect()
 
 if not connection:
-    raise RuntimeError("Failed to connect to MySQL. Check credentials or use mock database.")
+    # Don't raise error - let app.py fall back to mock database
+    print("⚠️  MySQL connection failed. App will fall back to mock database.")

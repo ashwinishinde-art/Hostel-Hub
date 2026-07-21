@@ -10,9 +10,14 @@ import secrets
 # Try MySQL first, fall back to mock database
 try:
     from config.database import db
-    print("✓ Using MySQL database")
-except:
-    print("✗ MySQL unavailable, using mock database")
+    # Check if MySQL connection is actually available
+    if db.connection is None or not db.is_connected:
+        print("✗ MySQL connection failed, using mock database")
+        from config.database_mock import db
+    else:
+        print("✓ Using MySQL database")
+except Exception as e:
+    print(f"✗ MySQL unavailable ({str(e)}), using mock database")
     from config.database_mock import db
 
 # Import OTP utilities
@@ -26,6 +31,25 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.login_message = 'Please log in to access this page.'
+
+# ==================== CUSTOM JINJA FILTERS ====================
+@app.template_filter('format_date')
+def format_date(value, format_str='%d %b %Y'):
+    """Format date safely - handles both datetime objects and strings"""
+    if not value:
+        return 'N/A'
+    
+    try:
+        # If it's already a datetime object, format it
+        if hasattr(value, 'strftime'):
+            return value.strftime(format_str)
+        # If it's a string, return it as-is (already formatted)
+        elif isinstance(value, str):
+            return value
+        else:
+            return str(value)
+    except Exception as e:
+        return str(value) if value else 'N/A'
 
 # ==================== USER CLASS ====================
 class User(UserMixin):
@@ -153,9 +177,16 @@ def register():
     """Student registration"""
     if request.method == 'POST':
         try:
-            # Ensure database connection
-            if db.connection is None or not db.is_connected:
-                db.connect()
+            # Ensure database connection is active
+            try:
+                if hasattr(db, 'connection') and db.connection is not None:
+                    if hasattr(db.connection, 'ping'):
+                        db.connection.ping(True)
+                    elif not db.is_connected:
+                        db.connect()
+            except:
+                # If MySQL fails, it's already using mock database
+                pass
             
             if db.connection is None:
                 flash('Database connection error. Please try again.', 'danger')
@@ -167,6 +198,7 @@ def register():
             confirm_password = request.form.get('confirm_password', '')
             full_name = request.form.get('full_name', '').strip()
             phone = request.form.get('phone', '').strip()
+            gender = request.form.get('gender', '').strip()
             roll_number = request.form.get('roll_number', '').strip().upper()
             branch = request.form.get('branch', '').strip()
             semester = request.form.get('semester', 1)
@@ -179,7 +211,7 @@ def register():
             pincode = request.form.get('pincode', '').strip()
             
             # Validation
-            if not all([username, email, password, full_name, roll_number, branch]):
+            if not all([username, email, password, full_name, gender, roll_number, branch]):
                 flash('All required fields must be filled.', 'danger')
                 return redirect(url_for('register'))
             
@@ -191,45 +223,73 @@ def register():
                 flash('Password must be at least 6 characters.', 'danger')
                 return redirect(url_for('register'))
             
-            cursor = db.connection.cursor()
-            
-            # Check if username/email exists
-            cursor.execute("SELECT id FROM users WHERE username = %s OR email = %s", (username, email))
-            if cursor.fetchone():
-                flash('Username or email already exists.', 'danger')
-                cursor.close()
-                return redirect(url_for('register'))
-            
-            # Hash password
-            password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-            
-            # Create user account
-            cursor.execute("""
-                INSERT INTO users (username, email, password_hash, role, full_name, phone, is_active)
-                VALUES (%s, %s, %s, %s, %s, %s, TRUE)
-            """, (username, email, password_hash, 'student', full_name, phone))
-            db.connection.commit()
-            user_id = cursor.lastrowid
-            
-            # Create student profile
-            cursor.execute("""
-                INSERT INTO students (user_id, roll_number, branch, semester, contact_person_name, 
-                                    contact_person_phone, emergency_contact_phone, address, city, state, pincode)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """, (user_id, roll_number, branch, semester, contact_person_name, contact_person_phone, 
-                  emergency_contact, address, city, state, pincode))
-            db.connection.commit()
-            cursor.close()
-            
-            flash('Registration successful! Please log in.', 'success')
-            return redirect(url_for('login'))
-            
-        except Exception as e:
             try:
-                db.connection.rollback()
-            except:
-                pass
-            flash(f'Registration failed: {str(e)}', 'danger')
+                cursor = db.connection.cursor()
+                
+                # Check if username/email exists
+                cursor.execute("SELECT id FROM users WHERE username = %s OR email = %s", (username, email))
+                if cursor.fetchone():
+                    flash('Username or email already exists.', 'danger')
+                    cursor.close()
+                    return redirect(url_for('register'))
+                
+                # Hash password
+                password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                
+                # Create user account
+                cursor.execute("""
+                    INSERT INTO users (username, email, password_hash, role, full_name, phone, gender, is_active)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, TRUE)
+                """, (username, email, password_hash, 'student', full_name, phone, gender))
+                
+                # Handle commit for both MySQL and mock database
+                if hasattr(db.connection, 'commit'):
+                    db.connection.commit()
+                
+                # Get the user_id - handle both MySQL and mock database
+                if hasattr(cursor, 'lastrowid'):
+                    user_id = cursor.lastrowid
+                else:
+                    # For mock database, query back to get the ID
+                    cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
+                    user_result = cursor.fetchone()
+                    user_id = user_result['id'] if user_result else None
+                
+                if not user_id:
+                    raise Exception("Failed to get user ID after registration")
+                
+                # Create student profile
+                cursor.execute("""
+                    INSERT INTO students (user_id, roll_number, branch, semester, contact_person_name, 
+                                        contact_person_phone, emergency_contact_phone, address, city, state, pincode)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (user_id, roll_number, branch, semester, contact_person_name, contact_person_phone, 
+                      emergency_contact, address, city, state, pincode))
+                
+                # Handle commit for both MySQL and mock database
+                if hasattr(db.connection, 'commit'):
+                    db.connection.commit()
+                
+                cursor.close()
+                
+                flash('Registration successful! Please log in.', 'success')
+                return redirect(url_for('login'))
+            
+            except Exception as e:
+                try:
+                    if hasattr(db.connection, 'rollback'):
+                        db.connection.rollback()
+                except:
+                    pass
+                print(f"[REGISTER] Error: {e}")
+                import traceback
+                traceback.print_exc()
+                flash(f'Registration failed: {str(e)}', 'danger')
+                return redirect(url_for('register'))
+        
+        except Exception as e:
+            print(f"[REGISTER] Outer error: {e}")
+            flash(f'Registration error: {str(e)}', 'danger')
             return redirect(url_for('register'))
     
     return render_template('register.html')
@@ -242,14 +302,16 @@ def login():
         try:
             print(f"[LOGIN] Starting login attempt", file=sys.stderr, flush=True)
             
-            # Ensure database connection
-            if db.connection is None or not db.is_connected:
-                db.connect()
-            
-            if db.connection is None:
-                print(f"[LOGIN] DB connection failed", file=sys.stderr, flush=True)
-                flash('Database connection error. Please check if MySQL is running.', 'danger')
-                return redirect(url_for('login'))
+            # Ensure database connection is active
+            try:
+                if hasattr(db, 'connection') and db.connection is not None:
+                    if hasattr(db.connection, 'ping'):
+                        db.connection.ping(True)
+                    elif not db.is_connected:
+                        db.connect()
+            except:
+                # If MySQL fails, it's already using mock database
+                pass
             
             username = request.form.get('username', '').strip()
             password = request.form.get('password', '')
@@ -260,10 +322,15 @@ def login():
                 flash('Username and password are required.', 'danger')
                 return redirect(url_for('login'))
             
-            cursor = db.connection.cursor()
-            cursor.execute("SELECT id, username, email, role, full_name, password_hash FROM users WHERE username = %s AND is_active = TRUE", (username,))
-            user_data = cursor.fetchone()
-            cursor.close()
+            try:
+                cursor = db.connection.cursor()
+                cursor.execute("SELECT id, username, email, role, full_name, password_hash FROM users WHERE username = %s AND is_active = TRUE", (username,))
+                user_data = cursor.fetchone()
+                cursor.close()
+            except Exception as e:
+                print(f"[LOGIN] Database query error: {e}", file=sys.stderr, flush=True)
+                flash('Database error. Please try again.', 'danger')
+                return redirect(url_for('login'))
             
             print(f"[LOGIN] User found: {user_data is not None}", file=sys.stderr, flush=True)
             

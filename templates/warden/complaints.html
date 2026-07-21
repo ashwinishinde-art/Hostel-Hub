@@ -76,7 +76,7 @@
                         <td>{{ complaint.category }}</td>
                         <td><span class="badge bg-{% if complaint.priority == 'High' %}danger{% else %}warning{% endif %}" style="font-weight: 600;">{{ complaint.priority }}</span></td>
                         <td><span class="badge bg-{% if complaint.status == 'Resolved' %}success{% else %}danger{% endif %}" style="font-weight: 600;">{{ complaint.status }}</span></td>
-                        <td>{{ complaint.created_at.strftime('%d %b %Y') }}</td>
+                        <td>{{ complaint.created_at|format_date('%d %b %Y') }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

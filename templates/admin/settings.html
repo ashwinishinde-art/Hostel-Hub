@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+
+{% block title %}Hostel Settings - Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .settings-container {
+        max-width: 800px;
+        margin: 30px auto;
+    }
+
+    .settings-card {
+        background: var(--card-current);
+        border: 2px solid var(--border-current);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .settings-card:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .settings-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--border-current);
+    }
+
+    .settings-header i {
+        font-size: 2.5rem;
+        color: var(--secondary-color);
+        margin-right: 20px;
+    }
+
+    .settings-header h2 {
+        margin: 0;
+        font-weight: 700;
+        color: var(--text-current);
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 700;
+        color: var(--text-current);
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid var(--border-current);
+        border-radius: 8px;
+        font-size: 1rem;
+        color: var(--text-current);
+        background-color: var(--bg-current);
+        transition: all 0.3s ease;
+        font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        background-color: var(--bg-current);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .form-group small {
+        display: block;
+        margin-top: 5px;
+        color: #7f8c8d;
+        font-size: 0.85rem;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 35px;
+        padding-top: 25px;
+        border-top: 2px solid var(--border-current);
+    }
+
+    .btn-save {
+        flex: 1;
+        padding: 12px 25px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+    }
+
+    .btn-save:active {
+        transform: translateY(0);
+    }
+
+    .btn-reset {
+        flex: 1;
+        padding: 12px 25px;
+        background: transparent;
+        color: var(--text-current);
+        border: 2px solid var(--border-current);
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-reset:hover {
+        background-color: var(--bg-current-secondary);
+        border-color: var(--secondary-color);
+        color: var(--secondary-color);
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(52, 152, 219, 0.05) 100%);
+        border-left: 4px solid var(--secondary-color);
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        color: var(--text-current);
+        font-size: 0.95rem;
+    }
+
+    .info-box i {
+        color: var(--secondary-color);
+        margin-right: 10px;
+    }
+
+    .alert {
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(39, 174, 96, 0.05) 100%);
+        border-left: 4px solid var(--success-color);
+        color: var(--text-current);
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(231, 76, 60, 0.05) 100%);
+        border-left: 4px solid var(--danger-color);
+        color: var(--text-current);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="settings-container">
+        <!-- Breadcrumb -->
+        <div class="mb-4" style="display: flex; align-items: center; gap: 10px; color: #7f8c8d;">
+            <a href="{{ url_for('admin.dashboard') }}" style="color: var(--secondary-color); text-decoration: none; font-weight: 600;">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <i class="fas fa-chevron-right"></i>
+            <span style="font-weight: 600;">Hostel Settings</span>
+        </div>
+
+        <!-- Settings Card -->
+        <div class="settings-card">
+            <!-- Header -->
+            <div class="settings-header">
+                <i class="fas fa-cog"></i>
+                <div>
+                    <h2>Hostel Management Settings</h2>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <span>Update your hostel information below. These details will be displayed throughout the system.</span>
+            </div>
+
+            <!-- Display Alerts -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {% if category == 'success' %}
+                                <i class="fas fa-check-circle"></i>
+                            {% else %}
+                                <i class="fas fa-exclamation-circle"></i>
+                            {% endif %}
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Settings Form -->
+            <form method="POST" action="{{ url_for('admin.settings') }}">
+                <!-- Hostel Name -->
+                <div class="form-group">
+                    <label for="hostel_name">
+                        <i class="fas fa-building" style="color: var(--secondary-color); margin-right: 5px;"></i>
+                        Hostel Name
+                    </label>
+                    <input type="text" id="hostel_name" name="hostel_name" 
+                           value="{{ settings.get('hostel_name', '') }}" 
+                           placeholder="Enter hostel name"
+                           required>
+                    <small>The official name of your hostel</small>
+                </div>
+
+                <!-- Hostel Address -->
+                <div class="form-group">
+                    <label for="hostel_address">
+                        <i class="fas fa-map-marker-alt" style="color: var(--secondary-color); margin-right: 5px;"></i>
+                        Hostel Address
+                    </label>
+                    <textarea id="hostel_address" name="hostel_address" 
+                              placeholder="Enter complete hostel address"
+                              required>{{ settings.get('hostel_address', '') }}</textarea>
+                    <small>Full address including street, area, city, and postal code</small>
+                </div>
+
+                <!-- Hostel Phone -->
+                <div class="form-group">
+                    <label for="hostel_phone">
+                        <i class="fas fa-phone" style="color: var(--secondary-color); margin-right: 5px;"></i>
+                        Hostel Phone
+                    </label>
+                    <input type="tel" id="hostel_phone" name="hostel_phone" 
+                           value="{{ settings.get('hostel_phone', '') }}" 
+                           placeholder="Enter hostel contact number"
+                           pattern="[0-9\-\+\s]{10,}"
+                           required>
+                    <small>Main contact number for hostel inquiries</small>
+                </div>
+
+                <!-- Hostel Email -->
+                <div class="form-group">
+                    <label for="hostel_email">
+                        <i class="fas fa-envelope" style="color: var(--secondary-color); margin-right: 5px;"></i>
+                        Hostel Email
+                    </label>
+                    <input type="email" id="hostel_email" name="hostel_email" 
+                           value="{{ settings.get('hostel_email', '') }}" 
+                           placeholder="Enter hostel email address"
+                           required>
+                    <small>Official email for student and parent communication</small>
+                </div>
+
+                <!-- Warden Phone -->
+                <div class="form-group">
+                    <label for="warden_phone">
+                        <i class="fas fa-phone-alt" style="color: var(--secondary-color); margin-right: 5px;"></i>
+                        Warden Contact
+                    </label>
+                    <input type="tel" id="warden_phone" name="warden_phone" 
+                           value="{{ settings.get('warden_phone', '') }}" 
+                           placeholder="Enter warden's contact number"
+                           pattern="[0-9\-\+\s]{10,}"
+                           required>
+                    <small>Warden's direct contact for emergencies and issues</small>
+                </div>
+
+                <!-- Buttons -->
+                <div class="button-group">
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <button type="reset" class="btn-reset">
+                        <i class="fas fa-undo"></i> Reset
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Back Link -->
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ url_for('admin.dashboard') }}" 
+               style="color: var(--secondary-color); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const phone = document.getElementById('hostel_phone').value;
+        const wardenPhone = document.getElementById('warden_phone').value;
+        
+        // Basic phone validation
+        if (!/^\d{10,}$/.test(phone.replace(/[\s\-\+]/g, ''))) {
+            e.preventDefault();
+            alert('Please enter a valid phone number (at least 10 digits)');
+            return false;
+        }
+        
+        if (!/^\d{10,}$/.test(wardenPhone.replace(/[\s\-\+]/g, ''))) {
+            e.preventDefault();
+            alert('Please enter a valid warden phone number (at least 10 digits)');
+            return false;
+        }
+    });
+</script>
+{% endblock %}

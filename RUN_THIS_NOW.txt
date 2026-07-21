@@ -1,0 +1,243 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║            HOSTEL ROOM SETUP - DELETE ALL & CREATE NEW ROOMS               ║
+║                     Rooms: 101-105, 201-205, 301-305                       ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+⚡ QUICK COMMAND (Copy & Paste)
+═══════════════════════════════════════════════════════════════════════════
+
+cd /home/prajwal/Desktop/Hostel-Hub && mysql -u root -p hostel_management < config/setup_rooms.sql
+
+Then enter your MySQL password when prompted.
+
+
+📋 WHAT THIS DOES
+═══════════════════════════════════════════════════════════════════════════
+
+BEFORE:
+  ❌ Deletes ALL existing rooms
+  ❌ Removes all room-student allocations
+
+AFTER:
+  ✅ Creates 15 new rooms
+  ✅ Organized by floor: 101-105, 201-205, 301-305
+  ✅ All rooms available for allocation
+  ✅ Ready for student housing assignments
+
+STAYS SAFE:
+  ✅ Student accounts (not deleted)
+  ✅ Student profile data
+  ✅ Complaints/issues
+  ✅ Visitor requests
+  ✅ Fees
+  ✅ Notices
+
+
+🎯 ROOM STRUCTURE
+═══════════════════════════════════════════════════════════════════════════
+
+FLOOR 1 (5 rooms):
+  101 - Single Deluxe, 1 bed, ₹7,000/month
+  102 - Double Sharing, 2 beds, ₹5,000/month
+  103 - Double Sharing, 2 beds, ₹5,000/month
+  104 - Triple Sharing, 3 beds, ₹4,000/month
+  105 - Quad Sharing, 4 beds, ₹3,500/month
+
+FLOOR 2 (5 rooms):
+  201 - Single Deluxe, 1 bed, ₹7,000/month
+  202 - Double Sharing, 2 beds, ₹5,000/month
+  203 - Double Sharing, 2 beds, ₹5,000/month
+  204 - Triple Sharing, 3 beds, ₹4,000/month
+  205 - Quad Sharing, 4 beds, ₹3,500/month
+
+FLOOR 3 (5 rooms):
+  301 - Single Deluxe, 1 bed, ₹7,000/month
+  302 - Double Sharing, 2 beds, ₹5,000/month
+  303 - Double Sharing, 2 beds, ₹5,000/month
+  304 - Triple Sharing, 3 beds, ₹4,000/month
+  305 - Quad Sharing, 4 beds, ₹3,500/month
+
+TOTAL: 15 Rooms (5 per floor × 3 floors)
+
+
+🔧 STEP-BY-STEP EXECUTION
+═══════════════════════════════════════════════════════════════════════════
+
+STEP 1: Open Terminal
+  • Press Ctrl+Alt+T (Linux) or open Terminal app
+
+STEP 2: Navigate to Project
+  cd /home/prajwal/Desktop/Hostel-Hub
+
+STEP 3: Run Setup Script
+  mysql -u root -p hostel_management < config/setup_rooms.sql
+
+STEP 4: Enter MySQL Password
+  • Type your MySQL password (characters won't show)
+  • Press Enter
+
+STEP 5: Wait for Completion
+  • Should show: "Query OK" messages
+  • Should list rooms created
+  • Should show verification results
+
+STEP 6: Verify Success
+  • Check for output showing 15 rooms
+  • Should list floors 1, 2, 3
+  • Should show room numbers 101-105, 201-205, 301-305
+
+
+✅ VERIFICATION
+═══════════════════════════════════════════════════════════════════════════
+
+After running, verify with:
+
+CHECK 1: Count total rooms
+  mysql -u root -p -e "SELECT COUNT(*) as total_rooms FROM hostel_management.rooms;"
+  Expected: 15
+
+CHECK 2: Rooms per floor
+  mysql -u root -p -e "SELECT floor, COUNT(*) FROM hostel_management.rooms GROUP BY floor ORDER BY floor;"
+  Expected:
+    1  | 5
+    2  | 5
+    3  | 5
+
+CHECK 3: In Admin Dashboard
+  1. Login to http://localhost:5000/login
+  2. Username: admin
+  3. Password: admin123
+  4. Click: Admin Dashboard → Room Management
+  5. Should see all 15 rooms listed
+
+
+📊 ADMIN DASHBOARD CHECK
+═══════════════════════════════════════════════════════════════════════════
+
+After setup, login to admin dashboard:
+
+URL: http://localhost:5000/login
+Username: admin
+Password: admin123
+
+Then go to: Room Management
+You should see a table with all 15 rooms:
+
+┌────────────────┬───────┬─────────────────┬──────────┬──────────────────┐
+│ Room No        │ Floor │ Type            │ Capacity │ Available        │
+├────────────────┼───────┼─────────────────┼──────────┼──────────────────┤
+│ 101            │   1   │ Single Deluxe   │    1     │ ✓ Yes            │
+│ 102            │   1   │ Double Sharing  │    2     │ ✓ Yes            │
+│ 103            │   1   │ Double Sharing  │    2     │ ✓ Yes            │
+│ 104            │   1   │ Triple Sharing  │    3     │ ✓ Yes            │
+│ 105            │   1   │ Quad Sharing    │    4     │ ✓ Yes            │
+│ 201            │   2   │ Single Deluxe   │    1     │ ✓ Yes            │
+│ ...            │  ...  │ ...             │   ...    │ ...              │
+└────────────────┴───────┴─────────────────┴──────────┴──────────────────┘
+
+
+🚀 NEXT STEPS (After Setup)
+═══════════════════════════════════════════════════════════════════════════
+
+1. ALLOCATE ROOMS TO STUDENTS
+   • Go to: Admin → Allocate Room
+   • Select student name
+   • Select room (e.g., 201)
+   • Confirm allocation
+
+2. TEST WITH STUDENT LOGIN
+   • Login as: prajwal / admin123
+   • Should see allocated room details
+
+3. SUBMIT COMPLAINT (Optional Test)
+   • Click: "Submit Complaint"
+   • Test the system is working
+
+4. REQUEST VISITOR (Optional Test)
+   • Click: "Request Visitor Entry"
+   • Verify visitor workflow
+
+
+❌ TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════
+
+PROBLEM: "mysql: command not found"
+SOLUTION: MySQL not installed or not in PATH
+  • Install: sudo apt-get install mysql-client
+
+PROBLEM: "Access denied for user 'root'"
+SOLUTION: Wrong password
+  • Try again with correct password
+  • Or test: mysql -u root -p mysql
+
+PROBLEM: "Unknown database 'hostel_management'"
+SOLUTION: Database doesn't exist
+  • Run: mysql -u root -p < config/database.sql
+
+PROBLEM: "Can't connect to MySQL server"
+SOLUTION: MySQL service not running
+  • Start: sudo systemctl start mysql
+  • Check: sudo systemctl status mysql
+
+PROBLEM: "Script doesn't exist"
+SOLUTION: Wrong path
+  • Verify file exists: ls config/setup_rooms.sql
+  • Or use full path: /home/prajwal/Desktop/Hostel-Hub/config/setup_rooms.sql
+
+
+⚠️ IMPORTANT WARNINGS
+═══════════════════════════════════════════════════════════════════════════
+
+1. ALL EXISTING ROOMS WILL BE DELETED
+   • If you need to keep current rooms, make a backup first
+   • Backup command: mysqldump -u root -p hostel_management > backup.sql
+
+2. ROOM ALLOCATIONS WILL BE REMOVED
+   • Any student-room assignments will be deleted
+   • This is expected and normal
+
+3. BACKUP BEFORE RUNNING (Optional but Recommended)
+   mysqldump -u root -p hostel_management > backup_$(date +%Y%m%d_%H%M%S).sql
+
+
+✨ SUCCESS INDICATORS
+═══════════════════════════════════════════════════════════════════════════
+
+Script ran successfully if you see:
+
+✓ "Deleted all room occupancy records"
+✓ "Deleted all existing rooms"
+✓ 15 room INSERT statements completed
+✓ Room count = 15
+✓ Floor 1: 5 rooms
+✓ Floor 2: 5 rooms
+✓ Floor 3: 5 rooms
+
+
+📁 FILES AVAILABLE
+═══════════════════════════════════════════════════════════════════════════
+
+SQL Script (Fastest):
+  config/setup_rooms.sql
+
+Python Script (Interactive):
+  setup_hostel_rooms.py
+
+Documentation:
+  SETUP_ROOMS_INSTRUCTIONS.md (Detailed guide)
+  QUICK_SETUP_GUIDE.md (Quick reference)
+  RUN_THIS_NOW.txt (This file)
+
+
+═══════════════════════════════════════════════════════════════════════════
+
+👉 READY? COPY AND RUN:
+
+cd /home/prajwal/Desktop/Hostel-Hub && \
+mysql -u root -p hostel_management < config/setup_rooms.sql
+
+═══════════════════════════════════════════════════════════════════════════
+
+Version: 1.0
+Date: July 20, 2026
+Status: Ready to Execute ✓

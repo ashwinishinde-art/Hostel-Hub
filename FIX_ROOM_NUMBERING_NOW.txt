@@ -1,0 +1,165 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                      FIX ROOM NUMBERING - INSTRUCTIONS                     ║
+║         Ensure rooms follow pattern: 101-105, 201-205, 301-305             ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+⚡ QUICK FIX - Copy & Paste Commands
+════════════════════════════════════════════════════════════════════════════
+
+OPTION 1: Using SQL Script (Fastest)
+────────────────────────────────────────
+cd /home/prajwal/Desktop/Hostel-Hub
+sudo mysql hostel_management < config/fix_room_numbering.sql
+
+OPTION 2: Using Python Script
+────────────────────────────────────────
+cd /home/prajwal/Desktop/Hostel-Hub
+python fix_rooms_direct.py
+
+OPTION 3: Manual MySQL
+────────────────────────────────────────
+mysql -u root -p hostel_management
+
+Then paste these commands:
+
+SOURCE /home/prajwal/Desktop/Hostel-Hub/config/fix_room_numbering.sql;
+
+════════════════════════════════════════════════════════════════════════════
+
+📋 WHAT WILL BE FIXED
+════════════════════════════════════════════════════════════════════════════
+
+BEFORE (Wrong):
+  Room: 101, 102, 103, 201, 202, 203, 301, 302, 303
+  (Random numbering, hard to identify floor)
+
+AFTER (Correct - Floor-Based):
+  Floor 1: 101, 102, 103, 104, 105
+  Floor 2: 201, 202, 203, 204, 205
+  Floor 3: 301, 302, 303, 304, 305
+
+Pattern: First digit(s) = Floor, Last 2 digits = Room position
+  ✓ 101 = Floor 1, Room 01
+  ✓ 205 = Floor 2, Room 05
+  ✓ 303 = Floor 3, Room 03
+
+════════════════════════════════════════════════════════════════════════════
+
+📁 FILES AVAILABLE
+════════════════════════════════════════════════════════════════════════════
+
+1. config/fix_room_numbering.sql (60 lines)
+   - Direct SQL commands
+   - Deletes old rooms
+   - Creates 15 new rooms with correct numbering
+   - Shows verification results
+
+2. fix_rooms_direct.py (134 lines)
+   - Python script
+   - Interactive output
+   - Real-time feedback
+
+════════════════════════════════════════════════════════════════════════════
+
+🎯 EXPECTED RESULTS
+════════════════════════════════════════════════════════════════════════════
+
+After running fix:
+
+✅ Total rooms: 15
+✅ Floor 1: 5 rooms (101-105)
+✅ Floor 2: 5 rooms (201-205)
+✅ Floor 3: 5 rooms (301-305)
+
+Room Details:
+  101 - Single Deluxe, 1 person, ₹7,000
+  102 - Double Sharing, 2 people, ₹5,000
+  103 - Double Sharing, 2 people, ₹5,000
+  104 - Triple Sharing, 3 people, ₹4,000
+  105 - Quad Sharing, 4 people, ₹3,500
+  
+  (Same pattern for 201-205 and 301-305)
+
+════════════════════════════════════════════════════════════════════════════
+
+✅ VERIFY FIX
+════════════════════════════════════════════════════════════════════════════
+
+After running the fix, verify in admin dashboard:
+
+1. Go to http://localhost:5000/admin/rooms
+2. You should see:
+   ✅ Room 101 | Floor 1
+   ✅ Room 102 | Floor 1
+   ✅ Room 103 | Floor 1
+   ✅ Room 104 | Floor 1
+   ✅ Room 105 | Floor 1
+   ✅ Room 201 | Floor 2
+   ✅ Room 202 | Floor 2
+   ... and so on
+
+Each room should have:
+  ✓ Correct room number (101, 102, etc.)
+  ✓ Correct floor number
+  ✓ Room type (Single/Double/Triple/Quad)
+  ✓ Capacity
+  ✓ Rent amount
+
+════════════════════════════════════════════════════════════════════════════
+
+🆘 TROUBLESHOOTING
+════════════════════════════════════════════════════════════════════════════
+
+If "Access denied":
+  → Need sudo password
+  → Contact system admin for access
+  → Or use: sudo mysql hostel_management < config/fix_room_numbering.sql
+
+If "Database not found":
+  → Ensure MySQL is running
+  → Run: sudo systemctl start mysql
+  → Verify: sudo systemctl status mysql
+
+If script hangs:
+  → Ctrl+C to cancel
+  → Check MySQL is running
+  → Try manual SQL execution
+
+════════════════════════════════════════════════════════════════════════════
+
+📊 ROOM NUMBERING LOGIC
+════════════════════════════════════════════════════════════════════════════
+
+Room Number = {FLOOR}{POSITION:02d}
+
+Examples:
+  Floor 1, Position 1  → 101
+  Floor 1, Position 5  → 105
+  Floor 2, Position 1  → 201
+  Floor 2, Position 3  → 203
+  Floor 3, Position 5  → 305
+  Floor 10, Position 2 → 1002
+
+Benefits:
+  ✓ Room number shows floor
+  ✓ Easy to remember
+  ✓ Scalable for any number of floors
+  ✓ Follows industry standard
+  ✓ Perfect for gender separation
+
+════════════════════════════════════════════════════════════════════════════
+
+Next Step:
+  1. Run the SQL fix command above
+  2. Refresh admin dashboard
+  3. Rooms should now show: 101, 102, 103... 201, 202, 203... etc.
+  4. Admin can allocate rooms successfully!
+
+════════════════════════════════════════════════════════════════════════════
+
+Status: Ready to execute
+Files: config/fix_room_numbering.sql
+Version: 1.0
+Date: July 20, 2026
+
+════════════════════════════════════════════════════════════════════════════

@@ -3,9 +3,12 @@ from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime
 
-# Try MySQL first, fall back to mock database
+# Try MySQL first, fall back to mock database (same as app.py)
 try:
     from config.database import db
+    # Check if MySQL connection is actually available
+    if db.connection is None or not db.is_connected:
+        from config.database_mock import db
 except:
     from config.database_mock import db
 
@@ -27,74 +30,153 @@ def admin_required(f):
 @admin_required
 def dashboard():
     """Admin dashboard with statistics"""
-    cursor = db.connection.cursor()
-    
-    # Calculate statistics
-    cursor.execute("SELECT COUNT(*) as count FROM users WHERE role = 'student'")
-    total_students = cursor.fetchone()['count']
-    
-    cursor.execute("SELECT COUNT(*) as count FROM rooms")
-    total_rooms_result = cursor.fetchone()
-    total_rooms = total_rooms_result.get('count', 0) if total_rooms_result else 0
-    
-    cursor.execute("SELECT COUNT(*) as count FROM rooms WHERE is_available = TRUE")
-    available_result = cursor.fetchone()
-    available_rooms = available_result.get('count', 0) if available_result else 0
-    
-    occupied_rooms = total_rooms - available_rooms
-    
-    cursor.execute("SELECT COUNT(*) as count FROM complaints WHERE status = 'Pending'")
-    pending_complaints_result = cursor.fetchone()
-    pending_complaints = pending_complaints_result.get('count', 0) if pending_complaints_result else 0
-    
-    cursor.execute("SELECT COUNT(*) as count FROM visitors WHERE status = 'Pending'")
-    pending_visitors_result = cursor.fetchone()
-    pending_visitors = pending_visitors_result.get('count', 0) if pending_visitors_result else 0
-    
-    cursor.execute("SELECT COUNT(*) as count FROM notices")
-    notices_result = cursor.fetchone()
-    total_notices = notices_result.get('count', 0) if notices_result else 0
-    
-    cursor.execute("SELECT COUNT(*) as count FROM fees WHERE payment_status IN ('Pending', 'Overdue')")
-    pending_fees_result = cursor.fetchone()
-    pending_fees = pending_fees_result.get('count', 0) if pending_fees_result else 0
-    
-    cursor.execute("""
-        SELECT SUM(pending_amount) as total_pending FROM fees
-    """)
-    fee_result = cursor.fetchone()
-    total_pending_fees = 0
-    if fee_result:
-        total_pending_fees = fee_result.get('total_pending') or 0
-    
-    # Get recent complaints (simplified for mock DB - no JOINs)
-    cursor.execute("""
-        SELECT * FROM complaints ORDER BY id DESC LIMIT 5
-    """)
-    recent_complaints = cursor.fetchall() or []
-    
-    # Get recent visitors (simplified for mock DB - no JOINs)
-    cursor.execute("""
-        SELECT * FROM visitors ORDER BY id DESC LIMIT 5
-    """)
-    recent_visitors = cursor.fetchall() or []
-    
-    cursor.close()
-    
-    return render_template('admin/dashboard.html',
-                         total_students=total_students,
-                         total_rooms=total_rooms,
-                         available_rooms=available_rooms,
-                         occupied_rooms=occupied_rooms,
-                         pending_complaints=pending_complaints,
-                         pending_visitors=pending_visitors,
-                         total_notices=total_notices,
-                         pending_fees=pending_fees,
-                         total_pending_fees=total_pending_fees,
-                         recent_complaints=recent_complaints,
-                         recent_visitors=recent_visitors)
+    try:
+        # Ensure database connection is active
+        if db.connection is None:
+            flash('Database connection error. Please try again.', 'danger')
+            return redirect(url_for('admin.dashboard'))
+        
+        cursor = db.connection.cursor()
+        
+        # Calculate statistics
+        cursor.execute("SELECT COUNT(*) as count FROM users WHERE role = 'student'")
+        total_students = cursor.fetchone()['count']
+        
+        cursor.execute("SELECT COUNT(*) as count FROM rooms")
+        total_rooms_result = cursor.fetchone()
+        total_rooms = total_rooms_result.get('count', 0) if total_rooms_result else 0
+        
+        cursor.execute("SELECT COUNT(*) as count FROM rooms WHERE is_available = TRUE")
+        available_result = cursor.fetchone()
+        available_rooms = available_result.get('count', 0) if available_result else 0
+        
+        occupied_rooms = total_rooms - available_rooms
+        
+        cursor.execute("SELECT COUNT(*) as count FROM complaints WHERE status = 'Pending'")
+        pending_complaints_result = cursor.fetchone()
+        pending_complaints = pending_complaints_result.get('count', 0) if pending_complaints_result else 0
+        
+        cursor.execute("SELECT COUNT(*) as count FROM visitors WHERE status = 'Pending'")
+        pending_visitors_result = cursor.fetchone()
+        pending_visitors = pending_visitors_result.get('count', 0) if pending_visitors_result else 0
+        
+        cursor.execute("SELECT COUNT(*) as count FROM notices")
+        notices_result = cursor.fetchone()
+        total_notices = notices_result.get('count', 0) if notices_result else 0
+        
+        cursor.execute("SELECT COUNT(*) as count FROM fees WHERE payment_status IN ('Pending', 'Overdue')")
+        pending_fees_result = cursor.fetchone()
+        pending_fees = pending_fees_result.get('count', 0) if pending_fees_result else 0
+        
+        cursor.execute("""
+            SELECT SUM(pending_amount) as total_pending FROM fees
+        """)
+        fee_result = cursor.fetchone()
+        total_pending_fees = 0
+        if fee_result:
+            total_pending_fees = fee_result.get('total_pending') or 0
+        
+        # Get recent students with student details
+        cursor.execute("""
+            SELECT u.id, u.full_name, u.username, u.created_at, 
+                   s.roll_number, s.branch, s.semester
+            FROM users u
+            LEFT JOIN students s ON u.id = s.user_id
+            WHERE u.role = 'student'
+            ORDER BY u.created_at DESC LIMIT 5
+        """)
+        recent_students = cursor.fetchall() or []
+        
+        # Get recent complaints with student info
+        cursor.execute("""
+            SELECT c.id, c.title, c.category, c.status, c.priority, c.created_at,
+                   u.full_name, u.username, r.room_number
+            FROM complaints c
+            JOIN users u ON c.student_id = u.id
+            LEFT JOIN rooms r ON c.room_id = r.id
+            ORDER BY c.created_at DESC LIMIT 5
+        """)
+        recent_complaints = cursor.fetchall() or []
+        
+        # Get recent visitors with student info
+        cursor.execute("""
+            SELECT v.id, v.visitor_name, v.visit_date, v.status, v.purpose,
+                   u.full_name, u.username
+            FROM visitors v
+            JOIN users u ON v.student_id = u.id
+            ORDER BY v.created_at DESC LIMIT 5
+        """)
+        recent_visitors = cursor.fetchall() or []
+        
+        # Get recent fees with student info
+        cursor.execute("""
+            SELECT f.id, f.total_amount, f.paid_amount, f.pending_amount,
+                   f.payment_status, f.due_date, f.academic_year, f.semester,
+                   u.full_name, u.username, s.roll_number
+            FROM fees f
+            JOIN users u ON f.student_id = u.id
+            LEFT JOIN students s ON u.id = s.user_id
+            WHERE f.payment_status IN ('Pending', 'Overdue')
+            ORDER BY f.created_at DESC LIMIT 5
+        """)
+        recent_fees = cursor.fetchall() or []
+        
+        cursor.close()
+        
+        return render_template('admin/dashboard.html',
+                             total_students=total_students,
+                             total_rooms=total_rooms,
+                             available_rooms=available_rooms,
+                             occupied_rooms=occupied_rooms,
+                             pending_complaints=pending_complaints,
+                             pending_visitors=pending_visitors,
+                             total_notices=total_notices,
+                             pending_fees=pending_fees,
+                             total_pending_fees=total_pending_fees,
+                             recent_students=recent_students,
+                             recent_complaints=recent_complaints,
+                             recent_visitors=recent_visitors,
+                             recent_fees=recent_fees)
+    except Exception as e:
+        print(f"[ADMIN DASHBOARD] Error: {e}")
+        import traceback
+        traceback.print_exc()
+        flash(f'Dashboard error: {str(e)}', 'danger')
+        return redirect(url_for('index'))
 
 # ==================== ROOM MANAGEMENT ====================
+def generate_room_number(floor, room_position):
+    """
+    Generate room number based on floor and room position.
+    Example: floor=2, position=1 -> room_number=201
+    """
+    room_position = int(room_position)
+    if room_position < 1 or room_position > 5:
+        raise ValueError("Room position must be between 1 and 5")
+    return f"{floor}{room_position:02d}"
+
+def get_next_room_position(floor):
+    """
+    Get the next available room position for a floor (1-5).
+    Returns None if floor is at capacity (5 rooms).
+    """
+    try:
+        if db.connection is None:
+            return None
+        cursor = db.connection.cursor()
+        cursor.execute("""
+            SELECT COUNT(*) as count FROM rooms WHERE floor = %s
+        """, (floor,))
+        result = cursor.fetchone()
+        count = result.get('count', 0) if result else 0
+        cursor.close()
+        
+        if count >= 5:
+            return None
+        return count + 1
+    except:
+        return None
+
 @admin_bp.route('/rooms', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -107,20 +189,44 @@ def rooms():
         
         if action == 'add':
             try:
-                room_number = request.form.get('room_number', '').strip()
                 floor = int(request.form.get('floor', 0))
+                room_position = int(request.form.get('room_position', 0))
                 room_type = request.form.get('room_type', '')
                 capacity = int(request.form.get('capacity', 0))
                 rent = float(request.form.get('rent', 0))
                 amenities = request.form.get('amenities', '').strip()
+                
+                # Validate floor and room position
+                if floor < 1:
+                    flash('Floor number must be at least 1.', 'danger')
+                    return redirect(url_for('admin.rooms'))
+                
+                if room_position < 1 or room_position > 5:
+                    flash('Room position must be between 1 and 5 (max 5 rooms per floor).', 'danger')
+                    return redirect(url_for('admin.rooms'))
+                
+                # Check if room already exists at this position
+                cursor.execute("""
+                    SELECT id FROM rooms WHERE floor = %s AND room_number = %s
+                """, (floor, generate_room_number(floor, room_position)))
+                
+                if cursor.fetchone():
+                    flash(f'Room {generate_room_number(floor, room_position)} already exists on floor {floor}.', 'danger')
+                    return redirect(url_for('admin.rooms'))
+                
+                # Generate room number
+                room_number = generate_room_number(floor, room_position)
                 
                 cursor.execute("""
                     INSERT INTO rooms (room_number, floor, room_type, capacity, rent, amenities, is_available)
                     VALUES (%s, %s, %s, %s, %s, %s, TRUE)
                 """, (room_number, floor, room_type, capacity, rent, amenities))
                 db.connection.commit()
-                flash('Room added successfully!', 'success')
+                flash(f'Room {room_number} added successfully!', 'success')
                 
+            except ValueError as e:
+                db.connection.rollback()
+                flash(f'Invalid input: {str(e)}', 'danger')
             except Exception as e:
                 db.connection.rollback()
                 flash(f'Error adding room: {str(e)}', 'danger')
@@ -129,19 +235,53 @@ def rooms():
             try:
                 room_id = int(request.form.get('room_id', 0))
                 floor = int(request.form.get('floor', 0))
+                room_position = int(request.form.get('room_position', 0))
                 room_type = request.form.get('room_type', '')
                 capacity = int(request.form.get('capacity', 0))
                 rent = float(request.form.get('rent', 0))
                 amenities = request.form.get('amenities', '').strip()
                 
-                cursor.execute("""
-                    UPDATE rooms 
-                    SET floor = %s, room_type = %s, capacity = %s, rent = %s, amenities = %s
-                    WHERE id = %s
-                """, (floor, room_type, capacity, rent, amenities, room_id))
-                db.connection.commit()
-                flash('Room updated successfully!', 'success')
+                # Validate floor and room position
+                if floor < 1:
+                    flash('Floor number must be at least 1.', 'danger')
+                    return redirect(url_for('admin.rooms'))
                 
+                if room_position < 1 or room_position > 5:
+                    flash('Room position must be between 1 and 5 (max 5 rooms per floor).', 'danger')
+                    return redirect(url_for('admin.rooms'))
+                
+                # Get old room number to check if position changed
+                cursor.execute("SELECT floor, room_number FROM rooms WHERE id = %s", (room_id,))
+                old_room = cursor.fetchone()
+                
+                if old_room:
+                    new_room_number = generate_room_number(floor, room_position)
+                    old_floor = old_room.get('floor') if isinstance(old_room, dict) else old_room[0]
+                    old_room_number = old_room.get('room_number') if isinstance(old_room, dict) else old_room[1]
+                    
+                    # Check if new room number conflicts with existing room (excluding current room)
+                    if new_room_number != old_room_number:
+                        cursor.execute("""
+                            SELECT id FROM rooms WHERE room_number = %s AND id != %s
+                        """, (new_room_number, room_id))
+                        
+                        if cursor.fetchone():
+                            flash(f'Room {new_room_number} already exists.', 'danger')
+                            return redirect(url_for('admin.rooms'))
+                    
+                    cursor.execute("""
+                        UPDATE rooms 
+                        SET floor = %s, room_number = %s, room_type = %s, capacity = %s, rent = %s, amenities = %s
+                        WHERE id = %s
+                    """, (floor, new_room_number, room_type, capacity, rent, amenities, room_id))
+                    db.connection.commit()
+                    flash(f'Room {new_room_number} updated successfully!', 'success')
+                else:
+                    flash('Room not found.', 'danger')
+                
+            except ValueError as e:
+                db.connection.rollback()
+                flash(f'Invalid input: {str(e)}', 'danger')
             except Exception as e:
                 db.connection.rollback()
                 flash(f'Error updating room: {str(e)}', 'danger')
@@ -184,15 +324,23 @@ def rooms():
         return redirect(url_for('admin.rooms'))
     
     # Get all rooms
-    cursor.execute("SELECT * FROM rooms ORDER BY id")
+    cursor.execute("SELECT * FROM rooms ORDER BY floor, room_number")
     rooms_list = cursor.fetchall() or []
     
-    # Add occupied_count to each room and convert numeric fields
+    # Add occupied_count to each room, convert numeric fields, and extract room position
     for room in rooms_list:
         # Convert numeric fields to proper types
         room['floor'] = int(room.get('floor', 0)) if room.get('floor') else 0
         room['capacity'] = int(room.get('capacity', 0)) if room.get('capacity') else 0
         room['rent'] = float(room.get('rent', 0)) if room.get('rent') else 0.0
+        
+        # Extract room position from room_number
+        # e.g., '201' -> position is 01 (last 2 digits)
+        room_number = room.get('room_number', '')
+        if len(room_number) >= 2:
+            room['room_position'] = int(room_number[-2:])
+        else:
+            room['room_position'] = 0
         
         # Count ACTIVE occupants for this room (using status field, not is_active)
         room_id = int(room.get('id')) if isinstance(room.get('id'), str) else room.get('id')
@@ -777,24 +925,56 @@ def fees():
 @admin_required
 def students():
     """View all students"""
-    cursor = db.connection.cursor()
+    try:
+        if db.connection is None:
+            flash('Database connection error.', 'danger')
+            return redirect(url_for('admin.dashboard'))
+        
+        cursor = db.connection.cursor()
+        
+        # Simplified query for better mock database support
+        cursor.execute("""
+            SELECT u.id, u.username, u.email, u.full_name, u.phone, u.role,
+                   s.roll_number, s.branch, s.semester
+            FROM users u
+            JOIN students s ON u.id = s.user_id
+            WHERE u.role = 'student'
+            ORDER BY u.full_name
+        """)
+        students_list = cursor.fetchall()
+        
+        # Get room information for each student separately (more compatible with mock db)
+        if students_list:
+            for student in students_list:
+                try:
+                    cursor.execute("""
+                        SELECT r.room_number, ro.status
+                        FROM room_occupancy ro
+                        LEFT JOIN rooms r ON ro.room_id = r.id
+                        WHERE ro.student_id = %s AND ro.status = 'Active'
+                        LIMIT 1
+                    """, (student['id'],))
+                    room_info = cursor.fetchone()
+                    if room_info:
+                        student['room_number'] = room_info.get('room_number', 'N/A')
+                        student['room_status'] = room_info.get('status', 'N/A')
+                    else:
+                        student['room_number'] = 'Unallocated'
+                        student['room_status'] = None
+                except:
+                    student['room_number'] = 'Unallocated'
+                    student['room_status'] = None
+        
+        cursor.close()
+        
+        return render_template('admin/students.html', students=students_list)
     
-    cursor.execute("""
-        SELECT u.id, u.username, u.email, u.full_name, u.phone, u.role,
-               s.roll_number, s.branch, s.semester,
-               r.room_number,
-               ro.status as room_status
-        FROM users u
-        JOIN students s ON u.id = s.user_id
-        LEFT JOIN room_occupancy ro ON u.id = ro.student_id AND ro.status = 'Active'
-        LEFT JOIN rooms r ON ro.room_id = r.id
-        WHERE u.role = 'student'
-        ORDER BY u.full_name
-    """)
-    students_list = cursor.fetchall()
-    cursor.close()
-    
-    return render_template('admin/students.html', students=students_list)
+    except Exception as e:
+        print(f"[ADMIN STUDENTS] Error: {e}")
+        import traceback
+        traceback.print_exc()
+        flash(f'Error loading students: {str(e)}', 'danger')
+        return redirect(url_for('admin.dashboard'))
 
 
 # ==================== ROOM STUDENT MANAGEMENT ====================
@@ -803,69 +983,93 @@ def students():
 @admin_required
 def room_students(room_id):
     """Get students in a room (AJAX endpoint)"""
-    cursor = db.connection.cursor()
-    
-    # Get room details
-    cursor.execute("SELECT room_number, capacity FROM rooms WHERE id = %s", (room_id,))
-    room = cursor.fetchone()
-    
-    if not room:
-        return '<p style="color: #e74c3c;">Room not found</p>', 404
-    
-    # Get students in this room
-    cursor.execute("""
-        SELECT ro.id as occupancy_id, u.id as student_id, u.full_name, s.roll_number,
-               ro.check_in_date, ro.status
-        FROM room_occupancy ro
-        JOIN users u ON ro.student_id = u.id
-        JOIN students s ON u.id = s.user_id
-        WHERE ro.room_id = %s AND ro.status = 'Active'
-        ORDER BY ro.check_in_date
-    """, (room_id,))
-    students = cursor.fetchall()
-    
-    cursor.close()
+    try:
+        cursor = db.connection.cursor()
+        
+        # Get room details
+        cursor.execute("SELECT room_number, capacity FROM rooms WHERE id = %s", (room_id,))
+        room = cursor.fetchone()
+        
+        if not room:
+            cursor.close()
+            return '<p style="color: #e74c3c;">Room not found</p>', 404
+        
+        # Get students in this room
+        cursor.execute("""
+            SELECT ro.id as occupancy_id, u.id as student_id, u.full_name, s.roll_number,
+                   ro.check_in_date, ro.status
+            FROM room_occupancy ro
+            JOIN users u ON ro.student_id = u.id
+            JOIN students s ON u.id = s.user_id
+            WHERE ro.room_id = %s AND ro.status = 'Active'
+            ORDER BY ro.check_in_date
+        """, (room_id,))
+        students = cursor.fetchall()
+        
+        cursor.close()
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return f'<p style="color: #e74c3c;"><i class="fas fa-exclamation-circle"></i> Error loading students: {str(e)}</p>', 500
     
     # Build HTML response
     html = f'''
-    <div style="padding: 15px;">
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <h6 style="margin: 0 0 10px 0; font-weight: 700;">Room {room['room_number']}</h6>
-            <p style="margin: 0; font-weight: 500;">
-                <i class="fas fa-users"></i> {len(students)}/{room['capacity']} students
-            </p>
+    <div style="padding: 20px;">
+        <div class="room-info-box">
+            <i class="fas fa-door-open"></i>
+            <strong>Room {room['room_number']}</strong>
+            <span style="float: right; font-weight: 700; color: var(--secondary-color);">
+                {len(students)}/{room['capacity']} Students
+            </span>
         </div>
     '''
     
     if students:
         html += '''
-        <div style="border-radius: 8px; overflow: hidden;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead style="background: rgba(52, 152, 219, 0.1);">
+        <div style="border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <table class="students-table">
+                <thead>
                     <tr>
-                        <th style="padding: 12px; text-align: left; font-weight: 700; border-bottom: 2px solid var(--border-current);">Student</th>
-                        <th style="padding: 12px; text-align: left; font-weight: 700; border-bottom: 2px solid var(--border-current);">Roll No</th>
-                        <th style="padding: 12px; text-align: left; font-weight: 700; border-bottom: 2px solid var(--border-current);">Check-in</th>
-                        <th style="padding: 12px; text-align: center; font-weight: 700; border-bottom: 2px solid var(--border-current);">Actions</th>
+                        <th style="width: 40%;"><i class="fas fa-user"></i> Student Name</th>
+                        <th style="width: 20%;"><i class="fas fa-id-card"></i> Roll No</th>
+                        <th style="width: 20%;"><i class="fas fa-calendar-alt"></i> Check-in</th>
+                        <th style="width: 20%; text-align: center;"><i class="fas fa-cog"></i> Actions</th>
                     </tr>
                 </thead>
                 <tbody>
         '''
         
-        for student in students:
-            check_in_date = student['check_in_date'].strftime('%d %b %Y') if hasattr(student['check_in_date'], 'strftime') else student['check_in_date']
+        for i, student in enumerate(students, 1):
+            check_in_date = student['check_in_date'].strftime('%d %b %Y') if hasattr(student['check_in_date'], 'strftime') else str(student['check_in_date'])
+            bg_color = 'rgba(52, 152, 219, 0.05)' if i % 2 == 0 else 'transparent'
+            
             html += f'''
-                    <tr style="border-bottom: 1px solid var(--border-current);">
-                        <td style="padding: 12px; color: var(--text-current); font-weight: 600;">{student['full_name']}</td>
-                        <td style="padding: 12px; color: var(--text-current); font-weight: 500;">{student['roll_number']}</td>
-                        <td style="padding: 12px; color: var(--text-current); font-weight: 500;">{check_in_date}</td>
-                        <td style="padding: 12px; text-align: center;">
-                            <button class="btn btn-sm btn-warning" onclick="shiftStudent({student['occupancy_id']}, {room_id})" title="Shift to another room" style="font-weight: 600; margin-right: 5px;">
-                                <i class="fas fa-exchange-alt"></i> Shift
-                            </button>
-                            <button class="btn btn-sm btn-danger" onclick="removeStudentFromRoom({student['occupancy_id']}, {room_id})" title="Remove from room" style="font-weight: 600;">
-                                <i class="fas fa-trash"></i> Remove
-                            </button>
+                    <tr style="background-color: {bg_color};">
+                        <td style="padding: 16px; font-weight: 700; color: var(--secondary-color);">
+                            <i class="fas fa-user-circle" style="margin-right: 8px;"></i>
+                            {student['full_name']}
+                        </td>
+                        <td style="padding: 16px; font-weight: 600;">
+                            {student['roll_number']}
+                        </td>
+                        <td style="padding: 16px; color: #7f8c8d;">
+                            {check_in_date}
+                        </td>
+                        <td style="padding: 16px; text-align: center;">
+                            <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+                                <button class="btn btn-sm btn-info" 
+                                        onclick="shiftStudent({student['occupancy_id']}, {room_id})" 
+                                        title="Move student to another room" 
+                                        style="font-weight: 600; padding: 6px 10px;">
+                                    <i class="fas fa-exchange-alt"></i> Shift
+                                </button>
+                                <button class="btn btn-sm btn-danger" 
+                                        onclick="removeStudentFromRoom({student['occupancy_id']}, {room_id})" 
+                                        title="Remove student from this room" 
+                                        style="font-weight: 600; padding: 6px 10px;">
+                                    <i class="fas fa-trash-alt"></i> Remove
+                                </button>
+                            </div>
                         </td>
                     </tr>
             '''
@@ -874,12 +1078,18 @@ def room_students(room_id):
                 </tbody>
             </table>
         </div>
+        
+        <div style="margin-top: 20px; padding: 12px; background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(41, 128, 185, 0.05) 100%); border-radius: 8px; border-left: 3px solid var(--secondary-color); font-size: 0.9rem; color: #7f8c8d;">
+            <i class="fas fa-info-circle" style="margin-right: 8px; color: var(--secondary-color);"></i>
+            <strong>Shift:</strong> Move a student to another available room | <strong>Remove:</strong> Unallocate student from this room
+        </div>
         '''
     else:
         html += '''
-        <div style="text-align: center; padding: 30px; background: #f8f9fa; border-radius: 8px;">
-            <i class="fas fa-inbox" style="font-size: 2rem; opacity: 0.3; margin-bottom: 10px; display: block;"></i>
-            <p style="font-weight: 500; margin: 10px 0 0 0;">No students in this room</p>
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p style="font-weight: 600; margin: 10px 0 0 0;">No students currently in this room</p>
+            <small>Students will appear here once allocated to this room</small>
         </div>
         '''
     
@@ -1164,3 +1374,62 @@ def unallocate_all_students():
     return render_template('admin/unallocate_confirmation.html', 
                          students=allocated_students,
                          total_count=len(allocated_students))
+
+
+# ==================== HOSTEL SETTINGS PAGE ====================
+@admin_bp.route('/settings', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def settings():
+    """Hostel settings page"""
+    cursor = db.connection.cursor()
+    
+    if request.method == 'POST':
+        try:
+            hostel_name = request.form.get('hostel_name', '').strip()
+            hostel_address = request.form.get('hostel_address', '').strip()
+            hostel_phone = request.form.get('hostel_phone', '').strip()
+            hostel_email = request.form.get('hostel_email', '').strip()
+            warden_phone = request.form.get('warden_phone', '').strip()
+            
+            # Update each setting
+            settings_to_update = {
+                'hostel_name': hostel_name,
+                'hostel_address': hostel_address,
+                'hostel_phone': hostel_phone,
+                'hostel_email': hostel_email,
+                'warden_phone': warden_phone
+            }
+            
+            for setting_key, setting_value in settings_to_update.items():
+                if setting_value:
+                    cursor.execute(
+                        "UPDATE hostel_settings SET setting_value = %s WHERE setting_key = %s",
+                        (setting_value, setting_key)
+                    )
+                    if cursor.rowcount == 0:
+                        cursor.execute(
+                            "INSERT INTO hostel_settings (setting_key, setting_value) VALUES (%s, %s)",
+                            (setting_key, setting_value)
+                        )
+            
+            db.connection.commit()
+            flash('✅ Hostel settings updated successfully!', 'success')
+            return redirect(url_for('admin.settings'))
+            
+        except Exception as e:
+            db.connection.rollback()
+            flash(f'❌ Error updating settings: {str(e)}', 'danger')
+    
+    # Fetch current settings
+    cursor.execute("SELECT setting_key, setting_value FROM hostel_settings")
+    settings_list = cursor.fetchall() or []
+    
+    # Convert to dictionary
+    settings_dict = {}
+    for setting in settings_list:
+        settings_dict[setting['setting_key']] = setting['setting_value']
+    
+    cursor.close()
+    
+    return render_template('admin/settings.html', settings=settings_dict)

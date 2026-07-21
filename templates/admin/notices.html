@@ -96,7 +96,7 @@
                         <td><span class="badge bg-{% if notice.priority == 'High' %}danger{% elif notice.priority == 'Medium' %}warning{% else %}info{% endif %}" style="font-weight: 600;">{{ notice.priority }}</span></td>
                         <td style="font-weight: 600;">{{ notice.visibility }}</td>
                         <td>{% if notice.is_pinned %}<i class="fas fa-thumbtack pinned-icon"></i>{% else %}<span style="opacity: 0.3;">—</span>{% endif %}</td>
-                        <td>{{ notice.created_at.strftime('%d %b %Y') }}</td>
+                        <td>{{ notice.created_at|format_date('%d %b %Y') }}</td>
                         <td>
                             <div class="btn-group-compact">
                                 <button class="btn btn-sm btn-warning" title="Edit notice">
@@ -121,4 +121,110 @@
         {% endif %}
     </div>
 </div>
+
+<!-- New Notice Modal -->
+<div class="modal fade" id="newNoticeModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white; border: none;">
+                <h5 class="modal-title" style="font-weight: 700; letter-spacing: 0.3px;">
+                    <i class="fas fa-plus-circle"></i> Publish New Notice
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" id="noticeForm">
+                <input type="hidden" name="action" value="add">
+                <div class="modal-body" style="padding: 30px;">
+                    
+                    <!-- Title -->
+                    <div class="mb-3">
+                        <label for="notice_title" class="form-label" style="font-weight: 600;">
+                            <i class="fas fa-heading" style="color: var(--primary-color); margin-right: 8px;"></i>Title *
+                        </label>
+                        <input type="text" class="form-control" id="notice_title" name="title" required 
+                               placeholder="Enter notice title" style="border-radius: 8px; padding: 10px 15px;">
+                    </div>
+
+                    <!-- Content -->
+                    <div class="mb-3">
+                        <label for="notice_content" class="form-label" style="font-weight: 600;">
+                            <i class="fas fa-file-alt" style="color: var(--primary-color); margin-right: 8px;"></i>Content *
+                        </label>
+                        <textarea class="form-control" id="notice_content" name="content" rows="5" required 
+                                  placeholder="Enter notice content" style="border-radius: 8px; padding: 10px 15px; resize: vertical;"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <!-- Category -->
+                        <div class="col-md-6 mb-3">
+                            <label for="notice_category" class="form-label" style="font-weight: 600;">
+                                <i class="fas fa-tag" style="color: var(--primary-color); margin-right: 8px;"></i>Category
+                            </label>
+                            <select class="form-select" id="notice_category" name="category" style="border-radius: 8px; padding: 10px 15px;">
+                                <option value="General">General</option>
+                                <option value="Important">Important</option>
+                                <option value="Maintenance">Maintenance</option>
+                                <option value="Event">Event</option>
+                                <option value="Academic">Academic</option>
+                                <option value="Rules">Rules</option>
+                            </select>
+                        </div>
+
+                        <!-- Priority -->
+                        <div class="col-md-6 mb-3">
+                            <label for="notice_priority" class="form-label" style="font-weight: 600;">
+                                <i class="fas fa-exclamation" style="color: var(--primary-color); margin-right: 8px;"></i>Priority
+                            </label>
+                            <select class="form-select" id="notice_priority" name="priority" style="border-radius: 8px; padding: 10px 15px;">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Visibility -->
+                        <div class="col-md-6 mb-3">
+                            <label for="notice_visibility" class="form-label" style="font-weight: 600;">
+                                <i class="fas fa-eye" style="color: var(--primary-color); margin-right: 8px;"></i>Visibility
+                            </label>
+                            <select class="form-select" id="notice_visibility" name="visibility" style="border-radius: 8px; padding: 10px 15px;">
+                                <option value="All" selected>All</option>
+                                <option value="Students">Students Only</option>
+                                <option value="Admin">Admin Only</option>
+                                <option value="Warden">Warden Only</option>
+                            </select>
+                        </div>
+
+                        <!-- Pin Notice -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" style="font-weight: 600; display: block;">
+                                <i class="fas fa-thumbtack" style="color: var(--primary-color); margin-right: 8px;"></i>Options
+                            </label>
+                            <div style="display: flex; align-items: center; gap: 15px; margin-top: 8px;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="notice_pinned" name="is_pinned">
+                                    <label class="form-check-label" for="notice_pinned" style="margin-bottom: 0; font-weight: 500;">
+                                        Pin this notice
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="background: var(--bg-current-secondary); border-top: 1px solid var(--border-current); padding: 15px 30px;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-weight: 600;">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="font-weight: 600; background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); border: none;">
+                        <i class="fas fa-paper-plane"></i> Publish Notice
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

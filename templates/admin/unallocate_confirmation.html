@@ -98,7 +98,7 @@
                                 </td>
                                 <td style="padding: 15px; color: var(--text-current); font-weight: 500;">
                                     {% if student['check_in_date'] %}
-                                        {{ student['check_in_date'].strftime('%d %b %Y') if student['check_in_date'].__class__.__name__ == 'date' else student['check_in_date'] }}
+                                        {{ student['check_in_date']|format_date('%d %b %Y') }}
                                     {% else %}
                                         N/A
                                     {% endif %}

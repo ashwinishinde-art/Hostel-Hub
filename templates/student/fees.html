@@ -87,7 +87,7 @@
                                     <td>{{ payment.semester }}</td>
                                     <td><strong>₹{{ "%.2f"|format(payment.amount_paid) }}</strong></td>
                                     <td>{{ payment.payment_method }}</td>
-                                    <td>{{ payment.payment_date.strftime('%d %b %Y %H:%M') }}</td>
+                                    <td>{{ payment.payment_date|format_date('%d %b %Y %H:%M') }}</td>
                                     <td><small>{{ payment.transaction_id or 'N/A' }}</small></td>
                                 </tr>
                                 {% endfor %}

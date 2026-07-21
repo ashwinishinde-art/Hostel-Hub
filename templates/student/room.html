@@ -42,13 +42,7 @@
                             {% if room.check_in_date %}
                             <div class="detail-row">
                                 <div class="detail-label"><strong>Check-in Date:</strong></div>
-                                <div class="detail-value">
-                                    {% if room.check_in_date.strftime %}
-                                        {{ room.check_in_date.strftime('%d %b %Y') }}
-                                    {% else %}
-                                        {{ room.check_in_date }}
-                                    {% endif %}
-                                </div>
+                                <div class="detail-value">{{ room.check_in_date|format_date('%d %b %Y') }}</div>
                             </div>
                             {% endif %}
                         </div>

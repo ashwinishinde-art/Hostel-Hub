@@ -38,12 +38,12 @@
                         </tr>
                         <tr>
                             <td><strong>Filed Date:</strong></td>
-                            <td>{{ complaint.created_at.strftime('%d %b %Y %H:%M') }}</td>
+                            <td>{{ complaint.created_at|format_date('%d %b %Y %H:%M') }}</td>
                         </tr>
                         {% if complaint.resolved_at %}
                         <tr>
                             <td><strong>Resolved Date:</strong></td>
-                            <td>{{ complaint.resolved_at.strftime('%d %b %Y %H:%M') }}</td>
+                            <td>{{ complaint.resolved_at|format_date('%d %b %Y %H:%M') }}</td>
                         </tr>
                         {% endif %}
                     </table>
@@ -78,7 +78,7 @@
                         {% endif %}
                     </h3>
                     <p><strong>{{ complaint.status }}</strong></p>
-                    <p class="text-muted small">Last updated: {{ complaint.updated_at.strftime('%d %b %Y') }}</p>
+                    <p class="text-muted small">Last updated: {{ complaint.updated_at|format_date('%d %b %Y') }}</p>
                 </div>
             </div>
         </div>

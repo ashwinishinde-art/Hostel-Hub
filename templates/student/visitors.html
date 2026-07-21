@@ -37,8 +37,8 @@
                             <tr>
                                 <td>{{ visitor.visitor_name }}</td>
                                 <td>{{ visitor.visitor_relation or 'N/A' }}</td>
-                                <td>{{ visitor.visit_date.strftime('%d %b %Y') if visitor.visit_date else 'N/A' }}</td>
-                                <td>{{ visitor.visit_time.strftime('%H:%M') if visitor.visit_time else 'N/A' }}</td>
+                                <td>{{ visitor.visit_date|format_date('%d %b %Y') }}</td>
+                                <td>{{ visitor.visit_time|format_date('%H:%M') }}</td>
                                 <td>
                                     <span class="badge bg-{% if visitor.status == 'Approved' %}success{% elif visitor.status == 'Rejected' %}danger{% elif visitor.status == 'Pending' %}warning{% else %}info{% endif %}">
                                         {{ visitor.status }}

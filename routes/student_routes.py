@@ -2,9 +2,12 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_required, current_user
 from datetime import datetime
 
-# Try MySQL first, fall back to mock database
+# Try MySQL first, fall back to mock database (same as app.py)
 try:
     from config.database import db
+    # Check if MySQL connection is actually available
+    if db.connection is None or not db.is_connected:
+        from config.database_mock import db
 except:
     from config.database_mock import db
 
@@ -80,6 +83,7 @@ def profile():
     if request.method == 'POST':
         try:
             phone = request.form.get('phone', '').strip()
+            gender = request.form.get('gender', '').strip()
             contact_person_name = request.form.get('contact_person_name', '').strip()
             contact_person_phone = request.form.get('contact_person_phone', '').strip()
             emergency_contact = request.form.get('emergency_contact_phone', '').strip()
@@ -98,8 +102,8 @@ def profile():
                   address, city, state, pincode, current_user.id))
             
             cursor.execute("""
-                UPDATE users SET phone = %s WHERE id = %s
-            """, (phone, current_user.id))
+                UPDATE users SET phone = %s, gender = %s WHERE id = %s
+            """, (phone, gender, current_user.id))
             
             db.connection.commit()
             flash('Profile updated successfully!', 'success')

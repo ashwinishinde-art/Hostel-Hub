@@ -18,16 +18,16 @@ PASSWORD_HASH = "$2b$12$fRl39TraAQ4NkUtay2xpJ.XXS7j2LZFUZtgfZBRzWePnfaqt8.vgK"
 # Default data structure
 DEFAULT_DB = {
     "users": [
-        {"id": 1, "username": "admin", "password_hash": PASSWORD_HASH, "role": "admin", "email": "admin@hostel.com", "full_name": "Administrator", "phone": "9876543210", "is_active": True, "created_at": "2024-01-01", "updated_at": "2024-01-01"},
-        {"id": 2, "username": "prajwal", "password_hash": PASSWORD_HASH, "role": "student", "email": "prajwal@hostel.com", "full_name": "Prajwal Tandekar", "phone": "9876543211", "is_active": True, "created_at": "2024-01-01", "updated_at": "2024-01-01"},
-        {"id": 3, "username": "rajdeep", "password_hash": PASSWORD_HASH, "role": "student", "email": "rajdeep@hostel.com", "full_name": "Rajdeep Singh", "phone": "9876543212", "is_active": True, "created_at": "2024-01-01", "updated_at": "2024-01-01"},
-        {"id": 4, "username": "rutuja", "password_hash": PASSWORD_HASH, "role": "student", "email": "rutuja@hostel.com", "full_name": "Rutuja Sharma", "phone": "9876543213", "is_active": True, "created_at": "2024-01-01", "updated_at": "2024-01-01"},
-        {"id": 5, "username": "warden", "password_hash": PASSWORD_HASH, "role": "warden", "email": "warden@hostel.com", "full_name": "Warden", "phone": "9876543214", "is_active": True, "created_at": "2024-01-01", "updated_at": "2024-01-01"},
+        {"id": 1, "username": "admin", "password_hash": PASSWORD_HASH, "role": "admin", "email": "admin@hostel.com", "full_name": "Administrator", "phone": "9876543210", "gender": "Male", "is_active": True, "created_at": "2024-01-01", "updated_at": "2024-01-01"},
+        {"id": 2, "username": "prajwal", "password_hash": PASSWORD_HASH, "role": "student", "email": "prajwal@hostel.com", "full_name": "Prajwal Tandekar", "phone": "9876543211", "gender": "Male", "is_active": True, "created_at": "2024-01-01", "updated_at": "2024-01-01"},
+        {"id": 3, "username": "rajdeep", "password_hash": PASSWORD_HASH, "role": "student", "email": "rajdeep@hostel.com", "full_name": "Rajdeep Singh", "phone": "9876543212", "gender": "Male", "is_active": True, "created_at": "2024-01-01", "updated_at": "2024-01-01"},
+        {"id": 4, "username": "rutuja", "password_hash": PASSWORD_HASH, "role": "student", "email": "rutuja@hostel.com", "full_name": "Rutuja Sharma", "phone": "9876543213", "gender": "Female", "is_active": True, "created_at": "2024-01-01", "updated_at": "2024-01-01"},
+        {"id": 5, "username": "warden", "password_hash": PASSWORD_HASH, "role": "warden", "email": "warden@hostel.com", "full_name": "Warden", "phone": "9876543214", "gender": "Male", "is_active": True, "created_at": "2024-01-01", "updated_at": "2024-01-01"},
     ],
     "students": [
-        {"id": 1, "user_id": 2, "enrollment_no": "ENR001", "batch": "2024", "department": "CSE", "cgpa": 8.5, "emergency_contact": "9876543215", "emergency_relation": "Father", "guardian_name": "Tandekar Sr."},
-        {"id": 2, "user_id": 3, "enrollment_no": "ENR002", "batch": "2024", "department": "CSE", "cgpa": 8.2, "emergency_contact": "9876543216", "emergency_relation": "Mother", "guardian_name": "Singh Sr."},
-        {"id": 3, "user_id": 4, "enrollment_no": "ENR003", "batch": "2024", "department": "ECE", "cgpa": 8.8, "emergency_contact": "9876543217", "emergency_relation": "Father", "guardian_name": "Sharma Sr."},
+        {"id": 1, "user_id": 2, "roll_number": "CSE001", "enrollment_no": "ENR001", "batch": "2024", "department": "CSE", "cgpa": 8.5, "emergency_contact": "9876543215", "emergency_relation": "Father", "guardian_name": "Tandekar Sr."},
+        {"id": 2, "user_id": 3, "roll_number": "CSE002", "enrollment_no": "ENR002", "batch": "2024", "department": "CSE", "cgpa": 8.2, "emergency_contact": "9876543216", "emergency_relation": "Mother", "guardian_name": "Singh Sr."},
+        {"id": 3, "user_id": 4, "roll_number": "ECE001", "enrollment_no": "ENR003", "batch": "2024", "department": "ECE", "cgpa": 8.8, "emergency_contact": "9876543217", "emergency_relation": "Father", "guardian_name": "Sharma Sr."},
     ],
     "rooms": [
         {"id": 1, "room_number": "101", "room_type": "Single Deluxe", "floor": 1, "capacity": 1, "rent": 5000, "amenities": "AC, Attached Bathroom, WiFi", "status": "occupied"},
@@ -35,9 +35,9 @@ DEFAULT_DB = {
         {"id": 3, "room_number": "201", "room_type": "Triple Sharing", "floor": 2, "capacity": 3, "rent": 2500, "amenities": "Fan, Shared Bathroom, WiFi", "status": "occupied"},
     ],
     "room_occupancy": [
-        {"id": 1, "student_id": 1, "room_id": 1, "allocated_date": "2024-01-01", "is_active": 1},
-        {"id": 2, "student_id": 2, "room_id": 3, "allocated_date": "2024-01-01", "is_active": 1},
-        {"id": 3, "student_id": 3, "room_id": 3, "allocated_date": "2024-01-01", "is_active": 1},
+        {"id": 1, "student_id": 1, "room_id": 1, "check_in_date": "2024-01-01", "status": "Active"},
+        {"id": 2, "student_id": 2, "room_id": 3, "check_in_date": "2024-01-01", "status": "Active"},
+        {"id": 3, "student_id": 3, "room_id": 3, "check_in_date": "2024-01-01", "status": "Active"},
     ],
     "complaints": [
         {"id": 1, "student_id": 1, "category": "Maintenance", "description": "AC not working", "status": "pending", "priority": "high", "created_at": "2024-01-15", "resolution_notes": ""},
@@ -144,9 +144,372 @@ class MockDatabase:
             print(f"Update error: {e}")
             return False
     
+    def parse_select_with_join(self, query, params=None):
+        """Handle SELECT queries with JOINs"""
+        import re
+        
+        query_lower = query.lower()
+        
+        # Handle room_occupancy LEFT JOIN rooms query
+        if "from room_occupancy" in query_lower and "left join rooms" in query_lower and "where ro.student_id" in query_lower:
+            ro_data = self.data.get("room_occupancy", [])
+            rooms_data = self.data.get("rooms", [])
+            
+            result = []
+            for ro in ro_data:
+                # Check WHERE clause filters
+                if params and len(params) >= 1:
+                    # Check student_id filter
+                    student_id = params[0]
+                    if ro.get("student_id") != student_id:
+                        continue
+                    
+                    # Check status filter if there's a second param
+                    if len(params) >= 2 and "status" in query_lower:
+                        status = params[1]
+                        if ro.get("status") != status:
+                            continue
+                
+                # Find corresponding room
+                room = None
+                for r in rooms_data:
+                    if r.get("id") == ro.get("room_id"):
+                        room = r
+                        break
+                
+                # Build result row (room info can be None for LEFT JOIN)
+                row = {
+                    "room_number": room.get("room_number") if room else None,
+                    "status": ro.get("status")
+                }
+                result.append(row)
+            
+            return result
+        
+        # Handle users-students JOIN query
+        if "from users" in query_lower and "join students" in query_lower and "where u.role = 'student'" in query_lower:
+            users_data = self.data.get("users", [])
+            students_data = self.data.get("students", [])
+            
+            result = []
+            for user in users_data:
+                if user.get("role") != "student":
+                    continue
+                
+                # Find corresponding student record
+                student = None
+                for s in students_data:
+                    if s.get("user_id") == user.get("id"):
+                        student = s
+                        break
+                
+                if not student:
+                    continue
+                
+                # Build result row with requested columns
+                row = {
+                    "id": user.get("id"),
+                    "username": user.get("username"),
+                    "email": user.get("email"),
+                    "full_name": user.get("full_name"),
+                    "phone": user.get("phone"),
+                    "role": user.get("role"),
+                    "roll_number": student.get("roll_number"),
+                    "branch": student.get("branch", "N/A"),
+                    "semester": student.get("semester", "N/A"),
+                    "enrollment_no": student.get("enrollment_no", ""),
+                    "department": student.get("department", "N/A"),
+                    "cgpa": student.get("cgpa", 0.0)
+                }
+                result.append(row)
+            
+            # Sort by full_name if present
+            if "order by u.full_name" in query_lower or "order by full_name" in query_lower:
+                result.sort(key=lambda x: x.get("full_name", ""))
+            
+            return result
+        
+        # Handle the specific room_students JOIN query
+        if "from room_occupancy" in query_lower and "join users" in query_lower and "join students" in query_lower:
+            # Parse the specific columns requested
+            select_part = query[query.lower().find("select") + 6:query.lower().find("from")].strip()
+            
+            # Get room_id from WHERE clause
+            room_id = None
+            status = None
+            if params:
+                # Extract room_id and status from WHERE clause
+                where_match = re.search(r'where\s+ro\.room_id\s*=\s*%s\s+and\s+ro\.status\s*=\s*%s', query_lower)
+                if where_match and len(params) >= 2:
+                    room_id = params[0]
+                    status = params[1]
+                elif "where" in query_lower and len(params) >= 1:
+                    room_id = params[0]
+                    if len(params) >= 2:
+                        status = params[1]
+            
+            # Get room_occupancy records
+            ro_data = self.data.get("room_occupancy", [])
+            users_data = self.data.get("users", [])
+            students_data = self.data.get("students", [])
+            
+            result = []
+            for ro in ro_data:
+                # Filter by room_id
+                if room_id is not None and ro.get("room_id") != room_id:
+                    continue
+                # Filter by status
+                if status is not None and ro.get("status") != status:
+                    continue
+                
+                # Find corresponding user
+                user = None
+                for u in users_data:
+                    if u.get("id") == ro.get("student_id"):
+                        user = u
+                        break
+                
+                if not user:
+                    continue
+                
+                # Find corresponding student
+                student = None
+                for s in students_data:
+                    if s.get("user_id") == user.get("id"):
+                        student = s
+                        break
+                
+                if not student:
+                    continue
+                
+                # Build result row with all requested columns
+                row = {
+                    "occupancy_id": ro.get("id"),
+                    "student_id": user.get("id"),
+                    "full_name": user.get("full_name"),
+                    "roll_number": student.get("roll_number"),
+                    "check_in_date": ro.get("check_in_date"),
+                    "status": ro.get("status")
+                }
+                result.append(row)
+            
+            # Sort by check_in_date if present
+            if "order by ro.check_in_date" in query_lower:
+                result.sort(key=lambda x: x.get("check_in_date", ""))
+            
+            return result
+        
+        # Handle complaints JOIN with users and optional rooms
+        if "from complaints" in query_lower and "join users" in query_lower:
+            complaints_data = self.data.get("complaints", [])
+            users_data = self.data.get("users", [])
+            rooms_data = self.data.get("rooms", [])
+            
+            result = []
+            for complaint in complaints_data:
+                # Find corresponding user
+                user = None
+                for u in users_data:
+                    if u.get("id") == complaint.get("student_id"):
+                        user = u
+                        break
+                
+                if not user:
+                    continue
+                
+                # Find corresponding room if left join
+                room = None
+                if complaint.get("room_id"):
+                    for r in rooms_data:
+                        if r.get("id") == complaint.get("room_id"):
+                            room = r
+                            break
+                
+                # Build result row with all requested columns
+                row = {
+                    "id": complaint.get("id"),
+                    "title": complaint.get("title", complaint.get("description", "")),
+                    "category": complaint.get("category"),
+                    "status": complaint.get("status"),
+                    "priority": complaint.get("priority"),
+                    "created_at": complaint.get("created_at"),
+                    "full_name": user.get("full_name"),
+                    "username": user.get("username"),
+                    "room_number": room.get("room_number") if room else None
+                }
+                result.append(row)
+            
+            # Sort by created_at DESC if present
+            if "order by c.created_at desc" in query_lower:
+                # Sort in reverse by created_at
+                try:
+                    from datetime import datetime
+                    result.sort(key=lambda x: datetime.fromisoformat(str(x.get("created_at", "")).replace("Z", "+00:00")), reverse=True)
+                except:
+                    # If date parsing fails, just reverse sort
+                    result.reverse()
+            
+            # Apply LIMIT if present
+            if "limit" in query_lower:
+                import re
+                limit_match = re.search(r'limit\s+(\d+)', query_lower)
+                if limit_match:
+                    limit = int(limit_match.group(1))
+                    result = result[:limit]
+            
+            return result
+        
+        # Handle visitors JOIN with users
+        if "from visitors" in query_lower and "join users" in query_lower:
+            visitors_data = self.data.get("visitors", [])
+            users_data = self.data.get("users", [])
+            
+            result = []
+            for visitor in visitors_data:
+                # Find corresponding user
+                user = None
+                for u in users_data:
+                    if u.get("id") == visitor.get("student_id"):
+                        user = u
+                        break
+                
+                if not user:
+                    continue
+                
+                # Build result row
+                row = {
+                    "id": visitor.get("id"),
+                    "visitor_name": visitor.get("visitor_name"),
+                    "visit_date": visitor.get("visit_date") or visitor.get("date"),
+                    "status": visitor.get("status"),
+                    "purpose": visitor.get("purpose"),
+                    "full_name": user.get("full_name"),
+                    "username": user.get("username")
+                }
+                result.append(row)
+            
+            # Apply LIMIT if present
+            if "limit" in query_lower:
+                import re
+                limit_match = re.search(r'limit\s+(\d+)', query_lower)
+                if limit_match:
+                    limit = int(limit_match.group(1))
+                    result = result[:limit]
+            
+            return result
+        
+        # Handle fees JOIN with users and optional students
+        if "from fees" in query_lower and "join users" in query_lower:
+            fees_data = self.data.get("fees", [])
+            users_data = self.data.get("users", [])
+            students_data = self.data.get("students", [])
+            
+            result = []
+            for fee in fees_data:
+                # Find corresponding user
+                user = None
+                for u in users_data:
+                    if u.get("id") == fee.get("student_id"):
+                        user = u
+                        break
+                
+                if not user:
+                    continue
+                
+                # Find corresponding student if left join
+                student = None
+                for s in students_data:
+                    if s.get("user_id") == user.get("id"):
+                        student = s
+                        break
+                
+                # Filter by payment status if WHERE clause exists
+                if "where" in query_lower and "payment_status" in query_lower:
+                    # Check both payment_status and status fields
+                    fee_status = fee.get("payment_status") or fee.get("status")
+                    if fee_status not in ["Pending", "Overdue", "pending", "overdue"]:
+                        continue
+                
+                # Build result row
+                row = {
+                    "id": fee.get("id"),
+                    "total_amount": fee.get("total_amount") or (
+                        (fee.get("room_rent", 0) or 0) + 
+                        (fee.get("mess_charges", 0) or 0) + 
+                        (fee.get("utilities", 0) or 0) + 
+                        (fee.get("other_charges", 0) or 0)
+                    ),
+                    "paid_amount": fee.get("paid_amount", 0),
+                    "pending_amount": fee.get("pending_amount") or (
+                        (fee.get("room_rent", 0) or 0) + 
+                        (fee.get("mess_charges", 0) or 0) + 
+                        (fee.get("utilities", 0) or 0) + 
+                        (fee.get("other_charges", 0) or 0) -
+                        (fee.get("paid_amount", 0) or 0)
+                    ),
+                    "payment_status": fee.get("payment_status") or fee.get("status"),
+                    "due_date": fee.get("due_date"),
+                    "academic_year": fee.get("academic_year") or str(fee.get("year", "")),
+                    "semester": fee.get("semester"),
+                    "full_name": user.get("full_name"),
+                    "username": user.get("username"),
+                    "roll_number": student.get("roll_number") if student else None
+                }
+                result.append(row)
+            
+            # Apply LIMIT if present
+            if "limit" in query_lower:
+                import re
+                limit_match = re.search(r'limit\s+(\d+)', query_lower)
+                if limit_match:
+                    limit = int(limit_match.group(1))
+                    result = result[:limit]
+            
+            return result
+        
+        # Handle notices JOIN with users
+        if "from notices" in query_lower and "join users" in query_lower:
+            notices_data = self.data.get("notices", [])
+            users_data = self.data.get("users", [])
+            
+            result = []
+            for notice in notices_data:
+                # Find corresponding user
+                user = None
+                for u in users_data:
+                    if u.get("id") == notice.get("created_by"):
+                        user = u
+                        break
+                
+                if not user:
+                    continue
+                
+                # Build result row with all notice data plus user full_name
+                row = dict(notice)  # Copy all notice fields
+                row["full_name"] = user.get("full_name")
+                result.append(row)
+            
+            # Sort by is_pinned DESC, then created_at DESC
+            try:
+                result.sort(key=lambda x: (
+                    not x.get("is_pinned", False),  # False sorts before True, so negate it
+                    -(int(x.get("id", 0)))  # Sort by id descending as proxy for created_at
+                ))
+            except:
+                pass
+            
+            return result
+        
+        # Fallback for other JOINs - return empty for now
+        return []
+    
     def parse_select(self, query, params=None):
         """Parse and execute SELECT"""
         query_lower = query.lower()
+        
+        # Check if this is a JOIN query
+        if " join " in query_lower:
+            return self.parse_select_with_join(query, params)
         
         # Handle COUNT(*) queries
         if "count(*)" in query_lower:

@@ -95,7 +95,7 @@
                         <td>₹{{ "%.2f"|format(fee.paid_amount) }}</td>
                         <td>₹{{ "%.2f"|format(fee.pending_amount) }}</td>
                         <td><span class="badge bg-{% if fee.payment_status == 'Paid' %}success{% elif fee.payment_status == 'Partial' %}warning{% else %}danger{% endif %}" style="font-weight: 600;">{{ fee.payment_status }}</span></td>
-                        <td>{{ fee.due_date.strftime('%d %b %Y') if fee.due_date else 'N/A' }}</td>
+                        <td>{% if fee.due_date %}{% if fee.due_date.__class__.__name__ == 'datetime' %}{{ fee.due_date.strftime('%d %b %Y') }}{% else %}{{ fee.due_date }}{% endif %}{% else %}N/A{% endif %}</td>
                         <td>
                             <div class="btn-group-compact">
                                 <button class="btn btn-sm btn-primary" title="Record payment">

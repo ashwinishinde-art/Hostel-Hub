@@ -2,9 +2,12 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from functools import wraps
 
-# Try MySQL first, fall back to mock database
+# Try MySQL first, fall back to mock database (same as app.py)
 try:
     from config.database import db
+    # Check if MySQL connection is actually available
+    if db.connection is None or not db.is_connected:
+        from config.database_mock import db
 except:
     from config.database_mock import db
 
