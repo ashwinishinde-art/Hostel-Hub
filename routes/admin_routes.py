@@ -370,16 +370,18 @@ def allocate_room():
                 check_in_date = datetime.now().strftime('%Y-%m-%d')
             
             # Get student gender
-            cursor.execute("SELECT gender FROM users WHERE id = %s", (student_id,))
+            cursor.execute("SELECT gender, full_name FROM users WHERE id = %s", (student_id,))
             student_result = cursor.fetchone()
             if not student_result:
                 flash('Student not found.', 'danger')
                 return redirect(url_for('admin.allocate_room'))
             
             student_gender = student_result.get('gender') if isinstance(student_result, dict) else student_result[0]
+            student_name = student_result.get('full_name') if isinstance(student_result, dict) else student_result[1]
             
-            if not student_gender:
-                flash('Student gender information is missing. Please update student profile first.', 'warning')
+            # Check if gender is missing - provide detailed error
+            if not student_gender or student_gender.strip() == '':
+                flash(f'⚠️ Student "{student_name}" has not set their gender yet. Please ask the student to update their profile with gender information first, then try allocating the room.', 'warning')
                 return redirect(url_for('admin.allocate_room'))
             
             # Get room information including gender occupancy

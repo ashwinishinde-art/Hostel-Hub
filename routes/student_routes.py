@@ -102,6 +102,11 @@ def profile():
             state = request.form.get('state', '').strip()
             pincode = request.form.get('pincode', '').strip()
             
+            # Validate gender
+            if not gender or gender not in ['Male', 'Female']:
+                flash('⚠️ Please select a valid gender (Male or Female). This is required for room allocation!', 'warning')
+                return redirect(url_for('student.profile'))
+            
             cursor.execute("""
                 UPDATE students SET 
                 contact_person_name = %s, contact_person_phone = %s,
@@ -116,18 +121,29 @@ def profile():
             """, (phone, gender, current_user.id))
             
             db.connection.commit()
-            flash('Profile updated successfully!', 'success')
+            
+            # Verify the update was successful
+            cursor.execute("SELECT gender FROM users WHERE id = %s", (current_user.id,))
+            verify_result = cursor.fetchone()
+            verify_gender = verify_result.get('gender') if isinstance(verify_result, dict) else verify_result[0] if verify_result else None
+            
+            if verify_gender == gender:
+                flash('✅ Profile updated successfully! Gender information saved.', 'success')
+            else:
+                flash('Profile partially updated. Please refresh and check gender field.', 'warning')
             
         except Exception as e:
             db.connection.rollback()
-            flash(f'Error updating profile: {str(e)}', 'danger')
+            flash(f'❌ Error updating profile: {str(e)}', 'danger')
+            import traceback
+            traceback.print_exc()
         
         cursor.close()
         return redirect(url_for('student.profile'))
     
     # Get current profile
     cursor.execute("""
-        SELECT s.*, u.phone, u.email 
+        SELECT s.*, u.phone, u.gender, u.email 
         FROM students s 
         JOIN users u ON s.user_id = u.id 
         WHERE u.id = %s

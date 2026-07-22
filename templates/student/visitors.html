@@ -3,18 +3,20 @@
 {% block title %}Visitors - Student Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid main-content">
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <h1><i class="fas fa-users"></i> Visitor Requests</h1>
-        </div>
-        <div class="col-md-6 text-end">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newVisitorModal">
-                <i class="fas fa-plus"></i> Request Visitor Entry
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 0; color: white; margin-bottom: 40px;">
+    <div class="container-fluid">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-weight: 900; font-size: 2.2rem; margin-bottom: 0; letter-spacing: -1px;">
+                <i class="fas fa-sign-in-alt"></i> Visitor Requests
+            </h1>
+            <button class="btn btn-light" style="color: #667eea; font-weight: 700;" data-bs-toggle="modal" data-bs-target="#newVisitorModal">
+                <i class="fas fa-plus"></i> Request Visitor
             </button>
         </div>
     </div>
+</div>
 
+<div class="container-fluid">
     <!-- Visitor Requests List -->
     <div class="row">
         <div class="col-md-12">

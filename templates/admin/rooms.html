@@ -370,23 +370,28 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid main-content">
-    <div class="room-management-header">
-        <div>
-            <h1><i class="fas fa-door-open"></i> Room Management</h1>
-            <p class="text-muted" style="font-weight: 500; margin-top: 5px;">Total Rooms: <strong>{{ rooms|length }}</strong></p>
-        </div>
-        <div class="header-buttons">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal">
-                <i class="fas fa-plus"></i> Add New Room
-            </button>
-            <a href="/admin/allocate-room" class="btn btn-success">
-                <i class="fas fa-check"></i> Allocate Room
-            </a>
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 0; color: white; margin-bottom: 40px;">
+    <div class="container-fluid">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="font-weight: 900; font-size: 2.2rem; margin-bottom: 8px; letter-spacing: -1px;">
+                    <i class="fas fa-door-open"></i> Room Management
+                </h1>
+                <p style="font-size: 1rem; opacity: 0.95; margin: 0;">Total Rooms: <strong>{{ rooms|length }}</strong></p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-light" style="color: #667eea; font-weight: 700;" data-bs-toggle="modal" data-bs-target="#addRoomModal">
+                    <i class="fas fa-plus"></i> Add New Room
+                </button>
+                <a href="/admin/allocate-room" class="btn btn-light" style="color: #667eea; font-weight: 700;">
+                    <i class="fas fa-check"></i> Allocate Room
+                </a>
+            </div>
         </div>
     </div>
+</div>
 
-    <div class="card">
+<div class="container-fluid">
         {% if rooms %}
         <div class="table-responsive">
             <table class="room-table">

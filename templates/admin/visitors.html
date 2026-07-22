@@ -57,15 +57,16 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid main-content">
-    <div class="row mb-4 fade-in-down">
-        <div class="col-md-12">
-            <h1 style="font-weight: 800; letter-spacing: 0.5px;"><i class="fas fa-users"></i> Visitor Requests</h1>
-            <p class="text-muted" style="font-weight: 500; margin-top: 5px;">Total Requests: <strong>{{ visitors|length }}</strong></p>
-        </div>
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 0; color: white; margin-bottom: 40px;">
+    <div class="container-fluid">
+        <h1 style="font-weight: 900; font-size: 2.2rem; margin-bottom: 8px; letter-spacing: -1px;">
+            <i class="fas fa-sign-in-alt"></i> Visitor Management
+        </h1>
+        <p style="font-size: 1rem; opacity: 0.95; margin: 0;">Total Requests: <strong>{{ visitors|length }}</strong></p>
     </div>
+</div>
 
-    <div class="card">
+<div class="container-fluid">
         {% if visitors %}
         <div class="table-responsive">
             <table class="visitors-table">
