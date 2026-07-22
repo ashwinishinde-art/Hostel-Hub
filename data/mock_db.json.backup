@@ -154,6 +154,17 @@
       "phone": "9999999999",
       "gender": "Male",
       "created_at": "2026-07-21 14:53:02"
+    },
+    {
+      "id": 16,
+      "username": "anushkakhandare",
+      "email": "anushkakhandare142@gmail.com",
+      "password_hash": "$2b$12$UXZKrjoRHmL1PLC3/7Fke.ysgHWgd3H/hxSSRCguufM3MZzM3kb2C",
+      "role": "student",
+      "full_name": "Anushka Khandare",
+      "phone": "",
+      "gender": "Female",
+      "created_at": "2026-07-22 11:13:52"
     }
   ],
   "students": [
@@ -322,6 +333,21 @@
       "city": "",
       "state": "",
       "pincode": ""
+    },
+    {
+      "id": 13,
+      "user_id": 16,
+      "roll_number": "CO1104",
+      "branch": "CSE",
+      "semester": "3",
+      "contact_person_name": "",
+      "contact_person_phone": "",
+      "emergency_contact_phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "pincode": "",
+      "created_at": "2026-07-22 11:13:52"
     }
   ],
   "rooms": [

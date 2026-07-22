@@ -12,12 +12,12 @@ try:
     from config.database import db
     # Check if MySQL connection is actually available
     if db.connection is None or not db.is_connected:
-        print("✗ MySQL connection failed, using mock database")
+        print("[INFO] MySQL connection failed, using mock database")
         from config.database_mock import db
     else:
-        print("✓ Using MySQL database")
+        print("[INFO] Using MySQL database")
 except Exception as e:
-    print(f"✗ MySQL unavailable ({str(e)}), using mock database")
+    print(f"[INFO] MySQL unavailable ({str(e)}), using mock database")
     from config.database_mock import db
 
 # Import OTP utilities
@@ -852,15 +852,14 @@ def add_cache_headers(response):
 
 if __name__ == '__main__':
     print("\n" + "="*60)
-    print("🚀 Hostel Management System Starting...")
+    print("Hostel Management System Starting...")
     print("="*60)
-    print(f"✓ System IP: 10.252.129.72")
-    print(f"✓ Port: 5000")
-    print(f"✓ URL: http://10.252.129.72:5000")
+    print(f"[OK] System IP: localhost")
+    print(f"[OK] Port: 5000")
+    print(f"[OK] URL: http://localhost:5000")
     print("="*60)
-    print("\n⚠️  Make sure MySQL is running!")
-    print("   If not, start it with:")
-    print("   sudo service mysql start  (Linux/WSL)")
+    print("\n[NOTE] If MySQL is not running, the app will use mock data.")
+    print("   To start MySQL on Windows, open Services and start MySQL.")
     print("="*60 + "\n")
     
     app.run(host='0.0.0.0', debug=True, port=5000)
