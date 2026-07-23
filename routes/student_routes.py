@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from datetime import datetime
+from functools import wraps
 
 # Try MySQL first, fall back to mock database (same as app.py)
 try:
@@ -13,10 +14,25 @@ except:
 
 student_bp = Blueprint('student', __name__, url_prefix='/student')
 
+def student_required(f):
+    """Decorator to restrict access to students only"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        if current_user.role != 'student':
+            # Redirect admin/warden to their own dashboard
+            if current_user.role == 'admin':
+                return redirect(url_for('admin.dashboard'))
+            elif current_user.role == 'warden':
+                return redirect(url_for('warden.dashboard'))
+            return redirect(url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 # ==================== STUDENT DASHBOARD ====================
 @student_bp.route('/dashboard')
-@student_bp.route('/dashboard')
-@login_required
+@student_required
 def dashboard():
     """Student dashboard"""
     try:
@@ -85,7 +101,7 @@ def dashboard():
 
 # ==================== STUDENT PROFILE ====================
 @student_bp.route('/profile', methods=['GET', 'POST'])
-@login_required
+@student_required
 def profile():
     """View and update student profile"""
     cursor = db.connection.cursor()
@@ -155,7 +171,7 @@ def profile():
 
 # ==================== COMPLAINTS ====================
 @student_bp.route('/complaints', methods=['GET', 'POST'])
-@login_required
+@student_required
 def complaints():
     """View and submit complaints"""
     cursor = db.connection.cursor()
@@ -222,7 +238,7 @@ def complaints():
 
 # ==================== COMPLAINT DETAIL ====================
 @student_bp.route('/complaint/<int:complaint_id>')
-@login_required
+@student_required
 def complaint_detail(complaint_id):
     """View complaint details"""
     cursor = db.connection.cursor()
@@ -241,7 +257,7 @@ def complaint_detail(complaint_id):
 
 # ==================== VISITOR REQUESTS ====================
 @student_bp.route('/visitors', methods=['GET', 'POST'])
-@login_required
+@student_required
 def visitors():
     """View and request visitors"""
     cursor = db.connection.cursor()
@@ -318,7 +334,7 @@ def visitors():
 
 # ==================== FEES ====================
 @student_bp.route('/fees')
-@login_required
+@student_required
 def fees():
     """View fee details and payment history"""
     cursor = db.connection.cursor()
@@ -401,7 +417,7 @@ def room():
 
 # ==================== NOTICES ====================
 @student_bp.route('/notices')
-@login_required
+@student_required
 def notices():
     """View hostel notices"""
     cursor = db.connection.cursor()

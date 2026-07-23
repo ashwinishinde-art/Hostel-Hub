@@ -1,0 +1,702 @@
+/**
+ * HACKER THEME - Hostel Management System
+ * Dark matrix aesthetic with neon green accents
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap');
+
+:root {
+    --hacker-bg:       #000000;
+    --hacker-bg2:      #00050a;
+    --hacker-bg3:      #000a0f;
+    --hacker-card:     #001020;
+    --hacker-border:   #00aaff20;
+    --hacker-green:    #00aaff;
+    --hacker-green2:   #0088cc;
+    --hacker-green3:   #33bbff;
+    --hacker-dim:      #0066aa44;
+    --hacker-text:     #c8eeff;
+    --hacker-muted:    #3a7a9f;
+    --hacker-red:      #ff0044;
+    --hacker-yellow:   #ffd700;
+    --hacker-cyan:     #00ffff;
+    --hacker-glow:     0 0 8px #00aaff, 0 0 20px #00aaff66;
+    --hacker-glow-sm:  0 0 4px #00aaff, 0 0 10px #00aaff44;
+}
+
+/* ===================== BASE ===================== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+    background-color: var(--hacker-bg) !important;
+    color: var(--hacker-text) !important;
+    font-family: 'Rajdhani', 'Share Tech Mono', monospace !important;
+}
+
+/* Scanline overlay effect */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,170,255,0.015) 2px,
+        rgba(0,170,255,0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* Matrix rain canvas (added via JS) */
+#matrix-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ===================== SCROLLBAR ===================== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--hacker-bg); }
+::-webkit-scrollbar-thumb { background: var(--hacker-green2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--hacker-green); box-shadow: var(--hacker-glow-sm); }
+
+/* ===================== NAVBAR ===================== */
+.navbar {
+    background: #000000 !important;
+    border-bottom: 1px solid var(--hacker-green) !important;
+    box-shadow: 0 0 20px rgba(0,170,255,0.3) !important;
+    font-family: 'Orbitron', monospace !important;
+    padding: 12px 20px !important;
+}
+
+.navbar-brand {
+    color: var(--hacker-green) !important;
+    font-family: 'Orbitron', monospace !important;
+    font-weight: 900 !important;
+    font-size: 1.2rem !important;
+    text-shadow: var(--hacker-glow) !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+}
+
+.navbar-brand:hover {
+    color: var(--hacker-green3) !important;
+    text-shadow: 0 0 20px #00aaff, 0 0 40px #00aaff !important;
+    transform: none !important;
+}
+
+.nav-link {
+    color: var(--hacker-text) !important;
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 0.9rem !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    padding: 8px 14px !important;
+    border: 1px solid transparent !important;
+    border-radius: 3px !important;
+    transition: all 0.2s ease !important;
+    margin: 0 3px !important;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--hacker-green) !important;
+    border-color: var(--hacker-green) !important;
+    background: rgba(0,170,255,0.08) !important;
+    text-shadow: var(--hacker-glow-sm) !important;
+    box-shadow: var(--hacker-glow-sm) !important;
+}
+
+.nav-link::after { display: none !important; }
+
+/* Navbar toggler */
+.navbar-toggler {
+    border-color: var(--hacker-green) !important;
+    color: var(--hacker-green) !important;
+}
+.navbar-toggler-icon {
+    filter: invert(1) sepia(1) saturate(5) hue-rotate(200deg) !important;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+    border-color: var(--hacker-green) !important;
+    color: var(--hacker-green) !important;
+    background: transparent !important;
+    font-size: 1rem !important;
+    box-shadow: var(--hacker-glow-sm) !important;
+}
+
+.theme-toggle:hover {
+    background: var(--hacker-green) !important;
+    color: #000 !important;
+    box-shadow: var(--hacker-glow) !important;
+    transform: none !important;
+}
+
+/* Dropdown */
+.dropdown-menu {
+    background: #050a05 !important;
+    border: 1px solid var(--hacker-green) !important;
+    box-shadow: var(--hacker-glow) !important;
+    border-radius: 3px !important;
+    min-width: 180px !important;
+}
+
+.dropdown-item {
+    color: var(--hacker-text) !important;
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 0.85rem !important;
+    padding: 9px 16px !important;
+    border-bottom: 1px solid rgba(0,170,255,0.08) !important;
+    transition: all 0.2s !important;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+    background: rgba(0,170,255,0.12) !important;
+    color: var(--hacker-green) !important;
+    text-shadow: var(--hacker-glow-sm) !important;
+    padding-left: 22px !important;
+}
+
+.dropdown-divider { border-color: var(--hacker-border) !important; }
+
+/* User avatar */
+.user-avatar {
+    background: linear-gradient(135deg, #001a00, #004400) !important;
+    border: 1px solid var(--hacker-green) !important;
+    box-shadow: var(--hacker-glow-sm) !important;
+    color: var(--hacker-green) !important;
+    font-family: 'Orbitron', monospace !important;
+}
+
+/* ===================== MAIN CONTENT ===================== */
+.main-content {
+    background: var(--hacker-bg2) !important;
+    min-height: calc(100vh - 60px);
+    position: relative;
+    z-index: 1;
+}
+
+/* ===================== CARDS ===================== */
+.card {
+    background: var(--hacker-card) !important;
+    border: 1px solid var(--hacker-border) !important;
+    border-radius: 4px !important;
+    color: var(--hacker-text) !important;
+    box-shadow: 0 0 15px rgba(0,170,255,0.05) !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--hacker-green);
+    box-shadow: var(--hacker-glow);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.card:hover {
+    border-color: var(--hacker-green) !important;
+    box-shadow: 0 0 20px rgba(0,170,255,0.2), inset 0 0 20px rgba(0,170,255,0.03) !important;
+    transform: translateY(-3px) !important;
+}
+
+.card:hover::before { opacity: 1; }
+
+.card-header {
+    background: rgba(0,170,255,0.07) !important;
+    border-bottom: 1px solid var(--hacker-border) !important;
+    color: var(--hacker-green) !important;
+    font-family: 'Orbitron', monospace !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+}
+
+.card-body { color: var(--hacker-text) !important; }
+
+.card-title {
+    color: var(--hacker-green) !important;
+    font-family: 'Orbitron', monospace !important;
+    font-size: 1rem !important;
+    letter-spacing: 1px !important;
+}
+
+.card-text { color: var(--hacker-text) !important; }
+
+/* ===================== STAT CARDS ===================== */
+.stat-card {
+    background: linear-gradient(135deg, #0a1a0a, #0d200d) !important;
+    border: 1px solid var(--hacker-green) !important;
+    box-shadow: var(--hacker-glow-sm) !important;
+    color: var(--hacker-text) !important;
+    border-radius: 4px !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 60px; height: 60px;
+    background: radial-gradient(circle, rgba(0,170,255,0.15), transparent);
+    border-radius: 50%;
+}
+
+.stat-card:hover {
+    box-shadow: var(--hacker-glow) !important;
+    transform: translateY(-5px) scale(1.02) !important;
+}
+
+.stat-card h3 {
+    color: var(--hacker-green) !important;
+    font-family: 'Orbitron', monospace !important;
+    text-shadow: var(--hacker-glow) !important;
+    font-size: 2.2rem !important;
+}
+
+.stat-card p { color: var(--hacker-muted) !important; }
+
+/* ===================== BUTTONS ===================== */
+.btn {
+    border-radius: 3px !important;
+    font-family: 'Share Tech Mono', monospace !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    font-size: 0.82rem !important;
+    transition: all 0.2s ease !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: transparent !important;
+    border: 1px solid var(--hacker-green) !important;
+    color: var(--hacker-green) !important;
+    box-shadow: var(--hacker-glow-sm) !important;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background: var(--hacker-green) !important;
+    color: #000 !important;
+    box-shadow: var(--hacker-glow) !important;
+    transform: translateY(-1px) !important;
+}
+
+.btn-success {
+    background: transparent !important;
+    border: 1px solid #0088cc !important;
+    color: #0088cc !important;
+}
+
+.btn-success:hover {
+    background: #0088cc !important;
+    color: #000 !important;
+    box-shadow: 0 0 10px #0088cc !important;
+}
+
+.btn-danger {
+    background: transparent !important;
+    border: 1px solid var(--hacker-red) !important;
+    color: var(--hacker-red) !important;
+}
+
+.btn-danger:hover {
+    background: var(--hacker-red) !important;
+    color: #fff !important;
+    box-shadow: 0 0 10px var(--hacker-red) !important;
+}
+
+.btn-warning {
+    background: transparent !important;
+    border: 1px solid var(--hacker-yellow) !important;
+    color: var(--hacker-yellow) !important;
+}
+
+.btn-warning:hover {
+    background: var(--hacker-yellow) !important;
+    color: #000 !important;
+    box-shadow: 0 0 10px var(--hacker-yellow) !important;
+}
+
+.btn-secondary {
+    background: transparent !important;
+    border: 1px solid var(--hacker-muted) !important;
+    color: var(--hacker-muted) !important;
+}
+
+.btn-secondary:hover {
+    background: var(--hacker-muted) !important;
+    color: #000 !important;
+}
+
+.btn-info {
+    background: transparent !important;
+    border: 1px solid var(--hacker-cyan) !important;
+    color: var(--hacker-cyan) !important;
+}
+
+.btn-info:hover {
+    background: var(--hacker-cyan) !important;
+    color: #000 !important;
+    box-shadow: 0 0 10px var(--hacker-cyan) !important;
+}
+
+.btn-outline-primary {
+    border-color: var(--hacker-green) !important;
+    color: var(--hacker-green) !important;
+}
+
+.btn-outline-primary:hover {
+    background: var(--hacker-green) !important;
+    color: #000 !important;
+}
+
+/* ===================== TABLES ===================== */
+.table {
+    background: var(--hacker-card) !important;
+    border-radius: 4px !important;
+    color: var(--hacker-text) !important;
+    border: 1px solid var(--hacker-border) !important;
+}
+
+.table thead {
+    background: rgba(0,170,255,0.1) !important;
+    color: var(--hacker-green) !important;
+    font-family: 'Orbitron', monospace !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    border-bottom: 1px solid var(--hacker-green) !important;
+}
+
+.table thead th {
+    color: var(--hacker-green) !important;
+    border-color: var(--hacker-border) !important;
+    padding: 14px 15px !important;
+}
+
+.table tbody tr {
+    border-color: rgba(0,170,255,0.08) !important;
+    transition: all 0.2s !important;
+}
+
+.table tbody tr:hover {
+    background: rgba(0,170,255,0.06) !important;
+    transform: none !important;
+    box-shadow: inset 3px 0 0 var(--hacker-green) !important;
+}
+
+.table td, .table th {
+    color: var(--hacker-text) !important;
+    border-color: rgba(0,170,255,0.08) !important;
+    vertical-align: middle !important;
+}
+
+/* ===================== FORMS ===================== */
+.form-control, .form-select {
+    background: #050a05 !important;
+    border: 1px solid rgba(0,170,255,0.25) !important;
+    color: var(--hacker-text) !important;
+    border-radius: 3px !important;
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 0.9rem !important;
+    transition: all 0.2s !important;
+}
+
+.form-control:focus, .form-select:focus {
+    background: #040d04 !important;
+    border-color: var(--hacker-green) !important;
+    box-shadow: 0 0 0 2px rgba(0,170,255,0.2), var(--hacker-glow-sm) !important;
+    color: var(--hacker-green) !important;
+    outline: none !important;
+}
+
+.form-control::placeholder { color: var(--hacker-muted) !important; opacity: 0.7 !important; }
+
+.form-label {
+    color: var(--hacker-green) !important;
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 0.82rem !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    margin-bottom: 5px !important;
+}
+
+.input-group-text {
+    background: rgba(0,170,255,0.1) !important;
+    border: 1px solid rgba(0,170,255,0.25) !important;
+    color: var(--hacker-green) !important;
+    font-family: 'Share Tech Mono', monospace !important;
+}
+
+/* ===================== BADGES ===================== */
+.badge {
+    border-radius: 2px !important;
+    font-family: 'Share Tech Mono', monospace !important;
+    letter-spacing: 1px !important;
+    font-size: 0.75rem !important;
+    padding: 5px 10px !important;
+    text-transform: uppercase !important;
+}
+
+.badge.bg-success, .badge.bg-primary {
+    background: transparent !important;
+    border: 1px solid var(--hacker-green) !important;
+    color: var(--hacker-green) !important;
+    box-shadow: var(--hacker-glow-sm) !important;
+}
+
+.badge.bg-danger {
+    background: transparent !important;
+    border: 1px solid var(--hacker-red) !important;
+    color: var(--hacker-red) !important;
+}
+
+.badge.bg-warning {
+    background: transparent !important;
+    border: 1px solid var(--hacker-yellow) !important;
+    color: var(--hacker-yellow) !important;
+}
+
+.badge.bg-info {
+    background: transparent !important;
+    border: 1px solid var(--hacker-cyan) !important;
+    color: var(--hacker-cyan) !important;
+}
+
+.badge.bg-secondary {
+    background: transparent !important;
+    border: 1px solid var(--hacker-muted) !important;
+    color: var(--hacker-muted) !important;
+}
+
+/* ===================== ALERTS ===================== */
+.alert {
+    border-radius: 3px !important;
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 0.88rem !important;
+    border: none !important;
+    border-left: 3px solid !important;
+}
+
+.alert-success {
+    background: rgba(0,170,255,0.07) !important;
+    border-left-color: var(--hacker-green) !important;
+    color: var(--hacker-green) !important;
+}
+
+.alert-danger {
+    background: rgba(255,0,68,0.07) !important;
+    border-left-color: var(--hacker-red) !important;
+    color: var(--hacker-red) !important;
+}
+
+.alert-warning {
+    background: rgba(255,215,0,0.07) !important;
+    border-left-color: var(--hacker-yellow) !important;
+    color: var(--hacker-yellow) !important;
+}
+
+.alert-info {
+    background: rgba(0,255,255,0.07) !important;
+    border-left-color: var(--hacker-cyan) !important;
+    color: var(--hacker-cyan) !important;
+}
+
+.btn-close { filter: invert(1) sepia(1) saturate(5) hue-rotate(200deg) !important; }
+
+/* ===================== SIDEBAR ===================== */
+.sidebar {
+    background: #020802 !important;
+    border-right: 1px solid var(--hacker-border) !important;
+    min-height: 100vh;
+}
+
+.sidebar .nav-link {
+    color: var(--hacker-muted) !important;
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 1px !important;
+    border-left: 2px solid transparent !important;
+    border-radius: 0 3px 3px 0 !important;
+    padding: 11px 16px !important;
+    transition: all 0.2s !important;
+    margin: 2px 0 !important;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    color: var(--hacker-green) !important;
+    background: rgba(0,170,255,0.06) !important;
+    border-left-color: var(--hacker-green) !important;
+    text-shadow: var(--hacker-glow-sm) !important;
+    transform: none !important;
+}
+
+.sidebar .nav-link i { width: 20px; }
+
+/* ===================== FOOTER ===================== */
+.footer {
+    background: #000 !important;
+    border-top: 1px solid var(--hacker-border) !important;
+    color: var(--hacker-muted) !important;
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 0.8rem !important;
+    letter-spacing: 1px !important;
+    padding: 20px !important;
+}
+
+/* ===================== HEADINGS ===================== */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--hacker-green) !important;
+    font-family: 'Orbitron', monospace !important;
+    letter-spacing: 1px !important;
+}
+
+h1 { font-size: 1.8rem !important; text-shadow: var(--hacker-glow) !important; }
+h2 { font-size: 1.5rem !important; }
+h3 { font-size: 1.2rem !important; }
+
+/* ===================== MISC TEXT ===================== */
+p, span, li, td, label { color: var(--hacker-text); }
+a { color: var(--hacker-green) !important; text-decoration: none !important; }
+a:hover { color: var(--hacker-green3) !important; text-shadow: var(--hacker-glow-sm) !important; }
+
+.text-muted { color: var(--hacker-muted) !important; }
+.text-success { color: var(--hacker-green) !important; }
+.text-danger  { color: var(--hacker-red) !important; }
+.text-warning { color: var(--hacker-yellow) !important; }
+.text-info    { color: var(--hacker-cyan) !important; }
+.text-primary { color: var(--hacker-green) !important; }
+
+/* ===================== PAGE HEADERS (dashboard hero sections) ===================== */
+div[style*="linear-gradient"] {
+    background: linear-gradient(135deg, #000a00, #001a00) !important;
+    border-bottom: 1px solid var(--hacker-green) !important;
+    box-shadow: 0 4px 30px rgba(0,170,255,0.15) !important;
+}
+
+/* ===================== MODALS ===================== */
+.modal-content {
+    background: #030d03 !important;
+    border: 1px solid var(--hacker-green) !important;
+    box-shadow: var(--hacker-glow) !important;
+    border-radius: 4px !important;
+    color: var(--hacker-text) !important;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--hacker-border) !important;
+    background: rgba(0,170,255,0.05) !important;
+}
+
+.modal-title {
+    color: var(--hacker-green) !important;
+    font-family: 'Orbitron', monospace !important;
+    font-size: 0.95rem !important;
+    letter-spacing: 2px !important;
+}
+
+.modal-footer { border-top: 1px solid var(--hacker-border) !important; }
+
+/* ===================== PAGINATION ===================== */
+.pagination .page-link {
+    background: transparent !important;
+    border: 1px solid rgba(0,170,255,0.2) !important;
+    color: var(--hacker-muted) !important;
+    font-family: 'Share Tech Mono', monospace !important;
+}
+
+.pagination .page-link:hover {
+    background: rgba(0,170,255,0.1) !important;
+    color: var(--hacker-green) !important;
+    border-color: var(--hacker-green) !important;
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--hacker-green) !important;
+    border-color: var(--hacker-green) !important;
+    color: #000 !important;
+}
+
+/* ===================== LIST GROUP ===================== */
+.list-group-item {
+    background: var(--hacker-card) !important;
+    border-color: rgba(0,170,255,0.1) !important;
+    color: var(--hacker-text) !important;
+}
+
+.list-group-item:hover {
+    background: rgba(0,170,255,0.06) !important;
+    color: var(--hacker-green) !important;
+}
+
+/* ===================== PROGRESS BARS ===================== */
+.progress {
+    background: #0a150a !important;
+    border: 1px solid rgba(0,170,255,0.15) !important;
+    border-radius: 2px !important;
+    height: 8px !important;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, var(--hacker-green2), var(--hacker-green3)) !important;
+    box-shadow: var(--hacker-glow-sm) !important;
+}
+
+/* ===================== ANIMATIONS ===================== */
+@keyframes hackerGlow {
+    0%, 100% { text-shadow: 0 0 5px #00aaff, 0 0 10px #00aaff; }
+    50%       { text-shadow: 0 0 15px #00aaff, 0 0 30px #00aaff, 0 0 60px #00aaff; }
+}
+
+@keyframes borderPulse {
+    0%, 100% { box-shadow: 0 0 5px rgba(0,170,255,0.3); }
+    50%       { box-shadow: 0 0 20px rgba(0,170,255,0.6); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scanline {
+    from { background-position: 0 0; }
+    to   { background-position: 0 100vh; }
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+
+.fade-in { animation: fadeInUp 0.4s ease both; }
+.card    { animation: fadeInUp 0.4s ease both; }
+
+/* Blinking cursor on headings */
+h1::after {
+    content: '_';
+    animation: blink 1s step-end infinite;
+    color: var(--hacker-green);
+    margin-left: 4px;
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 768px) {
+    .navbar-brand { font-size: 0.95rem !important; }
+    .main-content { padding: 12px !important; }
+    h1 { font-size: 1.3rem !important; }
+}
