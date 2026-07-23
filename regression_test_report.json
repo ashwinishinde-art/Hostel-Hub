@@ -1,0 +1,331 @@
+{
+  "total": 46,
+  "passed": 12,
+  "failed": 34,
+  "success_rate": "26%",
+  "timestamp": "2026-07-23T00:22:11.177120",
+  "test_log": [
+    {
+      "category": "authentication",
+      "test": "Users table exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.457228",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "authentication",
+      "test": "Users have is_active field",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.457251",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "authentication",
+      "test": "Login page accessible",
+      "status": "PASS",
+      "timestamp": "2026-07-23T00:22:10.464642",
+      "error": ""
+    },
+    {
+      "category": "authentication",
+      "test": "Valid login accepted",
+      "status": "PASS",
+      "timestamp": "2026-07-23T00:22:10.706482",
+      "error": ""
+    },
+    {
+      "category": "authentication",
+      "test": "Invalid login rejected",
+      "status": "PASS",
+      "timestamp": "2026-07-23T00:22:10.936212",
+      "error": ""
+    },
+    {
+      "category": "authentication",
+      "test": "Logout works",
+      "status": "PASS",
+      "timestamp": "2026-07-23T00:22:10.940945",
+      "error": ""
+    },
+    {
+      "category": "database",
+      "test": "Table 'users' exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.940966",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "database",
+      "test": "Table 'students' exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.940971",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "database",
+      "test": "Table 'rooms' exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.940974",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "database",
+      "test": "Table 'room_occupancy' exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.940976",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "database",
+      "test": "Table 'complaints' exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.940979",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "database",
+      "test": "Table 'visitors' exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.940981",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "database",
+      "test": "Table 'fees' exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.940983",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "database",
+      "test": "Table 'notices' exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.940985",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "database",
+      "test": "Table 'hostel_settings' exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.940988",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "database",
+      "test": "Hostel settings configured",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.940991",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "database",
+      "test": "Users have required fields",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.940993",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "database",
+      "test": "Rooms have required fields",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.940996",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "room_management",
+      "test": "Allocate room page exists",
+      "status": "PASS",
+      "timestamp": "2026-07-23T00:22:10.941526",
+      "error": ""
+    },
+    {
+      "category": "room_management",
+      "test": "Room capacity not exceeded",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.941533",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "room_management",
+      "test": "Room types are valid",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.941537",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "student_management",
+      "test": "Student records exist",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.941544",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "student_management",
+      "test": "Students linked to users",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.941547",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "student_management",
+      "test": "Student management page accessible",
+      "status": "PASS",
+      "timestamp": "2026-07-23T00:22:10.942020",
+      "error": ""
+    },
+    {
+      "category": "complaint_system",
+      "test": "Complaints table exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.942030",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "complaint_system",
+      "test": "Complaint statuses are valid",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.942034",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "complaint_system",
+      "test": "Complaint management page accessible",
+      "status": "PASS",
+      "timestamp": "2026-07-23T00:22:10.942502",
+      "error": ""
+    },
+    {
+      "category": "visitor_management",
+      "test": "Visitors table exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.942514",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "visitor_management",
+      "test": "Visitor statuses are valid",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.942518",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "visitor_management",
+      "test": "Visitor management page accessible",
+      "status": "PASS",
+      "timestamp": "2026-07-23T00:22:10.942984",
+      "error": ""
+    },
+    {
+      "category": "fee_management",
+      "test": "Fees table exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.942995",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "fee_management",
+      "test": "Fee statuses are valid",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.942999",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "fee_management",
+      "test": "Fee management page accessible",
+      "status": "PASS",
+      "timestamp": "2026-07-23T00:22:10.943449",
+      "error": ""
+    },
+    {
+      "category": "notice_board",
+      "test": "Notices table exists",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.943459",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "notice_board",
+      "test": "Notice management page accessible",
+      "status": "PASS",
+      "timestamp": "2026-07-23T00:22:10.943905",
+      "error": ""
+    },
+    {
+      "category": "cross_module",
+      "test": "Allocated students can file complaints",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.943915",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "cross_module",
+      "test": "Room occupancy data is consistent",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:10.943919",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "cross_module",
+      "test": "Dashboard loads successfully",
+      "status": "PASS",
+      "timestamp": "2026-07-23T00:22:10.944387",
+      "error": ""
+    },
+    {
+      "category": "performance",
+      "test": "Login response time < 500ms",
+      "status": "PASS",
+      "timestamp": "2026-07-23T00:22:11.173297",
+      "error": ""
+    },
+    {
+      "category": "performance",
+      "test": "Database queries < 100ms",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:11.173321",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "data_integrity",
+      "test": "No duplicate user IDs",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:11.173329",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "data_integrity",
+      "test": "No orphaned student records",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:11.173332",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "data_integrity",
+      "test": "Active allocations point to valid rooms",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:11.173335",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "security",
+      "test": "Passwords are hashed",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:11.173339",
+      "error": "'MockDatabase' object has no attribute 'query'"
+    },
+    {
+      "category": "security",
+      "test": "Protected routes require login",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:11.174297",
+      "error": "'NoneType' object has no attribute 'lower'"
+    },
+    {
+      "category": "security",
+      "test": "Role-based access control enforced",
+      "status": "FAIL",
+      "timestamp": "2026-07-23T00:22:11.177045",
+      "error": "Unprotected access to admin route (status 200)"
+    }
+  ]
+}

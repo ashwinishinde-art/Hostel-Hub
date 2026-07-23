@@ -13,6 +13,45 @@
       "updated_at": "2024-01-01"
     },
     {
+      "id": 2,
+      "username": "prajwal",
+      "password_hash": "$2b$12$fRl39TraAQ4NkUtay2xpJ.XXS7j2LZFUZtgfZBRzWePnfaqt8.vgK",
+      "role": "student",
+      "email": "prajwal@hostel.com",
+      "full_name": "Prajwal Tandekar",
+      "phone": "",
+      "is_active": true,
+      "created_at": "2024-01-01",
+      "updated_at": "2024-01-01",
+      "gender": "Male"
+    },
+    {
+      "id": 3,
+      "username": "rajdeep",
+      "password_hash": "$2b$12$fRl39TraAQ4NkUtay2xpJ.XXS7j2LZFUZtgfZBRzWePnfaqt8.vgK",
+      "role": "student",
+      "email": "rajdeep@hostel.com",
+      "full_name": "Rajdeep Singh",
+      "phone": "9876543212",
+      "is_active": true,
+      "created_at": "2024-01-01",
+      "updated_at": "2024-01-01",
+      "gender": "Male"
+    },
+    {
+      "id": 4,
+      "username": "rutuja",
+      "password_hash": "$2b$12$fRl39TraAQ4NkUtay2xpJ.XXS7j2LZFUZtgfZBRzWePnfaqt8.vgK",
+      "role": "student",
+      "email": "rutuja@hostel.com",
+      "full_name": "Rutuja Sharma",
+      "phone": "9876543213",
+      "is_active": true,
+      "created_at": "2024-01-01",
+      "updated_at": "2024-01-01",
+      "gender": "Female"
+    },
+    {
       "id": 5,
       "username": "warden",
       "password_hash": "$2b$12$fRl39TraAQ4NkUtay2xpJ.XXS7j2LZFUZtgfZBRzWePnfaqt8.vgK",
@@ -25,6 +64,58 @@
       "updated_at": "2024-01-01"
     },
     {
+      "id": 6,
+      "username": "nandini",
+      "email": "nandinichapke@gmaill.com",
+      "password_hash": "$2b$12$CADpChGU0xLOg49mlAuAmeFDcMIV1t38glxs0itE6AzQmmw88a5NW",
+      "role": "student",
+      "full_name": "Nandini Chapke",
+      "phone": "9112451080",
+      "gender": "Female",
+      "is_active": true,
+      "created_at": "2026-07-23",
+      "updated_at": "2026-07-23"
+    },
+    {
+      "id": 7,
+      "username": "anushka",
+      "email": "anushkakhandare@gmail.com",
+      "password_hash": "$2b$12$v4JnGc00/mhZWhEWVTV3QuZMLv5pLK0t.e6k1/GkNaA5gY1wSBXsK",
+      "role": "student",
+      "full_name": "Anushka Khandare",
+      "phone": "7894561231",
+      "gender": "Female",
+      "is_active": true,
+      "created_at": "2026-07-23",
+      "updated_at": "2026-07-23"
+    },
+    {
+      "id": 8,
+      "username": "srushti",
+      "email": "shrushtidethe@gmail.com",
+      "password_hash": "$2b$12$3uIa/uQLweP6Y/FR0Bdiueza/idSdX.OcWaT6ZB/yd12NX2alwPGa",
+      "role": "student",
+      "full_name": "Srushti Dethe",
+      "phone": "7894561231",
+      "gender": "Female",
+      "is_active": true,
+      "created_at": "2026-07-23",
+      "updated_at": "2026-07-23"
+    },
+    {
+      "id": 9,
+      "username": "rutujachaudhari",
+      "email": "rutujachaudhari@gmail.com",
+      "password_hash": "$2b$12$D73N4yco8PfiSuDEV2XHh.VNr.7d2SByjBpriycUEnHgU2DKXZkcG",
+      "role": "student",
+      "full_name": "Rutuja Chaudhari",
+      "phone": "",
+      "gender": "Female",
+      "is_active": true,
+      "created_at": "2026-07-23",
+      "updated_at": "2026-07-23"
+    },
+    {
       "id": 10,
       "username": "rushikesh",
       "email": "reushikeshhasbe@gmail.com",
@@ -32,7 +123,10 @@
       "role": "student",
       "full_name": "Rushikesh Hasbe",
       "phone": "7030710886",
-      "gender": "Male"
+      "gender": "Male",
+      "is_active": true,
+      "created_at": "2026-07-23",
+      "updated_at": "2026-07-23"
     },
     {
       "id": 11,
@@ -41,8 +135,11 @@
       "password_hash": "$2b$12$XT5DBDhrhc7ZrS8yNw3gO.YOCOQSUSaLsXGEYxfAFreMt3oeeyo6m",
       "role": "student",
       "full_name": "Nandini Chapke",
-      "phone": "9112452080",
-      "gender": "Female"
+      "phone": "",
+      "gender": "Female",
+      "is_active": true,
+      "created_at": "2026-07-23",
+      "updated_at": "2026-07-23"
     },
     {
       "id": 12,
@@ -52,7 +149,10 @@
       "role": "student",
       "full_name": "Rutuja Chaudhari",
       "phone": "8379909018",
-      "gender": "Female"
+      "gender": "Female",
+      "is_active": true,
+      "created_at": "2026-07-23",
+      "updated_at": "2026-07-23"
     },
     {
       "id": 13,
@@ -62,7 +162,10 @@
       "role": "student",
       "full_name": "Srushti Dethe",
       "phone": "8265021250",
-      "gender": "Female"
+      "gender": "Female",
+      "is_active": true,
+      "created_at": "2026-07-23",
+      "updated_at": "2026-07-23"
     },
     {
       "id": 14,
@@ -72,7 +175,21 @@
       "role": "student",
       "full_name": "Prajwal Tandekar",
       "phone": "",
-      "gender": "Male"
+      "gender": "Male",
+      "is_active": true,
+      "created_at": "2026-07-23",
+      "updated_at": "2026-07-23"
+    },
+    {
+      "id": 15,
+      "username": "testuser123",
+      "email": "test@hostel.com",
+      "password_hash": "$2b$12$LpvHZCA949EHT3q8q6jQDuh7GFlzc1UO8UXQ1uFmDvDKjtEhHJZrG",
+      "role": "student",
+      "full_name": "Test User",
+      "phone": "9999999999",
+      "gender": "Male",
+      "created_at": "2026-07-21 14:53:02"
     },
     {
       "id": 16,
@@ -84,66 +201,51 @@
       "phone": "",
       "gender": "Female",
       "created_at": "2026-07-22 11:13:52"
+    }
+  ],
+  "students": [
+    {
+      "id": 1,
+      "user_id": 2,
+      "enrollment_no": "ENR001",
+      "batch": "2024",
+      "department": "CSE",
+      "cgpa": 8.5,
+      "emergency_contact": "9876543215",
+      "emergency_relation": "Father",
+      "guardian_name": "Tandekar Sr.",
+      "contact_person_name": "",
+      "contact_person_phone": "",
+      "emergency_contact_phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "pincode": "",
+      "roll_number": "CSE24001"
     },
     {
-      "id": 17,
-      "username": "nidhee123",
-      "email": "nidheedeshpande@gmail.com",
-      "password_hash": "$2b$12$4Vlba8O4287siK31FvcCNO6qHozO5V2iN3DNHPmJZUDBzhacU6riC",
-      "role": "student",
-      "full_name": "nidhee deshpande",
-      "phone": "9856745643",
-      "gender": "Female",
-      "is_active": "TRUE",
-      "created_at": "2026-07-23 11:03:59"
+      "id": 2,
+      "user_id": 3,
+      "enrollment_no": "ENR002",
+      "batch": "2024",
+      "department": "CSE",
+      "cgpa": 8.2,
+      "emergency_contact": "9876543216",
+      "emergency_relation": "Mother",
+      "guardian_name": "Singh Sr.",
+      "roll_number": "CSE24002"
     },
     {
-      "id": 18,
-      "username": "Srushti",
-      "email": "srushtirode1@gmail.com",
-      "password_hash": "$2b$12$B5JStLYPEJlttaUtkJaSde4qbgwItIpzT62OryaWfoegiR48Xjjoy",
-      "role": "student",
-      "full_name": "Srushti Rode",
-      "phone": "9586214556",
-      "gender": "Female",
-      "is_active": "TRUE",
-      "created_at": "2026-07-23 11:04:13"
-    },
-    {
-      "id": 19,
-      "username": "Disha",
-      "email": "dishanvale@gmail.com",
-      "password_hash": "$2b$12$sNAHfB6OkXFE35iSN59jC.IxZZxm2K9QV2SOyjHLOWg64nfwAGzoy",
-      "role": "student",
-      "full_name": "Disha Navale",
-      "phone": "9485526652",
-      "gender": "Female",
-      "is_active": "TRUE",
-      "created_at": "2026-07-23 11:17:55"
-    },
-    {
-      "id": 20,
-      "username": "aarya123",
-      "email": "nagawadeaarya@gmail.com",
-      "password_hash": "$2b$12$Zd.b.NRNIVf3S2bYUEPWgucAD4gZD0evTQ.wU44skvJJxeOGHAtVG",
-      "role": "student",
-      "full_name": "Aarya nagawade",
-      "phone": "9876467654",
-      "gender": "Female",
-      "is_active": "TRUE",
-      "created_at": "2026-07-23 11:19:19"
-    },
-    {
-      "id": 21,
-      "username": "Aditi",
-      "email": "aditikumkar737@gmail.com",
-      "password_hash": "$2b$12$jc0UI/OTBPl60zTDrlCNvuHwWpp2Y5jdNQvO0jyWt6rAGcXC3y9ye",
-      "role": "student",
-      "full_name": "Aditi Kumkar",
-      "phone": "8562589665",
-      "gender": "Female",
-      "is_active": "TRUE",
-      "created_at": "2026-07-23 11:20:38"
+      "id": 3,
+      "user_id": 4,
+      "enrollment_no": "ENR003",
+      "batch": "2024",
+      "department": "ECE",
+      "cgpa": 8.8,
+      "emergency_contact": "9876543217",
+      "emergency_relation": "Father",
+      "guardian_name": "Sharma Sr.",
+      "roll_number": "ECE24003"
     },
     {
       "id": 22,
@@ -263,13 +365,13 @@
       "roll_number": "CO1210",
       "branch": "CSE",
       "semester": "4",
-      "contact_person_name": "Srusthi Dethe",
-      "contact_person_phone": "9348458343",
-      "emergency_contact_phone": "9348458343",
-      "address": "Zeal clg of engg and research,pune",
-      "city": "Pune",
-      "state": "Maharashtra",
-      "pincode": "41110"
+      "contact_person_name": "",
+      "contact_person_phone": "",
+      "emergency_contact_phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "pincode": ""
     },
     {
       "id": 10,
@@ -582,10 +684,9 @@
       "capacity": 3,
       "rent": 2700.0,
       "amenities": "Fan, Shared Bathroom, WiFi",
-      "status": "full",
-      "occupied_count": 3,
-      "room_position": 6,
-      "gender_occupancy": "Female"
+      "status": "vacant",
+      "occupied_count": 1,
+      "room_position": 6
     },
     {
       "id": 7,
@@ -595,7 +696,7 @@
       "capacity": 1,
       "rent": 5000.0,
       "amenities": "AC, Attached Bathroom, WiFi",
-      "status": "full",
+      "status": "vacant",
       "occupied_count": 1,
       "room_position": 7,
       "gender_occupancy": "Male"
@@ -609,8 +710,9 @@
       "rent": 3500.0,
       "amenities": "AC, Shared Bathroom, WiFi",
       "status": "vacant",
-      "occupied_count": 0,
-      "room_position": 8
+      "occupied_count": 1,
+      "room_position": 8,
+      "gender_occupancy": "Boys"
     },
     {
       "id": 9,
@@ -709,54 +811,6 @@
       "status": "vacant",
       "occupied_count": 0,
       "room_position": 16
-    },
-    {
-      "id": 17,
-      "room_number": "117",
-      "room_type": "Double Sharing",
-      "floor": 4,
-      "capacity": 2,
-      "rent": 3500.0,
-      "amenities": "AC, Shared Bathroom, WiFi",
-      "status": "vacant",
-      "occupied_count": 0,
-      "room_position": 17
-    },
-    {
-      "id": 18,
-      "room_number": "118",
-      "room_type": "Triple Sharing",
-      "floor": 4,
-      "capacity": 3,
-      "rent": 2700.0,
-      "amenities": "Fan, Shared Bathroom, WiFi",
-      "status": "vacant",
-      "occupied_count": 0,
-      "room_position": 18
-    },
-    {
-      "id": 19,
-      "room_number": "119",
-      "room_type": "Single Deluxe",
-      "floor": 4,
-      "capacity": 1,
-      "rent": 5000.0,
-      "amenities": "AC, Attached Bathroom, WiFi",
-      "status": "vacant",
-      "occupied_count": 0,
-      "room_position": 19
-    },
-    {
-      "id": 20,
-      "room_number": "120",
-      "room_type": "Double Sharing",
-      "floor": 4,
-      "capacity": 2,
-      "rent": 3500.0,
-      "amenities": "AC, Shared Bathroom, WiFi",
-      "status": "vacant",
-      "occupied_count": 0,
-      "room_position": 20
     }
   ],
   "room_occupancy": [
@@ -821,8 +875,31 @@
       "room_id": 2,
       "student_id": 18,
       "check_in_date": "2026-07-16",
+      "created_at": "2026-07-21 14:24:22"
+    },
+    {
+      "id": 6,
+      "room_id": 6,
+      "student_id": 3,
+      "check_in_date": "2026-07-22",
       "status": "Active",
-      "created_at": "2026-07-23 11:32:01"
+      "created_at": "2026-07-23 00:06:36"
+    },
+    {
+      "id": 7,
+      "room_id": 8,
+      "student_id": 10,
+      "check_in_date": "2026-07-22",
+      "status": "Active",
+      "created_at": "2026-07-23 00:07:29"
+    },
+    {
+      "id": 8,
+      "room_id": 2,
+      "student_id": 12,
+      "check_in_date": "2026-07-24",
+      "status": "Active",
+      "created_at": "2026-07-23 02:52:51"
     }
   ],
   "complaints": [
@@ -833,7 +910,22 @@
       "category": "Maintenance",
       "title": "The light",
       "description": "The lights are been fluctuating past four days.",
-      "priority": "High"
+      "priority": "High",
+      "status": "pending",
+      "created_at": "2026-07-23 00:23:08",
+      "resolution_notes": ""
+    },
+    {
+      "id": 2,
+      "student_id": 14,
+      "room_id": 5,
+      "category": "Electrical",
+      "title": "Lights",
+      "description": "Lights are not working properly",
+      "priority": "Medium",
+      "status": "pending",
+      "created_at": "2026-07-23 00:23:08",
+      "resolution_notes": ""
     },
     {
       "id": 3,
@@ -845,7 +937,21 @@
       "priority": "High",
       "created_at": "2026-07-21 14:11:21",
       "updated_at": "2026-07-21 14:11:21",
-      "created_at_str": "2026-07-21 14:11:21"
+      "created_at_str": "2026-07-21 14:11:21",
+      "status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "id": 4,
+      "student_id": 2,
+      "room_id": 2,
+      "category": "Maintenance",
+      "title": "Test Complaint",
+      "description": "Test complaint description",
+      "priority": "Medium",
+      "status": "Pending",
+      "created_at": "2026-07-23 00:25:49",
+      "updated_at": "2026-07-23 00:25:49"
     }
   ],
   "visitors": [],
@@ -872,6 +978,58 @@
       "category": "Facilities",
       "image_path": "/static/uploads/test.jpg",
       "created_at": "2026-07-21 14:54:32"
+    }
+  ],
+  "hostel_settings": [
+    {
+      "id": 1,
+      "setting_key": "hostel_name",
+      "setting_value": "Hostel Hub"
+    },
+    {
+      "id": 2,
+      "setting_key": "hostel_address",
+      "setting_value": "123 Main Street, Mumbai, Maharashtra"
+    },
+    {
+      "id": 3,
+      "setting_key": "hostel_phone",
+      "setting_value": "9876543210"
+    },
+    {
+      "id": 4,
+      "setting_key": "hostel_email",
+      "setting_value": "admin@hostel.com"
+    },
+    {
+      "id": 5,
+      "setting_key": "warden_name",
+      "setting_value": "Mr. Warden"
+    },
+    {
+      "id": 6,
+      "setting_key": "warden_phone",
+      "setting_value": "9876543214"
+    },
+    {
+      "id": 7,
+      "setting_key": "checkin_time",
+      "setting_value": "14:00"
+    },
+    {
+      "id": 8,
+      "setting_key": "checkout_time",
+      "setting_value": "11:00"
+    },
+    {
+      "id": 9,
+      "setting_key": "visitor_hours_start",
+      "setting_value": "10:00"
+    },
+    {
+      "id": 10,
+      "setting_key": "visitor_hours_end",
+      "setting_value": "18:00"
     }
   ]
 }

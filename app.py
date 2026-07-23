@@ -6,6 +6,7 @@ import bcrypt
 from datetime import datetime, timedelta
 from config.config import DevelopmentConfig
 import secrets
+from flask_socketio import SocketIO, emit, join_room, leave_room
 
 # Try MySQL first, fall back to mock database
 try:
@@ -26,6 +27,20 @@ from utils.otp_manager import generate_otp, get_otp_expiry, send_otp_email, send
 app = Flask(__name__)
 app.config['SECRET_KEY'] = DevelopmentConfig.SECRET_KEY
 app.config.from_object(DevelopmentConfig)
+
+# Initialize SocketIO for real-time updates
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
+
+# Store connected clients for each feature
+connected_clients = {
+    'gallery': set(),
+    'complaints': set(),
+    'notices': set(),
+    'fees': set(),
+    'visitors': set(),
+    'students': set(),
+    'rooms': set()
+}
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -76,14 +91,63 @@ def format_date(value, format_str='%d %b %Y'):
     except Exception as e:
         return str(value) if value else 'N/A'
 
+# ==================== WEBSOCKET EVENTS ====================
+
+@socketio.on('connect')
+def handle_connect():
+    """Handle client connection"""
+    print(f'✓ Client connected: {request.sid}')
+    emit('connection_response', {'data': 'Connected to real-time server', 'timestamp': datetime.now().isoformat()})
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    """Handle client disconnection"""
+    print(f'✗ Client disconnected: {request.sid}')
+    # Remove from all rooms
+    for room in connected_clients.values():
+        room.discard(request.sid)
+
+@socketio.on('subscribe')
+def handle_subscribe(data):
+    """Subscribe to updates for specific feature"""
+    feature = data.get('feature', 'gallery')
+    if feature in connected_clients:
+        connected_clients[feature].add(request.sid)
+        join_room(feature)
+        print(f'📌 Client {request.sid} subscribed to {feature} (Total: {len(connected_clients[feature])})')
+        emit('subscribed', {'feature': feature, 'timestamp': datetime.now().isoformat()})
+
+@socketio.on('unsubscribe')
+def handle_unsubscribe(data):
+    """Unsubscribe from updates"""
+    feature = data.get('feature', 'gallery')
+    if feature in connected_clients:
+        connected_clients[feature].discard(request.sid)
+        leave_room(feature)
+        print(f'📍 Client {request.sid} unsubscribed from {feature} (Total: {len(connected_clients[feature])})')
+
+def broadcast_update(feature, action, data):
+    """Broadcast update to all connected clients for a feature"""
+    message = {
+        'action': action,
+        'data': data,
+        'timestamp': datetime.now().isoformat(),
+        'feature': feature
+    }
+    
+    print(f'📢 Broadcasting {action} to {feature}: {len(connected_clients.get(feature, set()))} clients')
+    socketio.emit('update', message, room=feature)
+
 # ==================== USER CLASS ====================
 class User(UserMixin):
-    def __init__(self, id, username, email, role, full_name):
+    def __init__(self, id, username, email, role, full_name, phone=None, gender=None):
         self.id = id
         self.username = username
         self.email = email
         self.role = role
         self.full_name = full_name
+        self.phone = phone
+        self.gender = gender
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -99,12 +163,20 @@ def load_user(user_id):
             return None
             
         cursor = db.connection.cursor()
-        cursor.execute("SELECT id, username, email, role, full_name FROM users WHERE id = %s AND is_active = TRUE", (user_id,))
+        cursor.execute("SELECT id, username, email, role, full_name, phone, gender FROM users WHERE id = %s AND is_active = TRUE", (user_id,))
         user_data = cursor.fetchone()
         cursor.close()
         
         if user_data:
-            user = User(user_data['id'], user_data['username'], user_data['email'], user_data['role'], user_data['full_name'])
+            phone = user_data.get('phone') if isinstance(user_data, dict) else user_data[5] if len(user_data) > 5 else None
+            gender = user_data.get('gender') if isinstance(user_data, dict) else user_data[6] if len(user_data) > 6 else None
+            user = User(user_data['id'] if isinstance(user_data, dict) else user_data[0], 
+                       user_data['username'] if isinstance(user_data, dict) else user_data[1], 
+                       user_data['email'] if isinstance(user_data, dict) else user_data[2], 
+                       user_data['role'] if isinstance(user_data, dict) else user_data[3], 
+                       user_data['full_name'] if isinstance(user_data, dict) else user_data[4],
+                       phone, 
+                       gender)
             return user
         return None
     except Exception as e:
@@ -349,7 +421,7 @@ def login():
             
             try:
                 cursor = db.connection.cursor()
-                cursor.execute("SELECT id, username, email, role, full_name, password_hash FROM users WHERE username = %s AND is_active = TRUE", (username,))
+                cursor.execute("SELECT id, username, email, role, full_name, password_hash, phone, gender FROM users WHERE username = %s AND is_active = TRUE", (username,))
                 user_data = cursor.fetchone()
                 cursor.close()
             except Exception as e:
@@ -387,7 +459,9 @@ def login():
                     password_valid = False
                 
                 if password_valid:
-                    user = User(user_data['id'], user_data['username'], user_data['email'], user_data['role'], user_data['full_name'])
+                    phone = user_data.get('phone') if isinstance(user_data, dict) else user_data[6] if len(user_data) > 6 else None
+                    gender = user_data.get('gender') if isinstance(user_data, dict) else user_data[7] if len(user_data) > 7 else None
+                    user = User(user_data['id'], user_data['username'], user_data['email'], user_data['role'], user_data['full_name'], phone, gender)
                     print(f"[LOGIN] Password matched, logging in: {user.username}", file=sys.stderr, flush=True)
                     login_user(user, remember=True)
                     print(f"[LOGIN] Authenticated: {current_user.is_authenticated}", file=sys.stderr, flush=True)
@@ -787,15 +861,42 @@ def dashboard():
 # ==================== STATIC PAGES ====================
 @app.route('/gallery')
 def gallery():
-    """Gallery page"""
-    cursor = db.connection.cursor()
-    cursor.execute("""
-        SELECT * FROM gallery 
-        ORDER BY display_order ASC, created_at DESC
-    """)
-    images = cursor.fetchall()
-    cursor.close()
-    return render_template('gallery.html', images=images)
+    """Gallery page with real-time updates"""
+    return render_template('gallery_realtime.html')
+
+@app.route('/api/gallery/images')
+def api_gallery_images():
+    """API endpoint for real-time gallery updates"""
+    try:
+        cursor = db.connection.cursor()
+        cursor.execute("""
+            SELECT id, title, description, category, image_path, created_at FROM gallery 
+            ORDER BY created_at DESC
+        """)
+        images = cursor.fetchall()
+        cursor.close()
+        
+        # Convert to list of dicts for JSON serialization
+        images_list = []
+        if images:
+            for img in images:
+                if isinstance(img, dict):
+                    images_list.append(img)
+                else:
+                    # Handle tuple format from some database drivers
+                    images_list.append({
+                        'id': img[0] if len(img) > 0 else None,
+                        'title': img[1] if len(img) > 1 else '',
+                        'description': img[2] if len(img) > 2 else '',
+                        'category': img[3] if len(img) > 3 else 'Facilities',
+                        'image_path': img[4] if len(img) > 4 else '',
+                        'created_at': str(img[5]) if len(img) > 5 else ''
+                    })
+        
+        return {'success': True, 'images': images_list}
+    except Exception as e:
+        print(f"Error fetching gallery images: {e}")
+        return {'success': False, 'error': str(e)}, 500
 
 @app.route('/contact')
 def contact():
@@ -862,4 +963,5 @@ if __name__ == '__main__':
     print("   To start MySQL on Windows, open Services and start MySQL.")
     print("="*60 + "\n")
     
-    app.run(host='0.0.0.0', debug=True, port=5000)
+    # Use socketio.run() for real-time support
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True, allow_unsafe_werkzeug=True)

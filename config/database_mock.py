@@ -736,6 +736,8 @@ class MockDatabase:
             table_name = "notices"
         elif "from gallery" in query_lower:
             table_name = "gallery"
+        elif "from hostel_settings" in query_lower:
+            table_name = "hostel_settings"
         else:
             return []
         
@@ -829,24 +831,43 @@ class MockDatabase:
                 values_text = re.sub(r'\s+', ' ', values_text)
 
                 fields = [f.strip() for f in fields_text.split(',')]
-
-                # Split values carefully - quoted strings vs %s placeholders
-                raw_values = [v.strip() for v in values_text.split(',')]
-
-                param_index = 0
-                for i, field in enumerate(fields):
-                    if i >= len(raw_values):
-                        break
-                    val = raw_values[i]
-                    if val == '%s':
-                        # Use next param value
-                        if param_index < len(params):
-                            row[field] = params[param_index]
-                            param_index += 1
-                    else:
-                        # Literal value — strip surrounding quotes
-                        row[field] = val.strip("'\"")
-
+                
+                # Extract VALUES part to check for hardcoded values
+                values_match = re.search(r'VALUES\s*\((.*?)\)', query, re.IGNORECASE | re.DOTALL)
+                if values_match:
+                    values_text = values_match.group(1)
+                    values_text = re.sub(r'\s+', ' ', values_text)
+                    # Split by comma, but be careful with quoted strings
+                    raw_values = [v.strip() for v in values_text.split(',')]
+                    
+                    # Map fields to values
+                    param_idx = 0
+                    for i, field in enumerate(fields):
+                        if i < len(raw_values):
+                            raw_value = raw_values[i]
+                            # Check if this is a placeholder (%s) or a hardcoded value
+                            if raw_value == '%s':
+                                if param_idx < len(params):
+                                    row[field] = params[param_idx]
+                                    param_idx += 1
+                            else:
+                                # It's a hardcoded value (like 'Active', 'Pending', NULL, etc)
+                                # Remove quotes if present
+                                if raw_value.startswith("'") and raw_value.endswith("'"):
+                                    row[field] = raw_value[1:-1]
+                                elif raw_value.upper() == 'NULL':
+                                    row[field] = None
+                                else:
+                                    try:
+                                        # Try to parse as number
+                                        row[field] = int(raw_value)
+                                    except:
+                                        row[field] = raw_value
+                else:
+                    # Fallback to old method if VALUES parsing fails
+                    for i, field in enumerate(fields):
+                        if i < len(params):
+                            row[field] = params[i]
             
             # Add automatic timestamps for new records
             if 'created_at' not in row:
