@@ -5,9 +5,10 @@
 # Anyone on any network can access your site via the tunnel URL.
 # ============================================================
 
-$ProjectDir   = "C:\Users\Admin\OneDrive\Desktop\Hostel-Hub"
-$FlaskPort    = 5000
-$cloudflared  = "C:\Program Files (x86)\cloudflared\cloudflared.exe"
+$ProjectDir  = "C:\Users\Admin\OneDrive\Desktop\Hostel-Hub"
+$FlaskPort   = 5000
+$cloudflared = "C:\Program Files (x86)\cloudflared\cloudflared.exe"
+$LogFile     = "$ProjectDir\tunnel.log"
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
@@ -42,4 +43,5 @@ Write-Host " Share that URL with anyone - they can access your site!" -Foregroun
 Write-Host " Press Ctrl+C in this window to stop the tunnel." -ForegroundColor DarkGray
 Write-Host ""
 
-& $cloudflared tunnel --url http://localhost:$FlaskPort
+# Run tunnel and tee output to log file so the URL is captured
+& $cloudflared tunnel --url "http://localhost:$FlaskPort" 2>&1 | Tee-Object -FilePath $LogFile
