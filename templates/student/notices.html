@@ -2,45 +2,109 @@
 
 {% block title %}Notices - Student Dashboard{% endblock %}
 
-{% block content %}
-<div class="container-fluid main-content">
-    <h1 class="mb-4"><i class="fas fa-bullhorn"></i> Hostel Notices</h1>
+{% block extra_css %}
+<style>
+    .notice-card {
+        background: var(--card-current);
+        border-radius: 16px;
+        padding: 25px 28px;
+        margin-bottom: 18px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        border-left: 5px solid #667eea;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    .notice-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 35px rgba(102,126,234,0.15);
+    }
+    .notice-card.pinned {
+        border-left-color: #f59e0b;
+        background: linear-gradient(135deg, var(--card-current) 0%, rgba(245,158,11,0.03) 100%);
+    }
+    .notice-card.priority-high { border-left-color: #ef4444; }
+    .notice-card.priority-medium { border-left-color: #f59e0b; }
+    .notice-card.priority-low { border-left-color: #06b6d4; }
 
-    <div class="row">
-        <div class="col-md-12">
-            {% if notices %}
-                {% for notice in notices %}
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                {% if notice.is_pinned %}
-                                    <i class="fas fa-thumbtack text-danger"></i>
-                                {% endif %}
-                                <h5 class="card-title mb-0">{{ notice.title }}</h5>
-                            </div>
-                            <div>
-                                <span class="badge bg-primary">{{ notice.category }}</span>
-                                <span class="badge bg-{% if notice.priority == 'High' %}danger{% elif notice.priority == 'Medium' %}warning{% else %}info{% endif %}">
-                                    {{ notice.priority }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">{{ notice.content|e }}</p>
-                        <small class="text-muted">
-                            <i class="fas fa-calendar"></i> {{ notice.created_at|format_date('%d %b %Y at %H:%M') }}
-                        </small>
-                    </div>
-                </div>
-                {% endfor %}
-            {% else %}
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i> No notices available at the moment.
-            </div>
-            {% endif %}
-        </div>
+    .notice-title {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: var(--text-current);
+        margin-bottom: 10px;
+        letter-spacing: -0.2px;
+    }
+    .notice-body {
+        color: var(--text-current);
+        font-weight: 500;
+        line-height: 1.75;
+        margin-bottom: 15px;
+        opacity: 0.85;
+    }
+    .notice-footer {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .notice-footer small {
+        color: var(--text-current);
+        opacity: 0.6;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 50px 0; color: white; margin-bottom: 40px; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
+    <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.06); border-radius: 50%;"></div>
+    <div class="container-fluid" style="position: relative; z-index: 1;">
+        <h1 style="font-weight: 900; font-size: 2.2rem; margin-bottom: 8px; letter-spacing: -0.5px; text-shadow: 0 3px 12px rgba(0,0,0,0.2);">
+            <i class="fas fa-bullhorn"></i> Hostel Notices
+        </h1>
+        <p style="font-size: 1rem; opacity: 0.95; font-weight: 600; margin: 0;">Total Notices: <strong>{{ notices|length }}</strong></p>
     </div>
+</div>
+
+<div class="container-fluid main-content" style="padding-top: 0;">
+    {% if notices %}
+        {% for notice in notices %}
+        <div class="notice-card {% if notice.is_pinned %}pinned{% endif %} priority-{{ notice.priority|lower }}">
+            <!-- Header row -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                    {% if notice.is_pinned %}
+                        <i class="fas fa-thumbtack" style="color: #f59e0b;" title="Pinned"></i>
+                    {% endif %}
+                    <h5 class="notice-title" style="margin: 0;">{{ notice.title }}</h5>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; flex-shrink: 0;">
+                    <span class="badge" style="background: rgba(102,126,234,0.15); color: #667eea; font-weight: 700; padding: 6px 12px; border-radius: 20px;">
+                        {{ notice.category }}
+                    </span>
+                    <span class="badge bg-{% if notice.priority == 'High' %}danger{% elif notice.priority == 'Medium' %}warning{% else %}info{% endif %}" style="font-weight: 600; padding: 6px 12px;">
+                        {{ notice.priority }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <p class="notice-body">{{ notice.content }}</p>
+
+            <!-- Footer -->
+            <div class="notice-footer">
+                <i class="fas fa-calendar" style="color: #667eea; font-size: 0.85rem;"></i>
+                <small>{{ notice.created_at|format_date('%d %b %Y at %H:%M') }}</small>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div style="text-align: center; padding: 80px 20px;">
+        <i class="fas fa-bullhorn" style="font-size: 4rem; opacity: 0.2; display: block; margin-bottom: 20px;"></i>
+        <p style="font-size: 1.1rem; font-weight: 500;">No notices available at the moment</p>
+        <small class="text-muted">Hostel notices will appear here once published by admin</small>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -2,39 +2,79 @@
 
 {% block title %}My Profile - Student Dashboard{% endblock %}
 
+{% block extra_css %}
+<style>
+    .form-section-title {
+        font-weight: 800;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: var(--text-current);
+        opacity: 0.6;
+        margin: 25px 0 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--border-current);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .form-label {
+        font-weight: 700;
+        font-size: 0.88rem;
+        color: var(--text-current);
+        margin-bottom: 6px;
+    }
+    .form-control, .form-select {
+        border-radius: 10px;
+        padding: 10px 15px;
+        font-weight: 500;
+        border: 2px solid var(--border-current);
+        background-color: var(--card-current);
+        color: var(--text-current);
+        transition: all 0.3s ease;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
+    }
+    .form-control:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 0; color: white; margin-bottom: 40px;">
-    <div class="container-fluid">
-        <h1 style="font-weight: 900; font-size: 2.2rem; margin-bottom: 0; letter-spacing: -1px;">
-            <i class="fas fa-user"></i> My Profile
-        </h1>
+<div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 50px 0; color: white; margin-bottom: 40px; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
+    <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.06); border-radius: 50%;"></div>
+    <div class="container-fluid" style="position: relative; z-index: 1; display: flex; align-items: center; gap: 20px;">
+        <div style="width: 70px; height: 70px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; flex-shrink: 0;">
+            {{ current_user.full_name[0]|upper }}
+        </div>
+        <div>
+            <h1 style="font-weight: 900; font-size: 2.2rem; margin-bottom: 4px; letter-spacing: -0.5px; text-shadow: 0 3px 12px rgba(0,0,0,0.2);">
+                {{ current_user.full_name }}
+            </h1>
+            <p style="font-size: 1rem; opacity: 0.9; font-weight: 600; margin: 0;">
+                <i class="fas fa-id-card"></i> {{ student.roll_number }} &nbsp;|&nbsp;
+                <i class="fas fa-book"></i> {{ student.branch }}
+            </p>
+        </div>
     </div>
 </div>
-    
-<div class="container-fluid">
+
+<div class="container-fluid main-content" style="padding-top: 0;">
     <div class="row">
         <div class="col-md-8">
-            {% if not student.gender %}
-            <div class="alert alert-warning alert-dismissible fade show mb-4" role="alert">
-                <i class="fas fa-exclamation-triangle"></i>
-                <strong>⚠️ Important:</strong> Your gender information is missing! 
-                This is <strong>required for room allocation</strong>. 
-                Please fill in the Gender field below and click "Save Changes".
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% else %}
-            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-                <i class="fas fa-check-circle"></i>
-                <strong>✅ Good to go!</strong> Your gender information is saved as <strong>{{ student.gender }}</strong>.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endif %}
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Edit Profile</h5>
+            <div class="card" style="border-radius: 16px; overflow: hidden;">
+                <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 20px 25px;">
+                    <h5 style="color: white; font-weight: 800; margin: 0;"><i class="fas fa-edit"></i> Edit Profile</h5>
                 </div>
-                <div class="card-body">
+                <div style="padding: 25px 30px 30px;">
                     <form method="POST">
+
+                        <div class="form-section-title"><i class="fas fa-user"></i> Personal Information</div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Full Name</label>
@@ -45,7 +85,6 @@
                                 <input type="email" class="form-control" value="{{ current_user.email }}" disabled>
                             </div>
                         </div>
-                        
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Username</label>
@@ -56,26 +95,19 @@
                                 <input type="tel" class="form-control" id="phone" name="phone" value="{{ student.phone or '' }}">
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="gender" class="form-label">Gender <span style="color: red;">* (Required)</span></label>
+                                <label for="gender" class="form-label">Gender <span style="color: #ef4444;">*</span></label>
                                 <select class="form-select" id="gender" name="gender" required>
                                     <option value="">-- Select Gender --</option>
                                     <option value="Male" {% if student.gender == 'Male' %}selected{% endif %}>Male</option>
                                     <option value="Female" {% if student.gender == 'Female' %}selected{% endif %}>Female</option>
                                 </select>
-                                <small class="text-danger" style="display: {% if not student.gender %}block{% else %}none{% endif %};" id="genderWarning">
-                                    ⚠️ <strong>IMPORTANT:</strong> Gender is required for room allocation! Please select and save.
-                                </small>
-                                <small class="text-success" style="display: {% if student.gender %}block{% else %}none{% endif %};" id="genderSuccess">
-                                    ✅ Gender saved: <strong>{{ student.gender }}</strong>
-                                </small>
+                                <small class="text-muted">Required for room allocation</small>
                             </div>
                         </div>
-                        
-                        <hr>
-                        
+
+                        <div class="form-section-title"><i class="fas fa-graduation-cap"></i> Academic Information</div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Roll Number</label>
@@ -86,10 +118,8 @@
                                 <input type="text" class="form-control" value="{{ student.branch }}" disabled>
                             </div>
                         </div>
-                        
-                        <hr>
-                        <h5>Emergency Contact Information</h5>
-                        
+
+                        <div class="form-section-title"><i class="fas fa-phone-alt"></i> Emergency Contact</div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="contact_person_name" class="form-label">Contact Person Name</label>
@@ -100,43 +130,72 @@
                                 <input type="tel" class="form-control" id="contact_person_phone" name="contact_person_phone" value="{{ student.contact_person_phone or '' }}">
                             </div>
                         </div>
-                        
                         <div class="mb-3">
                             <label for="emergency_contact_phone" class="form-label">Emergency Contact Phone</label>
                             <input type="tel" class="form-control" id="emergency_contact_phone" name="emergency_contact_phone" value="{{ student.emergency_contact_phone or '' }}">
                         </div>
-                        
-                        <hr>
-                        <h5>Address Information</h5>
-                        
+
+                        <div class="form-section-title"><i class="fas fa-map-marker-alt"></i> Address</div>
                         <div class="mb-3">
                             <label for="address" class="form-label">Address</label>
                             <input type="text" class="form-control" id="address" name="address" value="{{ student.address or '' }}">
                         </div>
-                        
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label for="city" class="form-label">City</label>
                                 <input type="text" class="form-control" id="city" name="city" value="{{ student.city or '' }}">
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label for="state" class="form-label">State</label>
                                 <input type="text" class="form-control" id="state" name="state" value="{{ student.state or '' }}">
                             </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="pincode" class="form-label">Pincode</label>
+                                <input type="text" class="form-control" id="pincode" name="pincode" value="{{ student.pincode or '' }}">
+                            </div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="pincode" class="form-label">Pincode</label>
-                            <input type="text" class="form-control" id="pincode" name="pincode" value="{{ student.pincode or '' }}">
+
+                        <div style="padding-top: 10px;">
+                            <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border: none; padding: 12px 30px; font-weight: 700; border-radius: 10px; font-size: 1rem;">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
                         </div>
-                        
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save Changes
-                        </button>
                     </form>
                 </div>
             </div>
         </div>
+
+        <!-- Profile Summary -->
+        <div class="col-md-4 mb-4">
+            <div class="card" style="border-radius: 16px; overflow: hidden;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px 20px; text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 900; color: white; margin: 0 auto 15px;">
+                        {{ current_user.full_name[0]|upper }}
+                    </div>
+                    <h5 style="color: white; font-weight: 800; margin-bottom: 5px;">{{ current_user.full_name }}</h5>
+                    <p style="color: rgba(255,255,255,0.8); font-weight: 600; margin: 0; font-size: 0.9rem;">Student</p>
+                </div>
+                <div style="padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-current);">
+                        <span style="font-weight: 700; opacity: 0.6; font-size: 0.85rem;">Roll No</span>
+                        <span style="font-weight: 800; font-size: 0.9rem;">{{ student.roll_number }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-current);">
+                        <span style="font-weight: 700; opacity: 0.6; font-size: 0.85rem;">Branch</span>
+                        <span style="font-weight: 800; font-size: 0.9rem;">{{ student.branch }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-current);">
+                        <span style="font-weight: 700; opacity: 0.6; font-size: 0.85rem;">Semester</span>
+                        <span style="font-weight: 800; font-size: 0.9rem;">{{ student.semester or 'N/A' }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0;">
+                        <span style="font-weight: 700; opacity: 0.6; font-size: 0.85rem;">Email</span>
+                        <span style="font-weight: 700; font-size: 0.82rem; word-break: break-all;">{{ current_user.email }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 {% endblock %}

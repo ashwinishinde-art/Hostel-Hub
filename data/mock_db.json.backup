@@ -189,48 +189,18 @@
       "full_name": "Test User",
       "phone": "9999999999",
       "gender": "Male",
-      "created_at": "2026-07-21 14:53:02",
-      "is_active": true,
-      "updated_at": "2026-07-23"
+      "created_at": "2026-07-21 14:53:02"
     },
     {
       "id": 16,
-      "username": "newuser123",
-      "email": "newuser@test.com",
-      "password_hash": "$2b$12$bOpwo.apzQrCnjyLLafmieHYOUTA5qXw2PsUcm.Kbr.MDXcoG7N9K",
+      "username": "anushkakhandare",
+      "email": "anushkakhandare142@gmail.com",
+      "password_hash": "$2b$12$UXZKrjoRHmL1PLC3/7Fke.ysgHWgd3H/hxSSRCguufM3MZzM3kb2C",
       "role": "student",
-      "full_name": "New Test User",
-      "phone": "1234567890",
-      "gender": "male",
-      "created_at": "2026-07-22 23:46:29",
-      "updated_at": "2026-07-23",
-      "is_active": true
-    },
-    {
-      "id": 17,
-      "username": "quicktest456",
-      "email": "quicktest@test.com",
-      "password_hash": "$2b$12$qtrMN7ZRgfSROJ9VRaE0muW6YUB5CFpabiR9a.nW4GNJ0tCDzK7Vq",
-      "role": "student",
-      "full_name": "Quick Test User",
-      "phone": "1234567890",
-      "gender": "female",
-      "created_at": "2026-07-22 23:46:36",
-      "updated_at": "2026-07-23",
-      "is_active": true
-    },
-    {
-      "id": 18,
-      "username": "admin' OR '1'='1",
-      "email": "test@test.com",
-      "password_hash": "$2b$12$W0pmBtNxD2tyLHyGKO/uIeDm3QEnqumR8SsqD87zgi6JwD4869Jse",
-      "role": "student",
-      "full_name": "Test User",
+      "full_name": "Anushka Khandare",
       "phone": "",
-      "gender": "M",
-      "is_active": true,
-      "created_at": "2026-07-23 00:21:26",
-      "updated_at": "2026-07-23"
+      "gender": "Female",
+      "created_at": "2026-07-22 11:13:52"
     }
   ],
   "students": [
@@ -406,9 +376,9 @@
     {
       "id": 13,
       "user_id": 16,
-      "roll_number": "TEST123",
+      "roll_number": "CO1104",
       "branch": "CSE",
-      "semester": "4",
+      "semester": "3",
       "contact_person_name": "",
       "contact_person_phone": "",
       "emergency_contact_phone": "",
@@ -416,37 +386,7 @@
       "city": "",
       "state": "",
       "pincode": "",
-      "created_at": "2026-07-22 23:46:29"
-    },
-    {
-      "id": 14,
-      "user_id": 17,
-      "roll_number": "QUICK456",
-      "branch": "CSE",
-      "semester": "5",
-      "contact_person_name": "",
-      "contact_person_phone": "",
-      "emergency_contact_phone": "",
-      "address": "",
-      "city": "",
-      "state": "",
-      "pincode": "",
-      "created_at": "2026-07-22 23:46:36"
-    },
-    {
-      "id": 15,
-      "user_id": 18,
-      "roll_number": "123",
-      "branch": "CSE",
-      "semester": 1,
-      "contact_person_name": "",
-      "contact_person_phone": "",
-      "emergency_contact_phone": "",
-      "address": "",
-      "city": "",
-      "state": "",
-      "pincode": "",
-      "created_at": "2026-07-23 00:21:26"
+      "created_at": "2026-07-22 11:13:52"
     }
   ],
   "rooms": [

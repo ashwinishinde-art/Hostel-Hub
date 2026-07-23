@@ -28,7 +28,7 @@ class Database:
             return self.connection
             
         except MySQLdb.Error as e:
-            print(f"✗ Database connection failed: {e}")
+            print(f"[ERROR] Database connection failed: {e}")
             self.is_connected = False
             self.connection = None
             return None
@@ -59,7 +59,7 @@ class Database:
             cursor.close()
             return result
         except Exception as e:
-            print(f"✗ Query error: {e}")
+            print(f"[ERROR] Query error: {e}")
             self.connection = None
             self.is_connected = False
             return None
@@ -79,7 +79,7 @@ class Database:
             cursor.close()
             return True
         except Exception as e:
-            print(f"✗ Update error: {e}")
+            print(f"[ERROR] Update error: {e}")
             try:
                 conn.rollback()
             except:
@@ -103,4 +103,4 @@ connection = db.connect()
 
 if not connection:
     # Don't raise error - let app.py fall back to mock database
-    print("⚠️  MySQL connection failed. App will fall back to mock database.")
+    print("[WARNING] MySQL connection failed. App will fall back to mock database.")
