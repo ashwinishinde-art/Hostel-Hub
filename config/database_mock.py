@@ -199,6 +199,46 @@ class MockDatabase:
         
         query_lower = query.lower()
         
+        # Handle room_occupancy JOIN rooms query (inner join - used by student room details page)
+        if "from room_occupancy" in query_lower and "join rooms" in query_lower and "where ro.student_id" in query_lower:
+            ro_data = self.data.get("room_occupancy", [])
+            rooms_data = self.data.get("rooms", [])
+
+            result = []
+            for ro in ro_data:
+                if params and len(params) >= 1:
+                    student_id = params[0]
+                    if ro.get("student_id") != student_id:
+                        continue
+                    # Filter by status = 'Active' if in query
+                    if "ro.status" in query_lower and len(params) >= 2:
+                        if ro.get("status") != params[1]:
+                            continue
+                    elif "ro.status" in query_lower and "active" in query_lower:
+                        if ro.get("status") != "Active":
+                            continue
+
+                # Find corresponding room (inner join — skip if no room found)
+                room = None
+                for r in rooms_data:
+                    if r.get("id") == ro.get("room_id"):
+                        room = r
+                        break
+
+                if not room:
+                    continue
+
+                # Merge room + occupancy fields into one row
+                row = {**room, **{
+                    "check_in_date": ro.get("check_in_date"),
+                    "check_out_date": ro.get("check_out_date"),
+                    "status": ro.get("status"),
+                    "occupancy_id": ro.get("id"),
+                }}
+                result.append(row)
+
+            return result
+
         # Handle room_occupancy LEFT JOIN rooms query
         if "from room_occupancy" in query_lower and "left join rooms" in query_lower and "where ro.student_id" in query_lower:
             ro_data = self.data.get("room_occupancy", [])
@@ -278,8 +318,86 @@ class MockDatabase:
             
             return result
         
-        # Handle the specific room_students JOIN query
+        # Handle the specific room_students JOIN query (roommates)
         if "from room_occupancy" in query_lower and "join users" in query_lower and "join students" in query_lower:
+            # Detect roommates query: WHERE ro.room_id = %s AND ro.status = 'Active' AND u.id != %s
+            is_roommates_query = "u.id !=" in query_lower or "u.id !=%" in query.lower()
+
+            ro_data = self.data.get("room_occupancy", [])
+            users_data = self.data.get("users", [])
+            students_data = self.data.get("students", [])
+
+            room_id = None
+            status = None
+            exclude_user_id = None
+
+            if params:
+                if is_roommates_query and len(params) >= 2:
+                    # params = (room_id, current_user.id)
+                    room_id = params[0]
+                    exclude_user_id = params[1]
+                    status = "Active"
+                else:
+                    where_match = re.search(r'where\s+ro\.room_id\s*=\s*%s\s+and\s+ro\.status\s*=\s*%s', query_lower)
+                    if where_match and len(params) >= 2:
+                        room_id = params[0]
+                        status = params[1]
+                    elif len(params) >= 1:
+                        room_id = params[0]
+                        if len(params) >= 2:
+                            status = params[1]
+
+            result = []
+            seen_ids = set()
+            for ro in ro_data:
+                if room_id is not None and ro.get("room_id") != room_id:
+                    continue
+                if status is not None and ro.get("status") != status:
+                    continue
+
+                user = None
+                for u in users_data:
+                    if u.get("id") == ro.get("student_id"):
+                        user = u
+                        break
+
+                if not user:
+                    continue
+
+                # Exclude the requesting student (roommates query)
+                if exclude_user_id is not None and user.get("id") == exclude_user_id:
+                    continue
+
+                # DISTINCT by user id
+                if user.get("id") in seen_ids:
+                    continue
+                seen_ids.add(user.get("id"))
+
+                student = None
+                for s in students_data:
+                    if s.get("user_id") == user.get("id"):
+                        student = s
+                        break
+
+                if not student:
+                    continue
+
+                row = {
+                    "id": user.get("id"),
+                    "occupancy_id": ro.get("id"),
+                    "student_id": user.get("id"),
+                    "full_name": user.get("full_name"),
+                    "phone": user.get("phone"),
+                    "roll_number": student.get("roll_number"),
+                    "check_in_date": ro.get("check_in_date"),
+                    "status": ro.get("status")
+                }
+                result.append(row)
+
+            if "order by ro.check_in_date" in query_lower:
+                result.sort(key=lambda x: x.get("check_in_date", ""))
+
+            return result
             # Parse the specific columns requested
             select_part = query[query.lower().find("select") + 6:query.lower().find("from")].strip()
             
@@ -700,18 +818,35 @@ class MockDatabase:
             # Create new row with ID
             row = {"id": new_id}
             
-            # Extract field names from INSERT query - handle multiline
-            fields_match = re.search(r'\((.*?)\)\s*VALUES', query, re.IGNORECASE | re.DOTALL)
+            # Extract field names and values from INSERT query - handle multiline
+            fields_match = re.search(r'\((.*?)\)\s*VALUES\s*\((.*?)\)', query, re.IGNORECASE | re.DOTALL)
             if fields_match and params:
                 fields_text = fields_match.group(1)
-                # Clean up whitespace and newlines
+                values_text = fields_match.group(2)
+
+                # Clean up whitespace
                 fields_text = re.sub(r'\s+', ' ', fields_text)
+                values_text = re.sub(r'\s+', ' ', values_text)
+
                 fields = [f.strip() for f in fields_text.split(',')]
-                
-                # Map fields to values
+
+                # Split values carefully - quoted strings vs %s placeholders
+                raw_values = [v.strip() for v in values_text.split(',')]
+
+                param_index = 0
                 for i, field in enumerate(fields):
-                    if i < len(params):
-                        row[field] = params[i]
+                    if i >= len(raw_values):
+                        break
+                    val = raw_values[i]
+                    if val == '%s':
+                        # Use next param value
+                        if param_index < len(params):
+                            row[field] = params[param_index]
+                            param_index += 1
+                    else:
+                        # Literal value — strip surrounding quotes
+                        row[field] = val.strip("'\"")
+
             
             # Add automatic timestamps for new records
             if 'created_at' not in row:
