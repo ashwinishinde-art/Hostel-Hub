@@ -220,7 +220,7 @@
                             {% else %}
                                 <i class="fas fa-exclamation-circle"></i>
                             {% endif %}
-                            <span>{{ message }}</span>
+                            <span>{{ message|e }}</span>
                         </div>
                     {% endfor %}
                 {% endif %}

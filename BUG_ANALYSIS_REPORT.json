@@ -1,0 +1,199 @@
+{
+  "summary": {
+    "total_bugs": 6,
+    "critical": 2,
+    "high": 4,
+    "medium": 0,
+    "low": 0
+  },
+  "bugs_by_severity": {
+    "CRITICAL": [
+      {
+        "category": "Security",
+        "severity": "critical",
+        "title": "XSS Vulnerability in Login Form",
+        "description": "User input is not properly escaped in login form",
+        "steps_to_reproduce": [
+          "1. Go to login page",
+          "2. Enter <script>alert(\"test\")</script> in username field",
+          "3. Observe if script tags are rendered"
+        ],
+        "expected_behavior": "Script tags should be HTML-escaped",
+        "actual_behavior": "Script tags are rendered in response",
+        "root_cause": "User input not escaped in template rendering",
+        "suggested_fix": "Use Flask Jinja2 autoescaping (enabled by default) and validate template rendering",
+        "priority_order": 1
+      },
+      {
+        "category": "Security",
+        "severity": "critical",
+        "title": "Potential SQL Injection Vulnerability",
+        "description": "Student search endpoint may be vulnerable to SQL injection",
+        "steps_to_reproduce": [
+          "1. Go to Admin \u2192 Students",
+          "2. Search for: \" OR \"1\"=\"1"
+        ],
+        "expected_behavior": "Query should be parameterized and safe",
+        "actual_behavior": "SQL injection pattern detected in response",
+        "root_cause": "User input not properly parameterized in SQL queries",
+        "suggested_fix": "Ensure all queries use parameterized queries with %s placeholders",
+        "priority_order": 1
+      }
+    ],
+    "HIGH": [
+      {
+        "category": "Database",
+        "severity": "high",
+        "title": "Missing User Table Fields",
+        "description": "User table missing required fields: ['gender']",
+        "steps_to_reproduce": [
+          "1. Check mock_db.json user structure"
+        ],
+        "expected_behavior": "All user records should have: id, username, email, role, gender, is_active",
+        "actual_behavior": "Missing fields: ['gender']",
+        "root_cause": "mock_db.json not properly initialized with all required fields",
+        "suggested_fix": "Update mock_db.json initialization to include all required fields",
+        "priority_order": 2
+      },
+      {
+        "category": "Security",
+        "severity": "high",
+        "title": "Missing CSRF Protection on Forms",
+        "description": "Registration form missing CSRF token",
+        "steps_to_reproduce": [
+          "1. Go to /register",
+          "2. Check form for CSRF token"
+        ],
+        "expected_behavior": "All forms should include a CSRF token",
+        "actual_behavior": "No CSRF token found in form",
+        "root_cause": "CSRF protection not implemented in Flask app",
+        "suggested_fix": "Implement Flask-WTF for CSRF protection on all forms",
+        "priority_order": 2
+      },
+      {
+        "category": "Database",
+        "severity": "high",
+        "title": "Unreliable Database Connection",
+        "description": "Database connection exists but is not properly initialized",
+        "steps_to_reproduce": [
+          "1. Check database connection status"
+        ],
+        "expected_behavior": "Database should be either MySQL or properly initialized mock",
+        "actual_behavior": "Database connection is unreliable",
+        "root_cause": "Database connection not properly validated",
+        "suggested_fix": "Add connection validation and health check in database.py",
+        "priority_order": 2
+      },
+      {
+        "category": "Security",
+        "severity": "high",
+        "title": "Session Fixation Vulnerability",
+        "description": "Session ID does not change after login",
+        "steps_to_reproduce": [
+          "1. Note session ID before login",
+          "2. Login",
+          "3. Check session ID after login"
+        ],
+        "expected_behavior": "New session ID should be generated after successful login",
+        "actual_behavior": "Session ID remains the same",
+        "root_cause": "Session regeneration not implemented in login handler",
+        "suggested_fix": "Call session.clear() and regenerate session ID after successful login",
+        "priority_order": 2
+      }
+    ],
+    "MEDIUM": [],
+    "LOW": []
+  },
+  "all_bugs": [
+    {
+      "category": "Security",
+      "severity": "critical",
+      "title": "XSS Vulnerability in Login Form",
+      "description": "User input is not properly escaped in login form",
+      "steps_to_reproduce": [
+        "1. Go to login page",
+        "2. Enter <script>alert(\"test\")</script> in username field",
+        "3. Observe if script tags are rendered"
+      ],
+      "expected_behavior": "Script tags should be HTML-escaped",
+      "actual_behavior": "Script tags are rendered in response",
+      "root_cause": "User input not escaped in template rendering",
+      "suggested_fix": "Use Flask Jinja2 autoescaping (enabled by default) and validate template rendering",
+      "priority_order": 1
+    },
+    {
+      "category": "Security",
+      "severity": "critical",
+      "title": "Potential SQL Injection Vulnerability",
+      "description": "Student search endpoint may be vulnerable to SQL injection",
+      "steps_to_reproduce": [
+        "1. Go to Admin \u2192 Students",
+        "2. Search for: \" OR \"1\"=\"1"
+      ],
+      "expected_behavior": "Query should be parameterized and safe",
+      "actual_behavior": "SQL injection pattern detected in response",
+      "root_cause": "User input not properly parameterized in SQL queries",
+      "suggested_fix": "Ensure all queries use parameterized queries with %s placeholders",
+      "priority_order": 1
+    },
+    {
+      "category": "Database",
+      "severity": "high",
+      "title": "Missing User Table Fields",
+      "description": "User table missing required fields: ['gender']",
+      "steps_to_reproduce": [
+        "1. Check mock_db.json user structure"
+      ],
+      "expected_behavior": "All user records should have: id, username, email, role, gender, is_active",
+      "actual_behavior": "Missing fields: ['gender']",
+      "root_cause": "mock_db.json not properly initialized with all required fields",
+      "suggested_fix": "Update mock_db.json initialization to include all required fields",
+      "priority_order": 2
+    },
+    {
+      "category": "Security",
+      "severity": "high",
+      "title": "Missing CSRF Protection on Forms",
+      "description": "Registration form missing CSRF token",
+      "steps_to_reproduce": [
+        "1. Go to /register",
+        "2. Check form for CSRF token"
+      ],
+      "expected_behavior": "All forms should include a CSRF token",
+      "actual_behavior": "No CSRF token found in form",
+      "root_cause": "CSRF protection not implemented in Flask app",
+      "suggested_fix": "Implement Flask-WTF for CSRF protection on all forms",
+      "priority_order": 2
+    },
+    {
+      "category": "Database",
+      "severity": "high",
+      "title": "Unreliable Database Connection",
+      "description": "Database connection exists but is not properly initialized",
+      "steps_to_reproduce": [
+        "1. Check database connection status"
+      ],
+      "expected_behavior": "Database should be either MySQL or properly initialized mock",
+      "actual_behavior": "Database connection is unreliable",
+      "root_cause": "Database connection not properly validated",
+      "suggested_fix": "Add connection validation and health check in database.py",
+      "priority_order": 2
+    },
+    {
+      "category": "Security",
+      "severity": "high",
+      "title": "Session Fixation Vulnerability",
+      "description": "Session ID does not change after login",
+      "steps_to_reproduce": [
+        "1. Note session ID before login",
+        "2. Login",
+        "3. Check session ID after login"
+      ],
+      "expected_behavior": "New session ID should be generated after successful login",
+      "actual_behavior": "Session ID remains the same",
+      "root_cause": "Session regeneration not implemented in login handler",
+      "suggested_fix": "Call session.clear() and regenerate session ID after successful login",
+      "priority_order": 2
+    }
+  ]
+}

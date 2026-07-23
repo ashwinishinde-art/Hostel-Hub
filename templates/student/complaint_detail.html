@@ -51,12 +51,12 @@
                     <hr>
                     
                     <h5>Description</h5>
-                    <p>{{ complaint.description }}</p>
+                    <p>{{ complaint.description|e }}</p>
                     
                     {% if complaint.resolution_notes %}
                     <hr>
                     <h5>Resolution Notes</h5>
-                    <p>{{ complaint.resolution_notes }}</p>
+                    <p>{{ complaint.resolution_notes|e }}</p>
                     {% endif %}
                 </div>
             </div>

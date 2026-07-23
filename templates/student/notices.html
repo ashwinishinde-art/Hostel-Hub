@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <p class="card-text">{{ notice.content }}</p>
+                        <p class="card-text">{{ notice.content|e }}</p>
                         <small class="text-muted">
                             <i class="fas fa-calendar"></i> {{ notice.created_at|format_date('%d %b %Y at %H:%M') }}
                         </small>

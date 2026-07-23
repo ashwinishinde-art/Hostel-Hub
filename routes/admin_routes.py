@@ -205,6 +205,16 @@ def rooms():
                     flash('Room position must be between 1 and 5 (max 5 rooms per floor).', 'danger')
                     return redirect(url_for('admin.rooms'))
                 
+                # **NEW VALIDATION**: Check capacity is positive
+                if capacity <= 0:
+                    flash('Room capacity must be a positive number (at least 1).', 'danger')
+                    return redirect(url_for('admin.rooms'))
+                
+                # **NEW VALIDATION**: Check rent is positive
+                if rent < 0:
+                    flash('Room rent cannot be negative. Please enter a valid amount.', 'danger')
+                    return redirect(url_for('admin.rooms'))
+                
                 # Check if room already exists at this position
                 cursor.execute("""
                     SELECT id FROM rooms WHERE floor = %s AND room_number = %s
@@ -248,6 +258,16 @@ def rooms():
                 
                 if room_position < 1 or room_position > 5:
                     flash('Room position must be between 1 and 5 (max 5 rooms per floor).', 'danger')
+                    return redirect(url_for('admin.rooms'))
+                
+                # **NEW VALIDATION**: Check capacity is positive
+                if capacity <= 0:
+                    flash('Room capacity must be a positive number (at least 1).', 'danger')
+                    return redirect(url_for('admin.rooms'))
+                
+                # **NEW VALIDATION**: Check rent is positive
+                if rent < 0:
+                    flash('Room rent cannot be negative. Please enter a valid amount.', 'danger')
                     return redirect(url_for('admin.rooms'))
                 
                 # Get old room number to check if position changed
@@ -380,7 +400,9 @@ def allocate_room():
             student_name = student_result.get('full_name') if isinstance(student_result, dict) else student_result[1]
             
             # Check if gender is missing - provide detailed error
-            if not student_gender or student_gender.strip() == '':
+            # Handle None values and strip whitespace safely
+            student_gender = student_gender.strip() if student_gender else None
+            if not student_gender:
                 flash(f'⚠️ Student "{student_name}" has not set their gender yet. Please ask the student to update their profile with gender information first, then try allocating the room.', 'warning')
                 return redirect(url_for('admin.allocate_room'))
             
@@ -1003,7 +1025,7 @@ def students():
 @login_required
 @admin_required
 def room_students(room_id):
-    """Get students in a room (AJAX endpoint)"""
+    """Get students in a room (AJAX endpoint) - More robust version"""
     try:
         # Ensure database connection is alive
         if db.connection is None or not db.is_connected:
@@ -1011,7 +1033,7 @@ def room_students(room_id):
         
         cursor = db.connection.cursor()
         
-        # Get room details
+        # Step 1: Get room details
         cursor.execute("SELECT id, room_number, capacity FROM rooms WHERE id = %s", (room_id,))
         room = cursor.fetchone()
         
@@ -1029,21 +1051,61 @@ def room_students(room_id):
                 'capacity': room[2] if len(room) > 2 else 0
             }
         
-        # Get students in this room
+        # Step 2: Get room_occupancy records first (simpler query, less likely to fail)
         cursor.execute("""
-            SELECT ro.id as occupancy_id, u.id as student_id, u.full_name, s.roll_number,
-                   ro.check_in_date, ro.status
-            FROM room_occupancy ro
-            JOIN users u ON ro.student_id = u.id
-            JOIN students s ON u.id = s.user_id
-            WHERE ro.room_id = %s AND ro.status = 'Active'
-            ORDER BY ro.check_in_date
+            SELECT id, student_id, check_in_date, status
+            FROM room_occupancy
+            WHERE room_id = %s AND status = 'Active'
+            ORDER BY check_in_date
         """, (room_id,))
-        students = cursor.fetchall()
+        occupancy_records = cursor.fetchall() or []
         
-        # Ensure we got valid data
-        if students is None:
-            students = []
+        # Step 3: For each occupancy record, fetch user and student details separately
+        students = []
+        for occupancy in occupancy_records:
+            try:
+                # Handle both dict and tuple formats
+                if isinstance(occupancy, dict):
+                    occupancy_id = occupancy.get('id')
+                    student_id = occupancy.get('student_id')
+                    check_in_date = occupancy.get('check_in_date')
+                    status = occupancy.get('status')
+                else:
+                    occupancy_id = occupancy[0] if len(occupancy) > 0 else None
+                    student_id = occupancy[1] if len(occupancy) > 1 else None
+                    check_in_date = occupancy[2] if len(occupancy) > 2 else None
+                    status = occupancy[3] if len(occupancy) > 3 else None
+                
+                # Get user details
+                cursor.execute("SELECT id, full_name FROM users WHERE id = %s", (student_id,))
+                user = cursor.fetchone()
+                
+                if not user:
+                    continue  # Skip if user not found
+                
+                full_name = user.get('full_name') if isinstance(user, dict) else user[1]
+                
+                # Get student details (roll_number)
+                cursor.execute("SELECT roll_number FROM students WHERE user_id = %s", (student_id,))
+                student_info = cursor.fetchone()
+                
+                roll_number = 'N/A'
+                if student_info:
+                    roll_number = student_info.get('roll_number') if isinstance(student_info, dict) else student_info[0]
+                
+                # Build student record
+                students.append({
+                    'occupancy_id': occupancy_id,
+                    'student_id': student_id,
+                    'full_name': full_name,
+                    'roll_number': roll_number or 'N/A',
+                    'check_in_date': check_in_date,
+                    'status': status
+                })
+            except Exception as e:
+                # Log error but continue with other students
+                print(f"Error fetching student details for occupancy {occupancy}: {e}")
+                continue
         
         cursor.close()
     except Exception as e:
@@ -1519,54 +1581,96 @@ def gallery():
             except Exception as e:
                 db.connection.rollback()
                 flash(f'❌ Error adding photo: {str(e)}', 'danger')
-        
-        elif action == 'update':
-            try:
-                image_id = int(request.form.get('image_id', 0))
-                title = request.form.get('title', '').strip()
-                description = request.form.get('description', '').strip()
-                category = request.form.get('category', 'Facilities')
-                image_path = request.form.get('image_path', '').strip()
-                
-                if not all([title, image_path]):
-                    flash('❌ Title and image path are required!', 'danger')
-                    return redirect(url_for('admin.gallery'))
-                
-                cursor.execute("""
-                    UPDATE gallery 
-                    SET title = %s, description = %s, category = %s, image_path = %s
-                    WHERE id = %s
-                """, (title, description, category, image_path, image_id))
-                db.connection.commit()
-                flash(f'✅ Photo "{title}" updated successfully!', 'success')
-                
-            except Exception as e:
-                db.connection.rollback()
-                flash(f'❌ Error updating photo: {str(e)}', 'danger')
-        
-        elif action == 'delete':
-            try:
-                image_id = int(request.form.get('image_id', 0))
-                
-                # Get image title for message
-                cursor.execute("SELECT title FROM gallery WHERE id = %s", (image_id,))
-                image = cursor.fetchone()
-                image_title = image.get('title') if isinstance(image, dict) else image[0] if image else 'Photo'
-                
-                cursor.execute("DELETE FROM gallery WHERE id = %s", (image_id,))
-                db.connection.commit()
-                flash(f'✅ Photo "{image_title}" deleted successfully!', 'success')
-                
-            except Exception as e:
-                db.connection.rollback()
-                flash(f'❌ Error deleting photo: {str(e)}', 'danger')
-        
-        return redirect(url_for('admin.gallery'))
+
+@admin_bp.route('/gallery/upload', methods=['POST'])
+@login_required
+@admin_required
+def upload_gallery_image():
+    """Upload gallery image via AJAX"""
+    import os
+    import time
+    from werkzeug.utils import secure_filename
     
-    # Get all gallery images
-    cursor.execute("SELECT * FROM gallery ORDER BY created_at DESC")
-    gallery_images = cursor.fetchall() or []
+    try:
+        # Check if file is present
+        if 'file' not in request.files:
+            return {'success': False, 'error': 'No file provided'}, 400
+        
+        file = request.files['file']
+        
+        if file.filename == '':
+            return {'success': False, 'error': 'No file selected'}, 400
+        
+        # Validate file type
+        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+        if not file.filename.split('.')[-1].lower() in ALLOWED_EXTENSIONS:
+            return {'success': False, 'error': 'Invalid file type. Allowed: PNG, JPG, GIF, WebP'}, 400
+        
+        # Validate file size (5MB max)
+        file.seek(0, os.SEEK_END)
+        file_size = file.tell()
+        file.seek(0)
+        
+        if file_size > 5 * 1024 * 1024:
+            return {'success': False, 'error': 'File size exceeds 5MB limit'}, 400
+        
+        # Create uploads directory if it doesn't exist
+        upload_dir = 'static/uploads/gallery'
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        # Generate unique filename
+        timestamp = int(time.time())
+        filename = secure_filename(f"gallery_{timestamp}_{file.filename}")
+        filepath = os.path.join(upload_dir, filename)
+        
+        # Save file
+        file.save(filepath)
+        
+        # Get form data
+        title = request.form.get('title', '').strip()
+        description = request.form.get('description', '').strip()
+        category = request.form.get('category', 'Facilities')
+        
+        if not title:
+            # Delete file if title is missing
+            if os.path.exists(filepath):
+                os.remove(filepath)
+            return {'success': False, 'error': 'Title is required'}, 400
+        
+        # Save to database
+        cursor = db.connection.cursor()
+        image_path = f"/{filepath}"  # Store as web path
+        
+        cursor.execute("""
+            INSERT INTO gallery (title, description, category, image_path, created_at)
+            VALUES (%s, %s, %s, %s, NOW())
+        """, (title, description, category, image_path))
+        db.connection.commit()
+        cursor.close()
+        
+        # BROADCAST REAL-TIME UPDATE to all connected clients
+        from app import broadcast_update
+        broadcast_update('gallery', 'image_added', {
+            'title': title,
+            'description': description,
+            'category': category,
+            'image_path': image_path,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+        return {
+            'success': True,
+            'message': f'Image "{title}" uploaded successfully!',
+            'image_path': image_path
+        }, 200
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {'success': False, 'error': f'Upload error: {str(e)}'}, 500
+
+# ==================== GALLERY PAGE ROUTE ====================
     
     cursor.close()
     
-    return render_template('admin/gallery.html', gallery_images=gallery_images)
+    return render_template('admin/gallery_upload.html', gallery_images=gallery_images)

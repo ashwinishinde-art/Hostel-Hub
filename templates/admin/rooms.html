@@ -465,7 +465,7 @@
                                 <span class="badge bg-warning" style="font-weight: 600; padding: 6px 12px;">?</span>
                             {% endif %}
                         </td>
-                        <td><span class="amenities-text" title="{{ room.amenities if room.amenities else 'N/A' }}">{{ room.amenities[:35] if room.amenities else "N/A" }}</span></td>
+                        <td><span class="amenities-text" title="{{ room.amenities|escape if room.amenities else 'N/A' }}">{{ (room.amenities|escape)[:35] if room.amenities else "N/A" }}</span></td>
                         <td>
                             <div class="btn-group-compact">
                                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editRoomModal" onclick="loadRoom({{ room|tojson }})" title="Edit room">
@@ -643,12 +643,12 @@
                         </h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="modal-body" id="roomStudentsContainer" style="background: var(--bg-current);">
+                    <div class="modal-body" id="roomStudentsContainer" style="background: var(--bg-current); min-height: 300px;">
                         <div style="text-align: center; padding: 40px;">
                             <div style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 15px;">
                                 <i class="fas fa-spinner fa-spin"></i>
                             </div>
-                            <p style="font-weight: 600; color: var(--text-current);">Loading students...</p>
+                            <p style="font-weight: 600; color: var(--text-current);">Click tab to load students...</p>
                         </div>
                     </div>
                 </div>
@@ -696,29 +696,55 @@ function loadRoom(room) {
     
     // Store current room ID for students tab
     currentRoomIdForStudents = room.id;
+    
+    // IMPORTANT: Attach the students tab listener now
+    // Use setTimeout to ensure DOM is ready
+    setTimeout(() => {
+        attachStudentsTabListener();
+    }, 50);
 }
 
-// Add event listener for students tab - only once
-document.addEventListener('DOMContentLoaded', function() {
+// Add event listener for students tab with better handling
+function attachStudentsTabListener() {
     const studentsTab = document.getElementById('room-students-tab');
-    if (studentsTab) {
-        studentsTab.addEventListener('click', function() {
-            if (currentRoomIdForStudents) {
-                loadRoomStudents(currentRoomIdForStudents);
-            }
-        });
+    if (!studentsTab) {
+        console.warn('room-students-tab not found');
+        return;
+    }
+    
+    // Always remove old listener and add new one
+    // Create new listener function
+    const listener = function() {
+        if (currentRoomIdForStudents) {
+            loadRoomStudents(currentRoomIdForStudents);
+        }
+    };
+    
+    // Remove all existing listeners by cloning the element
+    const newTab = studentsTab.cloneNode(true);
+    studentsTab.parentNode.replaceChild(newTab, studentsTab);
+    
+    // Add new listener to the fresh element
+    newTab.addEventListener('click', listener);
+}
+
+// Attach listener when DOM is ready
+document.addEventListener('DOMContentLoaded', attachStudentsTabListener);
+
+// Also attach when modal is shown (for dynamic content)
+document.addEventListener('show.bs.modal', function(e) {
+    if (e.target && e.target.id === 'editRoomModal') {
+        setTimeout(attachStudentsTabListener, 100);
     }
 });
 
 function loadRoomStudents(roomId) {
     if (!roomId) {
-        console.error('No room ID provided');
         return;
     }
     
     const container = document.getElementById('roomStudentsContainer');
     if (!container) {
-        console.error('Container not found');
         return;
     }
     
@@ -750,7 +776,6 @@ function loadRoomStudents(roomId) {
         })
         .catch(error => {
             clearTimeout(timeoutId);
-            console.error('Error loading students:', error);
             
             let errorMsg = 'Error loading students';
             if (error.name === 'AbortError') {

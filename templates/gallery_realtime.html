@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+
+{% block title %}Gallery - Hostel Hub{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-4 fw-bold">
+                <i class="fas fa-images"></i> Hostel Gallery
+            </h1>
+            <p class="text-muted">Latest moments from our hostel life</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="btn-group" role="group">
+                {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                <a href="{{ url_for('admin.gallery') }}" class="btn btn-success" title="Add Image to Gallery">
+                    <i class="fas fa-plus"></i> Add Image
+                </a>
+                {% endif %}
+                <button type="button" class="btn btn-outline-primary" id="refreshBtn" title="Refresh Gallery">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <button type="button" class="btn btn-outline-success" id="autoRefreshBtn" title="Toggle Auto-Refresh">
+                    <i class="fas fa-broadcast-tower"></i> Real-time: <span id="connectionStatus">Connecting...</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-outline-secondary category-filter active" data-category="all">
+                    All
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary category-filter" data-category="Facilities">
+                    Facilities
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary category-filter" data-category="Rooms">
+                    Rooms
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary category-filter" data-category="Common Area">
+                    Common Area
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary category-filter" data-category="Dining">
+                    Dining
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary category-filter" data-category="Recreation">
+                    Recreation
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary category-filter" data-category="Events">
+                    Events
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary category-filter" data-category="Other">
+                    Other
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="row g-4" id="galleryGrid">
+        <div class="col-12 text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Loading gallery images...</p>
+        </div>
+    </div>
+
+    <!-- No Images Message -->
+    <div id="noImagesMsg" class="alert alert-info text-center d-none">
+        <i class="fas fa-info-circle"></i> No images in this category yet. Check back soon!
+    </div>
+</div>
+
+<!-- Notification Toast -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="notificationToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong class="me-auto">Real-time Update</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <span id="notificationText">New image added to gallery!</span>
+        </div>
+    </div>
+</div>
+
+<style>
+    #galleryGrid {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .gallery-item {
+        animation: slideIn 0.5s ease-out;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .gallery-item:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .gallery-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .gallery-info {
+        background: white;
+        padding: 15px;
+        border-radius: 0 0 8px 8px;
+        border: 1px solid #e9ecef;
+        border-top: none;
+    }
+
+    .gallery-category {
+        display: inline-block;
+        background: #007bff;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        margin-bottom: 8px;
+    }
+
+    .gallery-title {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+        font-size: 0.95rem;
+    }
+
+    .gallery-description {
+        color: #666;
+        font-size: 0.875rem;
+        line-height: 1.4;
+    }
+
+    .gallery-timestamp {
+        color: #999;
+        font-size: 0.75rem;
+        margin-top: 8px;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .connection-online {
+        color: #28a745;
+    }
+
+    .connection-offline {
+        color: #dc3545;
+    }
+
+    .connection-connecting {
+        color: #ffc107;
+    }
+
+    .category-filter.active {
+        background-color: #0d6efd !important;
+        color: white !important;
+    }
+</style>
+
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script>
+    // WebSocket Connection
+    const socket = io();
+    let currentFilter = 'all';
+    let allImages = [];
+    let isConnected = false;
+
+    // Handle Socket.IO Connection
+    socket.on('connect', function() {
+        console.log('✓ Connected to real-time server');
+        isConnected = true;
+        updateConnectionStatus('Online', 'success');
+        
+        // Subscribe to gallery updates
+        socket.emit('subscribe', { feature: 'gallery' });
+    });
+
+    socket.on('disconnect', function() {
+        console.log('✗ Disconnected from real-time server');
+        isConnected = false;
+        updateConnectionStatus('Offline', 'danger');
+    });
+
+    socket.on('subscribed', function(data) {
+        console.log('📌 Subscribed to gallery updates', data);
+        updateConnectionStatus('Online', 'success');
+    });
+
+    // Handle Real-time Updates
+    socket.on('update', function(data) {
+        console.log('📢 Real-time update received:', data);
+        
+        if (data.feature === 'gallery' && data.action === 'image_added') {
+            // Add new image to gallery
+            const newImage = data.data;
+            console.log('Adding new image:', newImage);
+            
+            // Add to beginning of images array
+            allImages.unshift({
+                id: Math.random(),
+                title: newImage.title,
+                description: newImage.description,
+                category: newImage.category,
+                image_path: newImage.image_path,
+                created_at: newImage.timestamp
+            });
+            
+            // Update display
+            renderGallery();
+            
+            // Show notification
+            showNotification(`New image "${newImage.title}" added to gallery!`);
+        }
+    });
+
+    socket.on('connection_response', function(data) {
+        console.log('Connection response:', data);
+    });
+
+    // Update connection status
+    function updateConnectionStatus(status, type) {
+        const statusElement = document.getElementById('connectionStatus');
+        statusElement.textContent = status;
+        statusElement.className = `connection-${type}`;
+        
+        if (type === 'success') {
+            console.log('✓ Real-time connection: ' + status);
+        } else {
+            console.log('✗ Real-time connection: ' + status);
+        }
+    }
+
+    // Load gallery images on page load
+    function loadGallery() {
+        console.log('Loading gallery from server...');
+        fetch('/api/gallery/images')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(`Loaded ${data.images.length} images`);
+                    allImages = data.images;
+                    renderGallery();
+                } else {
+                    console.error('Error loading gallery:', data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Render gallery based on current filter
+    function renderGallery() {
+        const galleryGrid = document.getElementById('galleryGrid');
+        const noImagesMsg = document.getElementById('noImagesMsg');
+        
+        // Filter images
+        let filteredImages = allImages;
+        if (currentFilter !== 'all') {
+            filteredImages = allImages.filter(img => img.category === currentFilter);
+        }
+        
+        if (filteredImages.length === 0) {
+            galleryGrid.innerHTML = '';
+            noImagesMsg.classList.remove('d-none');
+            return;
+        }
+        
+        noImagesMsg.classList.add('d-none');
+        
+        galleryGrid.innerHTML = filteredImages.map(image => `
+            <div class="col-md-6 col-lg-4">
+                <div class="card gallery-item shadow-sm border-0">
+                    <img src="${image.image_path}" alt="${image.title}" class="gallery-image">
+                    <div class="gallery-info">
+                        <span class="gallery-category">${image.category}</span>
+                        <div class="gallery-title">${escapeHtml(image.title)}</div>
+                        <div class="gallery-description">${escapeHtml(image.description || 'No description')}</div>
+                        <div class="gallery-timestamp">
+                            <i class="far fa-calendar"></i> ${formatDate(image.created_at)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Format date
+    function formatDate(dateStr) {
+        if (!dateStr) return 'Unknown';
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    // Show notification
+    function showNotification(message) {
+        const notificationText = document.getElementById('notificationText');
+        const notificationToast = document.getElementById('notificationToast');
+        
+        notificationText.textContent = message;
+        notificationToast.classList.remove('hide');
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            notificationToast.classList.add('hide');
+        }, 5000);
+    }
+
+    // Category filter
+    document.querySelectorAll('.category-filter').forEach(button => {
+        button.addEventListener('click', function() {
+            // Update active button
+            document.querySelectorAll('.category-filter').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update filter and render
+            currentFilter = this.dataset.category;
+            renderGallery();
+        });
+    });
+
+    // Refresh button
+    document.getElementById('refreshBtn').addEventListener('click', function() {
+        console.log('Manual refresh clicked');
+        loadGallery();
+        this.innerHTML = '<i class="fas fa-sync-alt spinning"></i> Refreshing...';
+        setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+        }, 1000);
+    });
+
+    // Initialize on page load
+    window.addEventListener('load', function() {
+        console.log('Page loaded, loading gallery...');
+        loadGallery();
+    });
+</script>
+{% endblock %}

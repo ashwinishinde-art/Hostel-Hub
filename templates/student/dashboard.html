@@ -186,7 +186,7 @@ setInterval(function() {
                 <span style="background: {% if complaint.priority == 'High' %}#fee2e2{% elif complaint.priority == 'Medium' %}#fef3c7{% else %}#e0f2fe{% endif %}; color: {% if complaint.priority == 'High' %}#991b1b{% elif complaint.priority == 'Medium' %}#92400e{% else %}#0c4a6e{% endif %}; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">{{ complaint.priority }}</span>
             </div>
 
-            <p style="color: #666; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5;">{{ complaint.description[:100] }}{% if complaint.description|length > 100 %}...{% endif %}</p>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5;">{{ (complaint.description[:100]|e) }}{% if complaint.description|length > 100 %}...{% endif %}</p>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
                 <div>
@@ -239,7 +239,7 @@ setInterval(function() {
                 </span>
             </div>
 
-            <p style="color: #666; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5;">{{ complaint.description[:100] }}{% if complaint.description|length > 100 %}...{% endif %}</p>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5;">{{ (complaint.description[:100]|e) }}{% if complaint.description|length > 100 %}...{% endif %}</p>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
                 <div>

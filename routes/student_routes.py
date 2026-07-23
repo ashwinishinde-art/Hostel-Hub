@@ -347,9 +347,10 @@ def fees():
 
 # ==================== ROOM DETAILS ====================
 @student_bp.route('/room')
+@student_bp.route('/room')
 @login_required
 def room():
-    """View allocated room details"""
+    """View allocated room details with roommates and complaints"""
     cursor = db.connection.cursor()
     
     try:
@@ -377,9 +378,18 @@ def room():
         """, (room_info['id'], current_user.id))
         roommates = cursor.fetchall()
         
+        # Get room-related complaints
+        cursor.execute("""
+            SELECT id, title, description, status, priority, created_at, updated_at
+            FROM complaints
+            WHERE student_id = %s
+            ORDER BY created_at DESC
+        """, (current_user.id,))
+        room_complaints = cursor.fetchall()
+        
         cursor.close()
         
-        return render_template('student/room.html', room=room_info, roommates=roommates)
+        return render_template('student/room.html', room=room_info, roommates=roommates, room_complaints=room_complaints)
     
     except Exception as e:
         cursor.close()

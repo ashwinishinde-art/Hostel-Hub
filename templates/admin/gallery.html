@@ -283,7 +283,7 @@
                                         </div>
                                         <h6 class="gallery-title">{{ image.title }}</h6>
                                         <p class="gallery-description">
-                                            {{ image.description if image.description else 'No description provided' }}
+                                            {{ (image.description|e) if image.description else 'No description provided' }}
                                         </p>
 
                                         <!-- Actions -->
