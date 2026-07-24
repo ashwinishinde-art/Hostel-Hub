@@ -20,142 +20,135 @@ Hostel Management System Starting...
 WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
  * Running on all addresses (0.0.0.0)
  * Running on http://127.0.0.1:5000
- * Running on http://10.179.101.72:5000
+ * Running on http://10.101.227.72:5000
 Press CTRL+C to quit
  * Restarting with watchdog (inotify)
 Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
  * Debugger is active!
  * Debugger PIN: 527-494-945
-127.0.0.1 - - [24/Jul/2026 12:41:58] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:03] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:03] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:03] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:03] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:03] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:03] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:04] "GET /favicon.ico HTTP/1.1" 404 -
-127.0.0.1 - - [24/Jul/2026 12:42:15] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:16] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:16] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:16] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:16] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:16] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:17] "GET /favicon.ico HTTP/1.1" 404 -
-127.0.0.1 - - [24/Jul/2026 12:42:19] "GET /register HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:19] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:19] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:19] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:19] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:19] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:38] "GET /register HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:39] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:39] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:39] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:39] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:39] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:42:40] "GET /favicon.ico HTTP/1.1" 404 -
-127.0.0.1 - - [24/Jul/2026 12:42:41] "GET /favicon.ico HTTP/1.1" 404 -
- * Detected change in '/home/prajwal/Desktop/Hostel-Hub/audit_theme_visibility.py', reloading
-[ERROR] Database connection failed: (2002, "Can't connect to server on '127.0.0.1' (115)")
-[WARNING] MySQL connection failed. App will fall back to mock database.
-[INFO] MySQL connection failed, using mock database
-
-============================================================
-Hostel Management System Starting...
-============================================================
-[OK] System IP: localhost
-[OK] Port: 5000
-[OK] URL: http://localhost:5000
-============================================================
-
-[NOTE] If MySQL is not running, the app will use mock data.
-   To start MySQL on Windows, open Services and start MySQL.
-============================================================
-
- * Restarting with watchdog (inotify)
-Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
- * Debugger is active!
- * Debugger PIN: 527-494-945
- * Detected change in '/home/prajwal/Desktop/Hostel-Hub/audit_theme_visibility.py', reloading
-[ERROR] Database connection failed: (2002, "Can't connect to server on '127.0.0.1' (115)")
-[WARNING] MySQL connection failed. App will fall back to mock database.
-[INFO] MySQL connection failed, using mock database
-
-============================================================
-Hostel Management System Starting...
-============================================================
-[OK] System IP: localhost
-[OK] Port: 5000
-[OK] URL: http://localhost:5000
-============================================================
-
-[NOTE] If MySQL is not running, the app will use mock data.
-   To start MySQL on Windows, open Services and start MySQL.
-============================================================
-
- * Restarting with watchdog (inotify)
-Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
- * Debugger is active!
- * Debugger PIN: 527-494-945
- * Detected change in '/home/prajwal/Desktop/Hostel-Hub/fix_theme_visibility.py', reloading
- * Detected change in '/home/prajwal/Desktop/Hostel-Hub/fix_theme_visibility.py', reloading
- * Detected change in '/home/prajwal/Desktop/Hostel-Hub/fix_theme_visibility.py', reloading
-[ERROR] Database connection failed: (2002, "Can't connect to server on '127.0.0.1' (115)")
-[WARNING] MySQL connection failed. App will fall back to mock database.
-[INFO] MySQL connection failed, using mock database
-
-============================================================
-Hostel Management System Starting...
-============================================================
-[OK] System IP: localhost
-[OK] Port: 5000
-[OK] URL: http://localhost:5000
-============================================================
-
-[NOTE] If MySQL is not running, the app will use mock data.
-   To start MySQL on Windows, open Services and start MySQL.
-============================================================
-
- * Restarting with watchdog (inotify)
-Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
- * Debugger is active!
- * Debugger PIN: 527-494-945
-127.0.0.1 - - [24/Jul/2026 12:48:17] "GET /register HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:48:18] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:48:18] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:48:18] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:48:18] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:48:18] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:48:18] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:48:19] "GET /favicon.ico HTTP/1.1" 404 -
-127.0.0.1 - - [24/Jul/2026 12:48:21] "GET /favicon.ico HTTP/1.1" 404 -
- * Detected change in '/home/prajwal/Desktop/Hostel-Hub/automated_fix_all_colors.py', reloading
- * Detected change in '/home/prajwal/Desktop/Hostel-Hub/automated_fix_all_colors.py', reloading
-[ERROR] Database connection failed: (2002, "Can't connect to server on '127.0.0.1' (115)")
-[WARNING] MySQL connection failed. App will fall back to mock database.
-[INFO] MySQL connection failed, using mock database
-
-============================================================
-Hostel Management System Starting...
-============================================================
-[OK] System IP: localhost
-[OK] Port: 5000
-[OK] URL: http://localhost:5000
-============================================================
-
-[NOTE] If MySQL is not running, the app will use mock data.
-   To start MySQL on Windows, open Services and start MySQL.
-============================================================
-
- * Restarting with watchdog (inotify)
-Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
- * Debugger is active!
- * Debugger PIN: 527-494-945
-127.0.0.1 - - [24/Jul/2026 12:51:32] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:51:32] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:51:32] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:51:32] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:51:32] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:51:32] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:51:32] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
-127.0.0.1 - - [24/Jul/2026 12:51:34] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [24/Jul/2026 14:14:49] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:06] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:07] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:07] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:07] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:07] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:07] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:07] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:09] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [24/Jul/2026 14:15:16] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:17] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:17] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:17] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:17] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:17] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:17] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:17] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:18] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:18] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:18] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:18] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:18] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:18] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:19] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [24/Jul/2026 14:15:21] "GET /register HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:21] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:21] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:21] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:21] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:21] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:21] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:22] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [24/Jul/2026 14:15:26] "GET /register HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:27] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:27] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:27] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:27] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:27] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:27] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+[LOGIN] Starting login attempt
+[LOGIN] Username: prajwaltandekar, Password length: 7
+[LOGIN] User found: True
+[LOGIN] Stored hash: $2b$12$9kO6Doo9PpWFT...
+[LOGIN] Password bytes type: <class 'bytes'>, Hash bytes type: <class 'bytes'>
+[LOGIN] Password check result: True
+[LOGIN] Password matched, logging in: prajwaltandekar
+[LOGIN] Authenticated: True
+127.0.0.1 - - [24/Jul/2026 14:15:35] "POST /login HTTP/1.1" 302 -
+127.0.0.1 - - [24/Jul/2026 14:15:35] "GET /dashboard HTTP/1.1" 302 -
+127.0.0.1 - - [24/Jul/2026 14:15:36] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:37] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:37] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:37] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:37] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:37] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:37] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:15:38] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [24/Jul/2026 14:16:12] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:13] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:15] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:15] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:15] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:15] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:15] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:15] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:47] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:49] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:53] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:53] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:53] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:53] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:53] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:53] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:16:55] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [24/Jul/2026 14:17:26] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:17:32] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:17:33] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:17:33] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:17:33] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:17:33] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:17:33] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:17:33] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:17:34] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [24/Jul/2026 14:18:04] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:05] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:05] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:05] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:05] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:05] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:05] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:05] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:36] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:37] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:38] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:38] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:38] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:38] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:38] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:18:38] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:11] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:15] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:17] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:17] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:17] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:17] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:17] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:17] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:22] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [24/Jul/2026 14:19:54] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:55] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:55] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:55] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:55] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:55] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:55] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:19:58] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:20:01] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [24/Jul/2026 14:20:31] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:20:32] "GET /student/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:20:32] "GET /static/js/dynamic-features.js HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:20:32] "GET /static/css/theme-variables.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:20:32] "GET /static/css/theme-variables-adaptive.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:20:32] "GET /static/css/dark-theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:20:32] "GET /static/css/theme-overrides.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:20:33] "GET /static/css/ultra-modern.css HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 14:20:33] "GET /favicon.ico HTTP/1.1" 404 -
