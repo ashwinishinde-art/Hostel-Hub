@@ -912,3 +912,4 @@ jinja2.exceptions.UndefinedError: 'dict object' has no attribute 'paid_amount'
 127.0.0.1 - - [24/Jul/2026 14:51:49] "GET /student/fees?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
 127.0.0.1 - - [24/Jul/2026 14:51:49] "GET /student/fees?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
 127.0.0.1 - - [24/Jul/2026 14:51:50] "GET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+127.0.0.1 - - [24/Jul/2026 15:23:51] "GET / HTTP/1.1" 200 -
