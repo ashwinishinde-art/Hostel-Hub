@@ -3,7 +3,7 @@
 {% block title %}Student Dashboard - Hostel Management System{% endblock %}
 
 {% block content %}
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 60px 0; color: white; margin-bottom: 60px;">
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 60px 0; color: var(--text-on-dark); margin-bottom: 60px;">
     <div class="container-fluid">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
@@ -12,7 +12,7 @@
                 </h1>
                 <p style="font-size: 1.1rem; opacity: 0.95; letter-spacing: 0.3px;">Welcome {{ current_user.full_name }} - Your Hostel Home</p>
             </div>
-            <button onclick="hardRefresh()" style="background: rgba(255,255,255,0.2); border: 2px solid white; color: white; padding: 12px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s ease;"
+            <button onclick="hardRefresh()" style="background: rgba(255,255,255,0.2); border: 2px solid white; color: var(--text-on-dark); padding: 12px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s ease;"
                 onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.05)';"
                 onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)';">
                 <i class="fas fa-sync-alt" id="refreshIcon"></i> Refresh
@@ -73,9 +73,9 @@ setInterval(function() {
                 onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 50px rgba(0, 0, 0, 0.12)';"
                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0, 0, 0, 0.08)';">
                 <i class="fas fa-door-open" style="font-size: 3rem; color: #667eea; margin-bottom: 15px; display: block;"></i>
-                <h5 style="color: #2c3e50; font-weight: 900; margin-bottom: 10px;">My Room</h5>
+                <h5 style="color: var(--text-primary); font-weight: 900; margin-bottom: 10px;">My Room</h5>
                 <p style="color: #7f8c8d; font-size: 0.95rem; margin-bottom: 15px;">View your room details and roommates</p>
-                <a href="/student/room" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: 700; display: inline-block;">View Details</a>
+                <a href="/student/room" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: var(--text-on-dark); padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: 700; display: inline-block;">View Details</a>
             </div>
         </div>
 
@@ -84,9 +84,9 @@ setInterval(function() {
                 onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 50px rgba(0, 0, 0, 0.12)';"
                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0, 0, 0, 0.08)';">
                 <i class="fas fa-money-bill-wave" style="font-size: 3rem; color: #10b981; margin-bottom: 15px; display: block;"></i>
-                <h5 style="color: #2c3e50; font-weight: 900; margin-bottom: 10px;">Fee Status</h5>
+                <h5 style="color: var(--text-primary); font-weight: 900; margin-bottom: 10px;">Fee Status</h5>
                 <p style="color: #7f8c8d; font-size: 0.95rem; margin-bottom: 15px;">Check your payment status</p>
-                <a href="/student/fees" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: 700; display: inline-block;">View Fees</a>
+                <a href="/student/fees" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: var(--text-on-dark); padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: 700; display: inline-block;">View Fees</a>
             </div>
         </div>
 
@@ -95,9 +95,9 @@ setInterval(function() {
                 onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 50px rgba(0, 0, 0, 0.12)';"
                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0, 0, 0, 0.08)';">
                 <i class="fas fa-bell" style="font-size: 3rem; color: #f97316; margin-bottom: 15px; display: block;"></i>
-                <h5 style="color: #2c3e50; font-weight: 900; margin-bottom: 10px;">Notices</h5>
+                <h5 style="color: var(--text-primary); font-weight: 900; margin-bottom: 10px;">Notices</h5>
                 <p style="color: #7f8c8d; font-size: 0.95rem; margin-bottom: 15px;">Latest hostel announcements</p>
-                <a href="/student/notices" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: 700; display: inline-block;">View Notices</a>
+                <a href="/student/notices" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: var(--text-on-dark); padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: 700; display: inline-block;">View Notices</a>
             </div>
         </div>
     </div>
@@ -109,9 +109,9 @@ setInterval(function() {
                 onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 50px rgba(0, 0, 0, 0.12)';"
                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0, 0, 0, 0.08)';">
                 <i class="fas fa-tools" style="font-size: 2.5rem; color: #ec4899; margin-bottom: 15px; display: block;"></i>
-                <h6 style="color: #2c3e50; font-weight: 900; margin-bottom: 10px;">Submit Complaint</h6>
+                <h6 style="color: var(--text-primary); font-weight: 900; margin-bottom: 10px;">Submit Complaint</h6>
                 <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 15px;">Report any issues or concerns</p>
-                <a href="/student/complaints" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; display: inline-block;">Submit</a>
+                <a href="/student/complaints" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: var(--text-on-dark); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; display: inline-block;">Submit</a>
             </div>
         </div>
 
@@ -120,9 +120,9 @@ setInterval(function() {
                 onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 50px rgba(0, 0, 0, 0.12)';"
                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0, 0, 0, 0.08)';">
                 <i class="fas fa-sign-in-alt" style="font-size: 2.5rem; color: #06b6d4; margin-bottom: 15px; display: block;"></i>
-                <h6 style="color: #2c3e50; font-weight: 900; margin-bottom: 10px;">Visitor Request</h6>
+                <h6 style="color: var(--text-primary); font-weight: 900; margin-bottom: 10px;">Visitor Request</h6>
                 <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 15px;">Request visitor entry permission</p>
-                <a href="/student/visitors" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; display: inline-block;">Request</a>
+                <a href="/student/visitors" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: var(--text-on-dark); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; display: inline-block;">Request</a>
             </div>
         </div>
 
@@ -131,9 +131,9 @@ setInterval(function() {
                 onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 50px rgba(0, 0, 0, 0.12)';"
                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0, 0, 0, 0.08)';">
                 <i class="fas fa-user-circle" style="font-size: 2.5rem; color: #8b5cf6; margin-bottom: 15px; display: block;"></i>
-                <h6 style="color: #2c3e50; font-weight: 900; margin-bottom: 10px;">My Profile</h6>
+                <h6 style="color: var(--text-primary); font-weight: 900; margin-bottom: 10px;">My Profile</h6>
                 <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 15px;">Update your personal information</p>
-                <a href="/student/profile" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; display: inline-block;">Edit</a>
+                <a href="/student/profile" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: var(--text-on-dark); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; display: inline-block;">Edit</a>
             </div>
         </div>
 
@@ -142,9 +142,9 @@ setInterval(function() {
                 onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 50px rgba(0, 0, 0, 0.12)';"
                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0, 0, 0, 0.08)';">
                 <i class="fas fa-history" style="font-size: 2.5rem; color: #f59e0b; margin-bottom: 15px; display: block;"></i>
-                <h6 style="color: #2c3e50; font-weight: 900; margin-bottom: 10px;">My Complaints</h6>
+                <h6 style="color: var(--text-primary); font-weight: 900; margin-bottom: 10px;">My Complaints</h6>
                 <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 15px;">Track complaint status and history</p>
-                <a href="/student/complaints" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; display: inline-block;">View</a>
+                <a href="/student/complaints" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: var(--text-on-dark); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; display: inline-block;">View</a>
             </div>
         </div>
     </div>
@@ -171,7 +171,7 @@ setInterval(function() {
 {% if complaints %}
 <div class="row mb-5">
     <div class="col-md-12">
-        <h3 style="color: #2c3e50; font-weight: 900; margin-bottom: 30px; font-size: 1.8rem; letter-spacing: -0.5px;">
+        <h3 style="color: var(--text-primary); font-weight: 900; margin-bottom: 30px; font-size: 1.8rem; letter-spacing: -0.5px;">
             <i class="fas fa-history" style="color: #f59e0b; margin-right: 15px; font-size: 2rem;"></i>Recent Complaints
         </h3>
     </div>
@@ -182,33 +182,33 @@ setInterval(function() {
             onmouseout="this.style.boxShadow='0 4px 15px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)';">
             
             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                <h5 style="color: #2c3e50; font-weight: 700; margin: 0; flex: 1;">{{ complaint.title }}</h5>
+                <h5 style="color: var(--text-primary); font-weight: 700; margin: 0; flex: 1;">{{ complaint.title }}</h5>
                 <span style="background: {% if complaint.priority == 'High' %}#fee2e2{% elif complaint.priority == 'Medium' %}#fef3c7{% else %}#e0f2fe{% endif %}; color: {% if complaint.priority == 'High' %}#991b1b{% elif complaint.priority == 'Medium' %}#92400e{% else %}#0c4a6e{% endif %}; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">{{ complaint.priority }}</span>
             </div>
 
-            <p style="color: #666; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5;">{{ (complaint.description[:100]|e) }}{% if complaint.description|length > 100 %}...{% endif %}</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5;">{{ (complaint.description[:100]|e) }}{% if complaint.description|length > 100 %}...{% endif %}</p>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
                 <div>
-                    <small style="color: #999; font-weight: 600;">Category</small>
-                    <p style="color: #2c3e50; font-weight: 600; margin: 4px 0;">{{ complaint.category }}</p>
+                    <small style="color: var(--text-tertiary); font-weight: 600;">Category</small>
+                    <p style="color: var(--text-primary); font-weight: 600; margin: 4px 0;">{{ complaint.category }}</p>
                 </div>
                 <div>
-                    <small style="color: #999; font-weight: 600;">Date Filed</small>
-                    <p style="color: #2c3e50; font-weight: 600; margin: 4px 0;">{{ complaint.created_at|format_date('%d %b %Y') }}</p>
+                    <small style="color: var(--text-tertiary); font-weight: 600;">Date Filed</small>
+                    <p style="color: var(--text-primary); font-weight: 600; margin: 4px 0;">{{ complaint.created_at|format_date('%d %b %Y') }}</p>
                 </div>
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <small style="color: #999; font-weight: 600;">Status</small>
+                    <small style="color: var(--text-tertiary); font-weight: 600;">Status</small>
                     <p style="margin: 4px 0;">
                         <span style="background: {% if complaint.status == 'Resolved' %}#dcfce7{% elif complaint.status == 'In Progress' %}#fef3c7{% else %}#fee2e2{% endif %}; color: {% if complaint.status == 'Resolved' %}#166534{% elif complaint.status == 'In Progress' %}#92400e{% else %}#991b1b{% endif %}; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
                             {{ complaint.status }}
                         </span>
                     </p>
                 </div>
-                <a href="/student/complaint/{{ complaint.id }}" style="background: #667eea; color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
+                <a href="/student/complaint/{{ complaint.id }}" style="background: #667eea; color: var(--text-on-dark); padding: 8px 14px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
                     <i class="fas fa-eye"></i> View
                 </a>
             </div>
@@ -222,7 +222,7 @@ setInterval(function() {
 {% if resolved_complaints %}
 <div class="row mb-5">
     <div class="col-md-12">
-        <h3 style="color: #2c3e50; font-weight: 900; margin-bottom: 30px; font-size: 1.8rem; letter-spacing: -0.5px;">
+        <h3 style="color: var(--text-primary); font-weight: 900; margin-bottom: 30px; font-size: 1.8rem; letter-spacing: -0.5px;">
             <i class="fas fa-check-circle" style="color: #10b981; margin-right: 15px; font-size: 2rem;"></i>Resolved Complaints
         </h3>
     </div>
@@ -233,34 +233,34 @@ setInterval(function() {
             onmouseout="this.style.boxShadow='0 4px 15px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)';">
             
             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                <h5 style="color: #2c3e50; font-weight: 700; margin: 0; flex: 1;">{{ complaint.title }}</h5>
+                <h5 style="color: var(--text-primary); font-weight: 700; margin: 0; flex: 1;">{{ complaint.title }}</h5>
                 <span style="background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
                     <i class="fas fa-check"></i> Resolved
                 </span>
             </div>
 
-            <p style="color: #666; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5;">{{ (complaint.description[:100]|e) }}{% if complaint.description|length > 100 %}...{% endif %}</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5;">{{ (complaint.description[:100]|e) }}{% if complaint.description|length > 100 %}...{% endif %}</p>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
                 <div>
-                    <small style="color: #999; font-weight: 600;">Category</small>
-                    <p style="color: #2c3e50; font-weight: 600; margin: 4px 0;">{{ complaint.category }}</p>
+                    <small style="color: var(--text-tertiary); font-weight: 600;">Category</small>
+                    <p style="color: var(--text-primary); font-weight: 600; margin: 4px 0;">{{ complaint.category }}</p>
                 </div>
                 <div>
-                    <small style="color: #999; font-weight: 600;">Date Filed</small>
-                    <p style="color: #2c3e50; font-weight: 600; margin: 4px 0;">{{ complaint.created_at|format_date('%d %b %Y') }}</p>
+                    <small style="color: var(--text-tertiary); font-weight: 600;">Date Filed</small>
+                    <p style="color: var(--text-primary); font-weight: 600; margin: 4px 0;">{{ complaint.created_at|format_date('%d %b %Y') }}</p>
                 </div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <div>
-                    <small style="color: #999; font-weight: 600;">Priority</small>
+                    <small style="color: var(--text-tertiary); font-weight: 600;">Priority</small>
                     <p style="margin: 4px 0;">
                         <span style="background: {% if complaint.priority == 'High' %}#fee2e2{% elif complaint.priority == 'Medium' %}#fef3c7{% else %}#e0f2fe{% endif %}; color: {% if complaint.priority == 'High' %}#991b1b{% elif complaint.priority == 'Medium' %}#92400e{% else %}#0c4a6e{% endif %}; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">{{ complaint.priority }}</span>
                     </p>
                 </div>
                 <div style="text-align: right;">
-                    <a href="/student/complaint/{{ complaint.id }}" style="background: #10b981; color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
+                    <a href="/student/complaint/{{ complaint.id }}" style="background: #10b981; color: var(--text-on-dark); padding: 8px 14px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
                         <i class="fas fa-eye"></i> View
                     </a>
                 </div>

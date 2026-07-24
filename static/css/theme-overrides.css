@@ -1,0 +1,266 @@
+/**
+ * THEME-AWARE OVERRIDES
+ * Fixes for inline styles that don't adapt to theme changes
+ * These overrides ensure text is visible in both light and dark themes
+ */
+
+/* ==================== TEXT COLOR OVERRIDES ==================== */
+
+/* Override hardcoded #2c3e50 text color to use theme-aware text */
+[style*="color: var(--text-primary)"],
+[style*="color:#2c3e50"],
+h1, h2, h3, h4, h5, h6,
+.card-title,
+.modal-title,
+.form-label,
+label {
+    color: var(--text-primary) !important;
+}
+
+/* Override text-white to be theme-aware */
+.text-white,
+.card-header {
+    color: var(--text-primary) !important;
+}
+
+/* ==================== BACKGROUND OVERRIDES ==================== */
+
+/* Card backgrounds should use theme colors */
+.card,
+.modal-content,
+.dropdown-menu {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-primary) !important;
+}
+
+/* Input fields should use theme colors */
+input.form-control,
+textarea.form-control,
+select.form-select {
+    background-color: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-primary) !important;
+}
+
+input.form-control::placeholder,
+textarea.form-control::placeholder {
+    color: var(--text-secondary) !important;
+}
+
+input.form-control:focus,
+textarea.form-control:focus,
+select.form-select:focus {
+    background-color: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important;
+}
+
+/* ==================== TABLE OVERRIDES ==================== */
+
+table {
+    color: var(--text-primary) !important;
+}
+
+table thead {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+table tbody tr {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+table tbody tr:hover {
+    background-color: var(--bg-secondary) !important;
+}
+
+/* ==================== LIST & DESCRIPTIONS ==================== */
+
+.list-group-item {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-primary) !important;
+}
+
+.list-group-item:hover {
+    background-color: var(--bg-secondary) !important;
+}
+
+dl, dt, dd {
+    color: var(--text-primary) !important;
+}
+
+/* ==================== CODE & PREFORMATTED ==================== */
+
+code,
+pre,
+.badge,
+.badge-dark {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-primary) !important;
+}
+
+/* ==================== NAV & BREADCRUMB ==================== */
+
+.nav-link,
+.breadcrumb-item {
+    color: var(--text-secondary) !important;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--text-primary) !important;
+}
+
+.breadcrumb {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* ==================== HELPER TEXT ==================== */
+
+.small,
+.text-muted,
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+.text-info {
+    color: var(--info) !important;
+}
+
+/* ==================== BORDERS & RULES ==================== */
+
+hr {
+    border-color: var(--border-primary) !important;
+}
+
+.border {
+    border-color: var(--border-primary) !important;
+}
+
+/* ==================== PROGRESS BARS ==================== */
+
+.progress {
+    background-color: var(--bg-secondary) !important;
+}
+
+/* ==================== FORM FEEDBACK ==================== */
+
+.valid-feedback,
+.invalid-feedback {
+    color: var(--danger) !important;
+}
+
+.form-text {
+    color: var(--text-secondary) !important;
+}
+
+/* ==================== DISABLED STATE ==================== */
+
+input:disabled,
+textarea:disabled,
+select:disabled,
+.btn:disabled {
+    opacity: 0.6;
+    color: var(--text-muted) !important;
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+}
+
+/* ==================== SPECIAL FIXES FOR COMMON ISSUES ==================== */
+
+/* Fix visibility in modals */
+.modal-header {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+}
+
+.modal-body {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.modal-footer {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+}
+
+/* Fix visibility in dropdowns */
+.dropdown-item {
+    color: var(--text-primary) !important;
+    background-color: transparent;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Fix visibility in tabs */
+.nav-tabs {
+    border-color: var(--border-primary) !important;
+}
+
+.nav-tabs .nav-link {
+    color: var(--text-secondary) !important;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+}
+
+/* Fix pagina tion */
+.pagination .page-link {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-primary) !important;
+}
+
+.pagination .page-link:hover {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--text-on-dark) !important;
+}
+
+/* ==================== FIX FOR SPECIFIC ELEMENTS ==================== */
+
+/* Ensure form labels are visible */
+.form-label,
+label {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+}
+
+/* Ensure help text is visible */
+small {
+    color: var(--text-secondary) !important;
+}
+
+/* Ensure placeholder text is readable */
+::placeholder {
+    color: var(--text-secondary) !important;
+    opacity: 0.8;
+}
+
+/* ==================== ICON VISIBILITY ==================== */
+
+/* Ensure icons inherit proper colors */
+i.fas,
+i.far,
+i.fal,
+i.fab {
+    color: inherit;
+}

@@ -30,7 +30,7 @@
 
     .gallery-title {
         font-weight: 700;
-        color: #2c3e50;
+        color: var(--text-primary);
         margin-bottom: 8px;
         font-size: 1.1rem;
     }
@@ -38,7 +38,7 @@
     .gallery-category {
         display: inline-block;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        color: var(--text-on-dark);
         padding: 5px 12px;
         border-radius: 20px;
         font-size: 0.8rem;
@@ -76,7 +76,7 @@
 
     .form-label {
         font-weight: 700;
-        color: #2c3e50;
+        color: var(--text-primary);
         margin-bottom: 8px;
     }
 
@@ -95,7 +95,7 @@
 
     .modal-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        color: var(--text-on-dark);
     }
 
     .modal-title {
@@ -173,7 +173,7 @@
             <!-- Add New Photo Tab -->
             <div class="tab-pane fade show active" id="add-photo" role="tabpanel">
                 <div class="form-section">
-                    <h4 style="font-weight: 700; margin-bottom: 25px; color: #2c3e50;">
+                    <h4 style="font-weight: 700; margin-bottom: 25px; color: var(--text-primary);">
                         <i class="fas fa-camera"></i> Add New Photo to Gallery
                     </h4>
 
@@ -211,10 +211,18 @@
                             <label class="form-label">
                                 <i class="fas fa-image"></i> Image Path/URL *
                             </label>
-                            <input type="text" class="form-control" name="image_path" required 
-                                   placeholder="e.g., /static/uploads/common_room.jpg or https://example.com/image.jpg">
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                <input type="text" class="form-control" name="image_path" id="galleryImagePath" required 
+                                       placeholder="e.g., /static/uploads/common_room.jpg or https://example.com/image.jpg"
+                                       style="flex: 1;">
+                                <button type="button" class="btn btn-primary" id="galleryFilePickerBtn" 
+                                        style="white-space: nowrap; padding: 10px 20px; font-weight: 700;">
+                                    <i class="fas fa-folder-open"></i> Browse Files
+                                </button>
+                            </div>
+                            <input type="file" id="galleryFileInput" accept="image/*" style="display: none;">
                             <small class="text-muted d-block mt-2">
-                                Enter the path to the image file or full URL. 
+                                Click "Browse Files" to select an image from your device, or enter the path manually. 
                                 <br>You can use: /static/uploads/filename.jpg or provide a full URL
                             </small>
                         </div>
@@ -239,14 +247,14 @@
                     <h5 style="font-weight: 700; margin-bottom: 15px; color: #667eea;">
                         <i class="fas fa-lightbulb"></i> Image Path Examples
                     </h5>
-                    <p style="margin-bottom: 10px; color: #2c3e50;">
+                    <p style="margin-bottom: 10px; color: var(--text-primary);">
                         <strong>Option 1: Local upload (recommended)</strong>
                     </p>
                     <code style="background: white; padding: 10px; border-radius: 5px; display: block; margin-bottom: 15px;">
                         /static/uploads/hostel_photo_1.jpg
                     </code>
 
-                    <p style="margin-bottom: 10px; color: #2c3e50;">
+                    <p style="margin-bottom: 10px; color: var(--text-primary);">
                         <strong>Option 2: External URL</strong>
                     </p>
                     <code style="background: white; padding: 10px; border-radius: 5px; display: block; margin-bottom: 15px;">
@@ -310,7 +318,7 @@
                     {% else %}
                         <div class="empty-gallery">
                             <i class="fas fa-inbox"></i>
-                            <h4 style="color: #2c3e50; font-weight: 700; margin-bottom: 10px;">No Photos Yet</h4>
+                            <h4 style="color: var(--text-primary); font-weight: 700; margin-bottom: 10px;">No Photos Yet</h4>
                             <p style="color: #7f8c8d; margin-bottom: 20px;">Add photos to the gallery from the "Add New Photo" tab</p>
                             <button class="btn btn-primary" data-bs-toggle="tab" data-bs-target="#add-photo">
                                 <i class="fas fa-plus"></i> Add First Photo
@@ -379,6 +387,188 @@
 </div>
 
 <script>
+// ==================== FILE PICKER FUNCTIONALITY ====================
+
+// Gallery (simple add form) file picker
+const galleryFilePickerBtn = document.getElementById('galleryFilePickerBtn');
+const galleryFileInput = document.getElementById('galleryFileInput');
+const galleryImagePath = document.getElementById('galleryImagePath');
+
+if (galleryFilePickerBtn && galleryFileInput) {
+    // Open file picker when button is clicked
+    galleryFilePickerBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        galleryFileInput.click();
+    });
+
+    // Handle file selection
+    galleryFileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('❌ Please select an image file (PNG, JPG, GIF, etc.)');
+                return;
+            }
+
+            // Validate file size (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('❌ File size should be less than 5MB');
+                return;
+            }
+
+            // Upload file and get path
+            uploadFileToServer(file);
+        }
+    });
+}
+
+// Function to upload file to server
+function uploadFileToServer(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    // REMOVED: Don't upload immediately with 'temp' title
+    // This was causing temp/test images to stay in gallery if user doesn't complete form
+    
+    // Instead, just save file locally and wait for user to fill in title
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        // Store file data for later upload
+        galleryImagePath.dataset.fileData = e.target.result;
+        galleryImagePath.dataset.fileName = file.name;
+        
+        // Show preview immediately
+        const previewHtml = `
+            <div style="margin-top: 15px; padding: 15px; background: #f0f0f0; border-radius: 8px; text-align: center;">
+                <img src="${e.target.result}" alt="Preview" style="max-width: 100%; max-height: 200px; border-radius: 8px;">
+                <p style="margin-top: 10px; color: var(--text-primary); font-weight: 600;">
+                    ✓ File selected! (${(file.size / 1024 / 1024).toFixed(2)}MB)
+                    <br><small>Now enter title and click "Add Photo"</small>
+                </p>
+            </div>
+        `;
+        
+        // Remove existing preview if any
+        const existingPreview = galleryImagePath.parentElement.querySelector('[id="preview"]');
+        if (existingPreview) {
+            existingPreview.remove();
+        }
+        
+        // Add new preview
+        const previewDiv = document.createElement('div');
+        previewDiv.id = 'preview';
+        previewDiv.innerHTML = previewHtml;
+        galleryImagePath.parentElement.insertBefore(previewDiv, galleryImagePath.nextElementSibling);
+        
+        // Show loading state
+        galleryFilePickerBtn.disabled = true;
+        galleryFilePickerBtn.innerHTML = '<i class="fas fa-check"></i> File Selected';
+    };
+    reader.readAsDataURL(file);
+}
+
+// ==================== FORM SUBMISSION HANDLING ====================
+
+// Prevent form submission if using file picker without proper title
+const galleryForm = document.querySelector('form[method="POST"]');
+if (galleryForm) {
+    galleryForm.addEventListener('submit', function(e) {
+        const titleInput = this.querySelector('input[name="title"]');
+        const imagePathInput = this.querySelector('#galleryImagePath');
+        
+        // If title is empty, prevent submission
+        if (!titleInput.value.trim()) {
+            e.preventDefault();
+            alert('❌ Please enter a photo title');
+            titleInput.focus();
+            return false;
+        }
+        
+        // If using file picker (image_path empty but file data exists), upload file first
+        if (!imagePathInput.value && imagePathInput.dataset.fileData) {
+            e.preventDefault();
+            uploadFileWithTitle(titleInput.value, imagePathInput);
+            return false;
+        }
+        
+        // Otherwise allow normal form submission
+        return true;
+    });
+}
+
+// Function to upload file with proper title
+function uploadFileWithTitle(title, imagePathInput) {
+    if (!imagePathInput.dataset.fileData) {
+        alert('❌ No file selected');
+        return;
+    }
+    
+    // Convert data URL to blob
+    const arr = imagePathInput.dataset.fileData.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    const n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    for (let i = 0; i < n; i++) {
+        u8arr[i] = bstr.charCodeAt(i);
+    }
+    const blob = new Blob([u8arr], {type: mime});
+    
+    // Create form data with file and title
+    const formData = new FormData();
+    formData.append('file', blob, imagePathInput.dataset.fileName);
+    formData.append('title', title);
+    
+    // Show loading state
+    const submitBtn = galleryForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    
+    fetch('/admin/gallery/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        
+        if (data.success) {
+            // Set image path
+            imagePathInput.value = data.image_path;
+            
+            // Show success and submit form
+            const successDiv = document.createElement('div');
+            successDiv.className = 'alert alert-success';
+            successDiv.style.cssText = 'animation: slideInUp 0.3s ease; margin-bottom: 20px;';
+            successDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i> 
+                <strong>✓ File uploaded!</strong> Now submitting form...
+            `;
+            galleryForm.parentElement.insertBefore(successDiv, galleryForm);
+            
+            // Auto-submit form after brief delay
+            setTimeout(() => {
+                galleryForm.submit();
+            }, 500);
+        } else {
+            alert('❌ Upload error: ' + (data.error || 'Unknown error'));
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        alert('❌ Upload failed: ' + error.message);
+    });
+}
+
+// ==================== IMAGE DATA LOADING ====================
+
 function loadImageData(image) {
     document.getElementById('edit_image_id').value = image.id || '';
     document.getElementById('edit_title').value = image.title || '';

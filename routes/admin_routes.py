@@ -1554,33 +1554,64 @@ def settings():
 @login_required
 @admin_required
 def gallery():
-    """Manage hostel gallery"""
-    cursor = db.connection.cursor()
-    
-    if request.method == 'POST':
-        action = request.form.get('action', '').strip()
+    """Manage hostel gallery - Admin only"""
+    try:
+        cursor = db.connection.cursor()
         
-        if action == 'add':
-            try:
-                title = request.form.get('title', '').strip()
-                description = request.form.get('description', '').strip()
-                category = request.form.get('category', 'Facilities')
-                image_path = request.form.get('image_path', '').strip()
-                
-                if not all([title, image_path]):
-                    flash('❌ Title and image path are required!', 'danger')
+        if request.method == 'POST':
+            action = request.form.get('action', '').strip()
+            
+            if action == 'add':
+                try:
+                    title = request.form.get('title', '').strip()
+                    description = request.form.get('description', '').strip()
+                    category = request.form.get('category', 'Facilities')
+                    image_path = request.form.get('image_path', '').strip()
+                    
+                    if not all([title, image_path]):
+                        flash('❌ Title and image path are required!', 'danger')
+                        return redirect(url_for('admin.gallery'))
+                    
+                    cursor.execute("""
+                        INSERT INTO gallery (title, description, category, image_path, created_at)
+                        VALUES (%s, %s, %s, %s, NOW())
+                    """, (title, description, category, image_path))
+                    db.connection.commit()
+                    flash(f'✅ Photo "{title}" added to gallery successfully!', 'success')
                     return redirect(url_for('admin.gallery'))
-                
-                cursor.execute("""
-                    INSERT INTO gallery (title, description, category, image_path, created_at)
-                    VALUES (%s, %s, %s, %s, NOW())
-                """, (title, description, category, image_path))
-                db.connection.commit()
-                flash(f'✅ Photo "{title}" added to gallery successfully!', 'success')
-                
-            except Exception as e:
-                db.connection.rollback()
-                flash(f'❌ Error adding photo: {str(e)}', 'danger')
+                    
+                except Exception as e:
+                    db.connection.rollback()
+                    flash(f'❌ Error adding photo: {str(e)}', 'danger')
+                    return redirect(url_for('admin.gallery'))
+            
+            elif action == 'delete':
+                try:
+                    image_id = request.form.get('image_id')
+                    if not image_id:
+                        flash('❌ Invalid image ID!', 'danger')
+                        return redirect(url_for('admin.gallery'))
+                    
+                    cursor.execute("DELETE FROM gallery WHERE id = %s", (image_id,))
+                    db.connection.commit()
+                    flash(f'✅ Image deleted successfully!', 'success')
+                    return redirect(url_for('admin.gallery'))
+                    
+                except Exception as e:
+                    db.connection.rollback()
+                    flash(f'❌ Error deleting image: {str(e)}', 'danger')
+                    return redirect(url_for('admin.gallery'))
+        
+        # GET request - fetch and display all gallery images
+        cursor.execute("SELECT id, title, description, category, image_path, created_at FROM gallery ORDER BY created_at DESC")
+        gallery_images = cursor.fetchall()
+        cursor.close()
+        
+        return render_template('admin/gallery.html', gallery_images=gallery_images)
+        
+    except Exception as e:
+        flash(f'❌ Error loading gallery: {str(e)}', 'danger')
+        return render_template('admin/gallery.html', gallery_images=[])
 
 @admin_bp.route('/gallery/upload', methods=['POST'])
 @login_required
@@ -1668,9 +1699,3 @@ def upload_gallery_image():
         import traceback
         traceback.print_exc()
         return {'success': False, 'error': f'Upload error: {str(e)}'}, 500
-
-# ==================== GALLERY PAGE ROUTE ====================
-    
-    cursor.close()
-    
-    return render_template('admin/gallery_upload.html', gallery_images=gallery_images)

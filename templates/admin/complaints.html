@@ -11,7 +11,7 @@
 
     .complaints-table thead {
         background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-        color: white;
+        color: var(--text-on-dark);
     }
 
     .complaints-table thead th {
@@ -77,14 +77,14 @@
 
     .detail-item label {
         font-weight: 700;
-        color: #2c3e50;
+        color: var(--text-primary);
         font-size: 0.9rem;
         display: block;
         margin-bottom: 5px;
     }
 
     .detail-item p {
-        color: #555;
+        color: var(--text-secondary);
         margin: 0;
         font-weight: 500;
     }
@@ -99,20 +99,20 @@
 
     .description-box label {
         font-weight: 700;
-        color: #2c3e50;
+        color: var(--text-primary);
         display: block;
         margin-bottom: 10px;
     }
 
     .description-box p {
-        color: #555;
+        color: var(--text-secondary);
         line-height: 1.6;
         margin: 0;
     }
 
     .modal-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        color: var(--text-on-dark);
         border: none;
     }
 
@@ -128,7 +128,7 @@
 {% endblock %}
 
 {% block content %}
-<div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 50px 0; color: white; margin-bottom: 40px; position: relative; overflow: hidden;">
+<div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 50px 0; color: var(--text-on-dark); margin-bottom: 40px; position: relative; overflow: hidden;">
     <div style="position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
     <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.06); border-radius: 50%;"></div>
     <div class="container-fluid" style="position: relative; z-index: 1;">
@@ -161,10 +161,10 @@
                     {% for complaint in complaints %}
                     <tr>
                         <td><strong>#{{ complaint.id }}</strong></td>
-                        <td style="font-weight: 700; color: #2c3e50;">{{ complaint.full_name }}</td>
-                        <td><span style="background: #667eea; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 700;">{{ complaint.room_number or 'N/A' }}</span></td>
+                        <td style="font-weight: 700; color: var(--text-primary);">{{ complaint.full_name }}</td>
+                        <td><span style="background: #667eea; color: var(--text-on-dark); padding: 6px 12px; border-radius: 6px; font-weight: 700;">{{ complaint.room_number or 'N/A' }}</span></td>
                         <td>
-                            <span style="background: #f0f0f0; color: #2c3e50; padding: 6px 10px; border-radius: 6px; font-weight: 600;">{{ complaint.category }}</span>
+                            <span style="background: #f0f0f0; color: var(--text-primary); padding: 6px 10px; border-radius: 6px; font-weight: 600;">{{ complaint.category }}</span>
                         </td>
                         <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ complaint.title }}">{{ complaint.title }}</td>
                         <td>
@@ -269,7 +269,7 @@ function quickUpdate(complaintId, status) {
                 top: 20px;
                 right: 20px;
                 background: #10b981;
-                color: white;
+                color: var(--text-on-dark);
                 padding: 15px 20px;
                 border-radius: 8px;
                 box-shadow: 0 4px 12px rgba(0,0,0,0.15);

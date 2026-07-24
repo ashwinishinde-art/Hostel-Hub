@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Hostel Hub Tunnel Launcher
+Comment=Start Flask app and Cloudflare tunnel
+Exec=/home/prajwal/Desktop/Hostel-Hub/start_tunnel.sh
+Terminal=true
+Icon=network-wireless
+Categories=Utility;

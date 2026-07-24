@@ -4,8 +4,8 @@
 {% block sub_styles %}
 <style>
     .search-bar { display: flex; gap: 10px; margin-bottom: 30px; }
-    .search-bar input { flex: 1; padding: 12px 18px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 15px; }
-    .search-bar button { padding: 12px 24px; background: var(--accent); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; }
+    .search-bar input { flex: 1; padding: 12px 18px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-on-dark); font-size: 15px; }
+    .search-bar button { padding: 12px 24px; background: var(--accent); border: none; border-radius: 8px; color: var(--text-on-dark); font-weight: 600; cursor: pointer; }
     .search-bar button:hover { background: var(--accent-hover); }
 
     .records-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; }
@@ -14,7 +14,7 @@
     .records-table tr { border-bottom: 1px solid var(--border-color); transition: background 0.1s; }
     .records-table tr:hover { background: rgba(255,255,255,0.02); }
     .records-table tr:last-child { border-bottom: none; }
-    .tag { background: #1e293b; color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid var(--border-color); }
+    .tag { background: #1e293b; color: var(--text-on-dark); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid var(--border-color); }
 </style>
 {% endblock %}
 

@@ -134,7 +134,7 @@ body::before {
 
 .theme-toggle:hover {
     background: var(--hacker-green) !important;
-    color: #000 !important;
+    color: var(--text-primary) !important;
     box-shadow: var(--hacker-glow) !important;
     transform: none !important;
 }
@@ -290,7 +290,7 @@ body::before {
 
 .btn-primary:hover, .btn-primary:focus {
     background: var(--hacker-green) !important;
-    color: #000 !important;
+    color: var(--text-primary) !important;
     box-shadow: var(--hacker-glow) !important;
     transform: translateY(-1px) !important;
 }
@@ -303,7 +303,7 @@ body::before {
 
 .btn-success:hover {
     background: #0088cc !important;
-    color: #000 !important;
+    color: var(--text-primary) !important;
     box-shadow: 0 0 10px #0088cc !important;
 }
 
@@ -315,7 +315,7 @@ body::before {
 
 .btn-danger:hover {
     background: var(--hacker-red) !important;
-    color: #fff !important;
+    color: var(--text-on-dark) !important;
     box-shadow: 0 0 10px var(--hacker-red) !important;
 }
 
@@ -327,7 +327,7 @@ body::before {
 
 .btn-warning:hover {
     background: var(--hacker-yellow) !important;
-    color: #000 !important;
+    color: var(--text-primary) !important;
     box-shadow: 0 0 10px var(--hacker-yellow) !important;
 }
 
@@ -339,7 +339,7 @@ body::before {
 
 .btn-secondary:hover {
     background: var(--hacker-muted) !important;
-    color: #000 !important;
+    color: var(--text-primary) !important;
 }
 
 .btn-info {
@@ -350,7 +350,7 @@ body::before {
 
 .btn-info:hover {
     background: var(--hacker-cyan) !important;
-    color: #000 !important;
+    color: var(--text-primary) !important;
     box-shadow: 0 0 10px var(--hacker-cyan) !important;
 }
 
@@ -361,7 +361,7 @@ body::before {
 
 .btn-outline-primary:hover {
     background: var(--hacker-green) !important;
-    color: #000 !important;
+    color: var(--text-primary) !important;
 }
 
 /* ===================== TABLES ===================== */
@@ -629,7 +629,7 @@ div[style*="linear-gradient"] {
 .pagination .page-item.active .page-link {
     background: var(--hacker-green) !important;
     border-color: var(--hacker-green) !important;
-    color: #000 !important;
+    color: var(--text-primary) !important;
 }
 
 /* ===================== LIST GROUP ===================== */

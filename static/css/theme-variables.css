@@ -1,0 +1,136 @@
+/**
+ * THEME-AWARE CSS VARIABLES
+ * Centralized color management for light/dark theme switching
+ * All text, backgrounds, and borders use these variables
+ */
+
+:root {
+    /* ==================== PRIMARY COLORS ==================== */
+    --primary-color: #6366f1;
+    --primary-dark: #4f46e5;
+    --primary-light: #818cf8;
+    --secondary: #ec4899;
+    --accent: #f97316;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --info: #06b6d4;
+    
+    /* ==================== LIGHT THEME COLORS ==================== */
+    --light-bg: #ffffff;
+    --light-bg-secondary: #f9fafb;
+    --light-bg-tertiary: #ecf0f1;
+    --light-text: #2c3e50;
+    --light-text-secondary: #7f8c8d;
+    --light-text-muted: #95a5a6;
+    --light-border: #e5e7eb;
+    --light-border-secondary: #ddd;
+    --light-card-bg: #ffffff;
+    --light-input-bg: #f8f9fa;
+    
+    /* ==================== DARK THEME COLORS ==================== */
+    --dark-bg: #0d1117;
+    --dark-bg-secondary: #161b22;
+    --dark-bg-tertiary: #1a202c;
+    --dark-text: #e6edf3;
+    --dark-text-secondary: #8b949e;
+    --dark-text-muted: #6e7681;
+    --dark-border: #30363d;
+    --dark-border-secondary: #444;
+    --dark-card-bg: #21262d;
+    --dark-input-bg: #0d1117;
+    
+    /* ==================== HACKER THEME COLORS ==================== */
+    --hacker-bg: #000000;
+    --hacker-bg-secondary: #00050a;
+    --hacker-bg-tertiary: #000a0f;
+    --hacker-text: #c8eeff;
+    --hacker-text-secondary: #3a7a9f;
+    --hacker-text-muted: #0066aa;
+    --hacker-border: #00aaff20;
+    --hacker-border-secondary: #00aaff40;
+    --hacker-card-bg: #001020;
+    --hacker-input-bg: #000000;
+    --hacker-green: #00aaff;
+    --hacker-glow: 0 0 8px #00aaff, 0 0 20px #00aaff66;
+    
+    /* ==================== CURRENT THEME (Light as default) ==================== */
+    --bg-primary: var(--light-bg);
+    --bg-secondary: var(--light-bg-secondary);
+    --bg-tertiary: var(--light-bg-tertiary);
+    --text-primary: var(--light-text);
+    --text-secondary: var(--light-text-secondary);
+    --text-muted: var(--light-text-muted);
+    --border-primary: var(--light-border);
+    --border-secondary: var(--light-border-secondary);
+    --card-bg: var(--light-card-bg);
+    --input-bg: var(--light-input-bg);
+    --text-on-primary: #ffffff;
+    --text-on-success: #ffffff;
+    --text-on-danger: #ffffff;
+    --text-on-warning: #ffffff;
+    --text-on-info: #ffffff;
+}
+
+/* ==================== DARK THEME MODE ==================== */
+html.dark-theme {
+    --bg-primary: var(--dark-bg);
+    --bg-secondary: var(--dark-bg-secondary);
+    --bg-tertiary: var(--dark-bg-tertiary);
+    --text-primary: var(--dark-text);
+    --text-secondary: var(--dark-text-secondary);
+    --text-muted: var(--dark-text-muted);
+    --border-primary: var(--dark-border);
+    --border-secondary: var(--dark-border-secondary);
+    --card-bg: var(--dark-card-bg);
+    --input-bg: var(--dark-input-bg);
+    --text-on-primary: #ffffff;
+    --text-on-success: #ffffff;
+    --text-on-danger: #ffffff;
+    --text-on-warning: #000000;
+    --text-on-info: #ffffff;
+}
+
+/* ==================== HACKER THEME MODE ==================== */
+html.hacker-theme {
+    --bg-primary: var(--hacker-bg);
+    --bg-secondary: var(--hacker-bg-secondary);
+    --bg-tertiary: var(--hacker-bg-tertiary);
+    --text-primary: var(--hacker-text);
+    --text-secondary: var(--hacker-text-secondary);
+    --text-muted: var(--hacker-text-muted);
+    --border-primary: var(--hacker-border);
+    --border-secondary: var(--hacker-border-secondary);
+    --card-bg: var(--hacker-card-bg);
+    --input-bg: var(--hacker-input-bg);
+    --text-on-primary: var(--hacker-green);
+    --text-on-success: #000000;
+    --text-on-danger: #ffffff;
+    --text-on-warning: #000000;
+    --text-on-info: #000000;
+}
+
+/* ==================== UTILITY CLASSES FOR BUTTONS ==================== */
+
+/* Button text colors on colored backgrounds */
+.btn-primary { color: var(--text-on-primary) !important; }
+.btn-success { color: var(--text-on-success) !important; }
+.btn-danger { color: var(--text-on-danger) !important; }
+.btn-warning { color: var(--text-on-warning) !important; }
+.btn-info { color: var(--text-on-info) !important; }
+
+/* Ensure text visibility in badges */
+.badge-primary { color: var(--text-on-primary) !important; }
+.badge-success { color: var(--text-on-success) !important; }
+.badge-danger { color: var(--text-on-danger) !important; }
+.badge-warning { color: var(--text-on-warning) !important; }
+.badge-info { color: var(--text-on-info) !important; }
+
+/* Ensure text visibility in alerts */
+.alert { color: var(--text-primary) !important; }
+.alert-dark { background-color: var(--bg-secondary) !important; color: var(--text-primary) !important; }
+
+/* ==================== SMOOTH TRANSITIONS ==================== */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}

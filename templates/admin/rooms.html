@@ -11,7 +11,7 @@
 
     .room-table thead {
         background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-        color: white;
+        color: var(--text-on-dark);
     }
 
     .room-table thead th {
@@ -88,7 +88,7 @@
 
     .students-table thead {
         background: linear-gradient(135deg, var(--secondary-color) 0%, #3498db 100%);
-        color: white;
+        color: var(--text-on-dark);
     }
 
     .students-table thead th {
@@ -186,25 +186,25 @@
     /* Different room type colors */
     .room-type.single {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        color: var(--text-on-dark);
         border: 2px solid rgba(102, 126, 234, 0.5);
     }
 
     .room-type.double {
         background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        color: white;
+        color: var(--text-on-dark);
         border: 2px solid rgba(245, 87, 108, 0.5);
     }
 
     .room-type.triple {
         background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
+        color: var(--text-on-dark);
         border: 2px solid rgba(79, 172, 254, 0.5);
     }
 
     .room-type.quad {
         background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-        color: white;
+        color: var(--text-on-dark);
         border: 2px solid rgba(67, 233, 123, 0.5);
     }
 
@@ -222,7 +222,7 @@
         border-radius: 10px;
         font-weight: 800;
         font-size: 1rem;
-        color: white;
+        color: var(--text-on-dark);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         transition: all 0.3s ease;
         cursor: default;
@@ -301,7 +301,7 @@
     /* Modal improvements */
     .modal-header {
         background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-        color: white;
+        color: var(--text-on-dark);
     }
 
     .modal-title {
@@ -370,7 +370,7 @@
 {% endblock %}
 
 {% block content %}
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 0; color: white; margin-bottom: 40px;">
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 0; color: var(--text-on-dark); margin-bottom: 40px;">
     <div class="container-fluid">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>

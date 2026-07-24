@@ -46,7 +46,7 @@ html.dark-theme .pagination .page-link {
 html.dark-theme .pagination .page-link:hover {
     background-color: #3498db;
     border-color: #3498db;
-    color: white;
+    color: var(--text-on-dark);
 }
 
 html.dark-theme .pagination .page-item.active .page-link {
@@ -221,7 +221,7 @@ html.dark-theme .badge.bg-success {
 
 html.dark-theme .badge.bg-warning {
     background-color: #f39c12 !important;
-    color: #000 !important;
+    color: var(--text-primary) !important;
 }
 
 html.dark-theme .badge.bg-info {
@@ -460,7 +460,7 @@ html.dark-theme .glass-effect {
     height: 60px;
     border-radius: 50%;
     background: linear-gradient(135deg, #3498db, #2980b9);
-    color: white;
+    color: var(--text-on-dark);
     border: none;
     cursor: pointer;
     display: flex;
