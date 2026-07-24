@@ -333,11 +333,85 @@ def visitors():
     return render_template('student/visitors.html', visitors=visitor_requests)
 
 # ==================== FEES ====================
-@student_bp.route('/fees')
+@student_bp.route('/fees', methods=['GET', 'POST'])
 @student_required
 def fees():
-    """View fee details and payment history"""
+    """View fee details and payment history, and make payments"""
     cursor = db.connection.cursor()
+    
+    if request.method == 'POST':
+        action = request.form.get('action', '').strip()
+        
+        if action == 'make_payment':
+            try:
+                fee_id = request.form.get('fee_id', 0)
+                amount_paid = request.form.get('amount_paid', 0)
+                payment_method = request.form.get('payment_method', 'Cash')
+                transaction_id = request.form.get('transaction_id', '').strip()
+                notes = request.form.get('notes', '').strip()
+                
+                # Validate fee belongs to current user
+                cursor.execute("""
+                    SELECT student_id, pending_amount, total_amount FROM fees WHERE id = %s
+                """, (fee_id,))
+                fee_info = cursor.fetchone()
+                
+                if not fee_info:
+                    flash('Fee record not found.', 'danger')
+                    return redirect(url_for('student.fees'))
+                
+                if fee_info['student_id'] != current_user.id:
+                    flash('Unauthorized access to fee record.', 'danger')
+                    return redirect(url_for('student.fees'))
+                
+                try:
+                    amount_paid = float(amount_paid)
+                    if amount_paid <= 0:
+                        flash('Payment amount must be greater than zero.', 'danger')
+                        return redirect(url_for('student.fees'))
+                    
+                    if amount_paid > fee_info['pending_amount']:
+                        flash(f'Payment amount cannot exceed pending amount of ₹{fee_info["pending_amount"]:.2f}', 'danger')
+                        return redirect(url_for('student.fees'))
+                
+                except ValueError:
+                    flash('Invalid payment amount.', 'danger')
+                    return redirect(url_for('student.fees'))
+                
+                # Record payment
+                cursor.execute("""
+                    INSERT INTO payment_history (fee_id, student_id, amount_paid, payment_method, 
+                                               transaction_id, payment_date, recorded_by, notes)
+                    VALUES (%s, %s, %s, %s, %s, NOW(), %s, %s)
+                """, (fee_id, current_user.id, amount_paid, payment_method, 
+                     transaction_id, current_user.id, notes))
+                
+                # Update fee status
+                new_pending = fee_info['pending_amount'] - amount_paid
+                if new_pending <= 0:
+                    status = 'Paid'
+                elif new_pending < fee_info['total_amount']:
+                    status = 'Partial'
+                else:
+                    status = 'Pending'
+                
+                cursor.execute("""
+                    UPDATE fees 
+                    SET paid_amount = paid_amount + %s,
+                        pending_amount = %s,
+                        payment_status = %s,
+                        last_payment_date = NOW()
+                    WHERE id = %s
+                """, (amount_paid, max(0, new_pending), status, fee_id))
+                
+                db.connection.commit()
+                flash(f'Payment of ₹{amount_paid:.2f} recorded successfully!', 'success')
+                
+            except Exception as e:
+                db.connection.rollback()
+                flash(f'Error processing payment: {str(e)}', 'danger')
+        
+        return redirect(url_for('student.fees'))
     
     # Get current fees
     cursor.execute("""

@@ -869,7 +869,56 @@
       "updated_at": "2026-07-23 14:08:43"
     }
   ],
-  "fees": [],
+  "fees": [
+    {
+      "id": 1,
+      "student_id": 11,
+      "academic_year": "2026-2027",
+      "semester": "3",
+      "room_rent": 5000.0,
+      "mess_fee": 3000.0,
+      "utilities_fee": 1000.0,
+      "other_charges": 500.0,
+      "total_amount": 9500.0,
+      "pending_amount": 9500.0,
+      "due_date": "2026-09-30",
+      "payment_status": "Pending",
+      "created_at": "2026-07-24 14:50:28",
+      "updated_at": "2026-07-24 14:50:28"
+    },
+    {
+      "id": 2,
+      "student_id": 14,
+      "academic_year": "2026-2027",
+      "semester": "3",
+      "room_rent": 5000.0,
+      "mess_fee": 3000.0,
+      "utilities_fee": 1000.0,
+      "other_charges": 500.0,
+      "total_amount": 9500.0,
+      "pending_amount": 9500.0,
+      "due_date": "2026-09-30",
+      "payment_status": "Pending",
+      "created_at": "2026-07-24 14:50:28",
+      "updated_at": "2026-07-24 14:50:28"
+    },
+    {
+      "id": 3,
+      "student_id": 10,
+      "academic_year": "2026-2027",
+      "semester": "3",
+      "room_rent": 5000.0,
+      "mess_fee": 3000.0,
+      "utilities_fee": 1000.0,
+      "other_charges": 500.0,
+      "total_amount": 9500.0,
+      "pending_amount": 9500.0,
+      "due_date": "2026-09-30",
+      "payment_status": "Pending",
+      "created_at": "2026-07-24 14:50:28",
+      "updated_at": "2026-07-24 14:50:28"
+    }
+  ],
   "notices": [
     {
       "id": 1,

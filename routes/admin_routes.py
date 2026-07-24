@@ -897,7 +897,82 @@ def fees():
     if request.method == 'POST':
         action = request.form.get('action', '').strip()
         
-        if action == 'record_payment':
+        if action == 'add_fees':
+            try:
+                academic_year = request.form.get('academic_year', '').strip()
+                semester = request.form.get('semester', 0)
+                room_rent = request.form.get('room_rent', 0)
+                mess_fee = request.form.get('mess_fee', 0)
+                utilities_fee = request.form.get('utilities_fee', 0)
+                other_charges = request.form.get('other_charges', 0)
+                due_date = request.form.get('due_date', '')
+                apply_to = request.form.get('apply_to', 'all')
+                selected_students = request.form.getlist('selected_students')
+                
+                # Validate inputs
+                if not academic_year or not semester:
+                    flash('Academic year and semester are required.', 'danger')
+                    return redirect(url_for('admin.fees'))
+                
+                try:
+                    room_rent = float(room_rent)
+                    mess_fee = float(mess_fee) if mess_fee else 0
+                    utilities_fee = float(utilities_fee) if utilities_fee else 0
+                    other_charges = float(other_charges) if other_charges else 0
+                except ValueError:
+                    flash('Invalid fee amounts. Please enter valid numbers.', 'danger')
+                    return redirect(url_for('admin.fees'))
+                
+                total_amount = room_rent + mess_fee + utilities_fee + other_charges
+                
+                # Get list of students to apply fees to
+                if apply_to == 'all':
+                    cursor.execute("""
+                        SELECT id FROM users WHERE role = 'student'
+                    """)
+                    students_to_update = cursor.fetchall()
+                elif apply_to == 'selected' and selected_students:
+                    students_to_update = [{'id': int(sid)} for sid in selected_students]
+                else:
+                    flash('Please select students to apply fees to.', 'danger')
+                    return redirect(url_for('admin.fees'))
+                
+                # Check if fee already exists for this year/semester combination
+                existing_count = 0
+                for student in students_to_update:
+                    student_id = student['id']
+                    cursor.execute("""
+                        SELECT id FROM fees 
+                        WHERE student_id = %s AND academic_year = %s AND semester = %s
+                    """, (student_id, academic_year, semester))
+                    if cursor.fetchone():
+                        existing_count += 1
+                
+                if existing_count > 0:
+                    flash(f'Fee record already exists for {existing_count} student(s) for this academic year and semester.', 'warning')
+                    return redirect(url_for('admin.fees'))
+                
+                # Add fees for each student
+                added_count = 0
+                for student in students_to_update:
+                    student_id = student['id']
+                    cursor.execute("""
+                        INSERT INTO fees (student_id, academic_year, semester, room_rent, mess_fee, 
+                                        utilities_fee, other_charges, total_amount, pending_amount, 
+                                        due_date, payment_status)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'Pending')
+                    """, (student_id, academic_year, semester, room_rent, mess_fee, 
+                          utilities_fee, other_charges, total_amount, total_amount, due_date))
+                    added_count += 1
+                
+                db.connection.commit()
+                flash(f'Fees added successfully to {added_count} student(s)!', 'success')
+                
+            except Exception as e:
+                db.connection.rollback()
+                flash(f'Error adding fees: {str(e)}', 'danger')
+        
+        elif action == 'record_payment':
             try:
                 fee_id = request.form.get('fee_id', 0)
                 amount_paid = request.form.get('amount_paid', 0)
@@ -948,8 +1023,25 @@ def fees():
                 db.connection.rollback()
                 flash(f'Error recording payment: {str(e)}', 'danger')
         
+        elif action == 'delete_fee':
+            try:
+                fee_id = request.form.get('fee_id', 0)
+                cursor.execute("""
+                    DELETE FROM payment_history WHERE fee_id = %s
+                """, (fee_id,))
+                cursor.execute("""
+                    DELETE FROM fees WHERE id = %s
+                """, (fee_id,))
+                db.connection.commit()
+                flash('Fee record deleted successfully!', 'success')
+                
+            except Exception as e:
+                db.connection.rollback()
+                flash(f'Error deleting fee record: {str(e)}', 'danger')
+        
         return redirect(url_for('admin.fees'))
     
+    # Get all fees
     cursor.execute("""
         SELECT f.*, u.full_name, s.roll_number
         FROM fees f
@@ -958,9 +1050,19 @@ def fees():
         ORDER BY f.academic_year DESC, f.semester DESC
     """)
     fees_list = cursor.fetchall()
+    
+    # Get all students for the dropdown
+    cursor.execute("""
+        SELECT u.id, u.full_name, s.roll_number
+        FROM users u
+        JOIN students s ON u.id = s.user_id
+        WHERE u.role = 'student'
+        ORDER BY u.full_name
+    """)
+    all_students = cursor.fetchall()
     cursor.close()
     
-    return render_template('admin/fees.html', fees=fees_list)
+    return render_template('admin/fees.html', fees=fees_list, students=all_students)
 
 # ==================== STUDENTS MANAGEMENT ====================
 @admin_bp.route('/students')
